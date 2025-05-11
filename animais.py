@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template
-from app.init import ManagerCSV
+from init import ManagerCSV
 
 GET, POST = 'GET', 'POST'
 
@@ -7,9 +7,9 @@ animais_bp = Blueprint('animais', __name__)
 
 @animais_bp.route('/animal_entrada', methods= [GET, POST])
 def animal_entrada():
-    lote = ['lote 1', 'lote 2']
-    raca = ['raca 1', 'raca 2']
-    fornecedor = ['fornecedor 1', 'fornecedor 2']
+    lote_opcoes = ['lote 1', 'lote 2']
+    raca_opcoes = ['raca 1', 'raca 2']
+    fornecedor_opcoes = ['fornecedor 1', 'fornecedor 2']
     status = None
 
     if request.method == POST:
@@ -41,9 +41,10 @@ def animal_entrada():
 
         status = 'Salvo com sucesso!'
 
-    return render_template('animal_entrada.html',
-                           lote = lote,
-                           raca = raca,
-                           fornecedor = fornecedor,
-                           status = status)
-
+    return render_template(
+        'animal_entrada.html',
+        lote_opcoes = lote_opcoes,
+        raca_opcoes = raca_opcoes,
+        fornecedor_opcoes = fornecedor_opcoes,
+        status = status
+    )

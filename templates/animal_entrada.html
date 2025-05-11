@@ -13,14 +13,14 @@
     <form action="/animal_entrada" method="POST">
         <label for="lote">Lote:</label>
         <select name="lote" id="lote">
-            {% for item in lote %}
+            {% for item in lote_opcoes %}
                 <option value="{{ item }}">{{ item }}</option>
             {% endfor %}
         </select>
 
         <label for="raca">Raça:</label>
         <select name="raca" id="raca">
-            {% for item in raca %}
+            {% for item in raca_opcoes %}
                 <option value="{{ item }}">{{ item }}</option>
             {% endfor %}
         </select>
@@ -30,7 +30,7 @@
 
         <label for="fornecedor">Fornecedor:</label>
         <select name="fornecedor" id="fornecedor">
-            {% for item in fornecedor %}
+            {% for item in fornecedor_opcoes %}
                 <option value="{{ item }}">{{ item }}</option>
             {% endfor %}
         </select>
