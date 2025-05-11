@@ -56,14 +56,19 @@ class ManagerCSV:
 
     def editar(self, id_alvo, novos_dados):
         """
-        Edita um registro com base no ID.
+            Edita um registro existente no arquivo CSV com base no ID fornecido. A função carrega o DataFrame
+            correspondente, localiza o registro com o ID especificado e atualiza os campos informados no 
+            dicionário novos_dados. Caso o ID não seja encontrado, uma exceção é lançada.
 
-        Args:
-            id_alvo (int): ID do registro a ser editado.
-            novos_dados (dict): Dicionário com os campos a atualizar.
-        
-        Raise:
-            ValueError: Se não encontrar o id.
+            Parâmetros:
+                id_alvo (int): O ID do registro que se deseja editar.
+                novos_dados (dict): Dicionário contendo os campos e os novos valores a serem atualizados.
+
+            Exceções:
+                ValueError: Lançada quando o ID especificado não é encontrado no arquivo.
+
+            Efeitos colaterais:
+                O arquivo CSV será sobrescrito com os dados atualizados, caso o ID exista.
         """
         df = self._carregar()
 
@@ -99,6 +104,18 @@ class ManagerJSON:
         self.dados = self._carregar_dados()
 
     def _garantir_arquivo(self):
+        """
+        Garante que o diretório e o arquivo JSON de dados existam.
+
+        Se o diretório especificado no caminho do arquivo não existir, ele será criado. 
+        Em seguida, se o arquivo de dados também não existir, será criado um arquivo JSON vazio 
+        contendo um dicionário inicial ({}).
+
+        Efeitos colaterais:
+            - Criação do diretório onde o arquivo será armazenado, se não existir.
+            - Criação de um arquivo JSON vazio no caminho especificado, caso ainda não exista.
+        """
+
         diretorio = os.path.dirname(self.caminho_arquivo)
         if not os.path.exists(diretorio):
             os.makedirs(diretorio)
@@ -119,11 +136,21 @@ class ManagerJSON:
 
     def atualizar_dado(self, categoria, valor):
         """
-        Adiciona um valor a uma categoria específica com ID automático.
+        Adiciona um novo valor a uma categoria específica, atribuindo um ID numérico automático.
 
-        :param categoria: Nome da categoria (ex: 'lote', 'cliente').
-        :param valor: Dado a ser salvo.
-        :return: ID gerado.
+        Se a categoria ainda não existir no dicionário de dados, ela será criada. 
+        O novo valor será armazenado com um ID sequencial baseado nos IDs já existentes dentro da categoria.
+
+        Parâmetros:
+            categoria (str): Nome da categoria onde o valor será armazenado (ex: 'lote', 'cliente').
+            valor (any): Dado a ser salvo na categoria, podendo ser string, dicionário ou outro tipo serializável.
+
+        Retorna:
+            str: O ID gerado automaticamente para o novo valor.
+
+        Efeitos colaterais:
+            - Atualiza o dicionário interno de dados.
+            - Persiste os dados atualizados chamando o método salvar().
         """
         if categoria not in self.dados:
             self.dados[categoria] = {}
@@ -139,20 +166,34 @@ class ManagerJSON:
 
     def obter_dado(self, categoria, chave, padrao=None):
         """
-        Retorna um dado específico dentro de uma categoria.
+        Retorna um dado específico armazenado dentro de uma categoria, utilizando o ID como chave.
 
-        :param categoria: Nome da categoria.
-        :param chave: ID do item.
-        :param padrao: Valor padrão se não existir.
+        Caso a categoria ou a chave não existam, será retornado o valor especificado em padrao 
+        (ou None, se não for informado).
+
+        Parâmetros:
+            categoria (str): Nome da categoria onde o dado está armazenado.
+            chave (str): ID do item a ser recuperado.
+            padrao (any, opcional): Valor a ser retornado caso o dado não seja encontrado. Padrão é None.
+
+        Retorna:
+            any: O valor armazenado correspondente à chave dentro da categoria, ou o valor padrão se não existir.
         """
         return self.dados.get(categoria, {}).get(chave, padrao)
 
     def deletar_dado(self, categoria, chave):
         """
-        Remove um item de uma categoria.
+        Remove um item de uma categoria específica com base na chave (ID).
 
-        :param categoria: Nome da categoria.
-        :param chave: ID do item.
+        Se a categoria e a chave existirem no dicionário de dados, o item será removido 
+        e os dados atualizados serão salvos. Caso contrário, uma mensagem de erro será retornada.
+
+        Parâmetros:
+            categoria (str): Nome da categoria de onde o item será removido.
+            chave (str ou int): ID do item a ser removido. Aceita inteiro, mas será convertido para string.
+
+        Retorna:
+            str: Mensagem indicando se a exclusão foi realizada com sucesso ou se o item não foi encontrado.
         """
         if type(chave) is int: chave = str(chave)
         if categoria in self.dados.keys() and chave in self.dados[categoria].keys():
@@ -163,7 +204,17 @@ class ManagerJSON:
 
     def limpar_categoria(self, categoria):
         """
-        Remove todos os dados de uma categoria específica.
+        Remove todos os dados armazenados em uma categoria específica.
+
+        Se a categoria existir no dicionário de dados, todos os registros associados a ela 
+        serão apagados e as alterações serão salvas no arquivo correspondente.
+
+        Parâmetros:
+            categoria (str): Nome da categoria que deve ser limpa.
+
+        Efeitos colaterais:
+            - A categoria é esvaziada no dicionário interno.
+            - As alterações são persistidas chamando o método salvar().
         """
         if categoria in self.dados:
             self.dados[categoria] = {}
@@ -171,10 +222,16 @@ class ManagerJSON:
 
     def formatar_dados(self, categoria):
         """
-        Retorna os dados formatados de uma categoria específica.
+        Retorna os dados de uma categoria em formato de texto legível.
 
-        :param categoria: Nome da categoria (ex: 'lote', 'cliente').
-        :return: String formatada.
+        Se a categoria estiver vazia ou não existir, informa que não há dados.
+        Caso contrário, exibe os dados com identação e organização por ID.
+
+        Parâmetros:
+            categoria (str): Nome da categoria cujos dados devem ser formatados (ex: 'lote', 'cliente').
+
+        Retorna:
+            str: Representação formatada em texto dos dados da categoria.
         """
         if categoria not in self.dados or not self.dados[categoria]:
             return f"{categoria}\n  Nenhum dado encontrado."
