@@ -163,3 +163,20 @@ def animal_entrada():
         fornecedor_opcoes = fornecedor_opcoes,
         status = status
     )
+
+@app.route('/tos')
+def tos():
+    """
+    Exibe os Termos de Serviço.
+    ---
+    responses:
+      200:
+        description: Retorna os termos de serviço.
+        schema:
+          type: object
+          properties:
+            termos:
+              type: string
+              example: "Aqui estão os termos de serviço."
+    """
+    return render_template('tos.html')
