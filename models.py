@@ -99,7 +99,7 @@ class ManagerJSON:
     """
 
     def __init__(self, caminho_arquivo):
-        self.caminho_arquivo = caminho_arquivo
+        self.caminho_arquivo = os.path.join('data', 'json', caminho_arquivo)
         self._garantir_arquivo()
         self.dados = self._carregar_dados()
 
