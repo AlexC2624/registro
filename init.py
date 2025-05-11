@@ -1,5 +1,5 @@
 import os
-from models import ManagerCSV
+from models import ManagerCSV, ManagerJSON
 from flask import Flask, render_template, request, redirect, url_for
 from flasgger import Swagger
 
@@ -31,10 +31,8 @@ def index():
     """
     if request.method == POST:
         acao = request.form.get('acao')
-        if acao == 'lote_cadastro':
-            return redirect(url_for('lote_cadastro'))
-        if acao == 'animal_entrada':
-            return redirect(url_for('animal_entrada'))
+        if acao == 'lote_cadastro': return redirect(url_for('lote_cadastro'))
+        if acao == 'animal_entrada': return redirect(url_for('animal_entrada'))
     return render_template('index.html')
 
 @app.route('/teste')
@@ -53,6 +51,23 @@ def teste():
               example: "API funcionando com Swagger!"
     """
     return render_template('teste.html', t=None)
+
+@app.route('/tos')
+def tos():
+    """
+    Exibe os Termos de Serviço.
+    ---
+    responses:
+      200:
+        description: Retorna os termos de serviço.
+        schema:
+          type: object
+          properties:
+            termos:
+              type: string
+              example: "Aqui estão os termos de serviço."
+    """
+    return render_template('tos.html')
 
 @app.route('/lote_cadastro', methods= [GET, POST])
 def lote_cadastro():
@@ -75,8 +90,7 @@ def lote_cadastro():
     """
     if request.method == POST:
         acao = request.form.get('acao')
-        print(acao)
-        if acao == 'botao1':
+        if acao == 'novo_lote':
             return render_template('teste.html')
 
     return render_template('lote_cadastro.html')
@@ -163,20 +177,3 @@ def animal_entrada():
         fornecedor_opcoes = fornecedor_opcoes,
         status = status
     )
-
-@app.route('/tos')
-def tos():
-    """
-    Exibe os Termos de Serviço.
-    ---
-    responses:
-      200:
-        description: Retorna os termos de serviço.
-        schema:
-          type: object
-          properties:
-            termos:
-              type: string
-              example: "Aqui estão os termos de serviço."
-    """
-    return render_template('tos.html')
