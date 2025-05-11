@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <body>
+        <!-- <a href="{{ url_for('animal_entrada') }}">
+            <button type="button">Ir para Cadastro de Animal</button>
+        </a>
+        <a href="{{ url_for('lote_cadastro') }}">
+            <button type="button">lote_cadastro</button>
+        </a> -->
+        <form method="post" action="{{ url_for('index') }}">
+            <button type="submit" name="acao" value="animal_entrada">animal_entrada</button>
+            <button type="submit" name="acao" value="lote_cadastro">lote_cadastro</button>
+        </form>
+    </body>
+</html>

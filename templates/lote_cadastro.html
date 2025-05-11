@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <body>
+        <a href="{{ url_for('index') }}">
+            <button type="button">Voltar</button>
+        </a>
+        <form method="post" action="{{ url_for('lote_cadastro') }}">
+            <button type="submit" name="acao" value="botao1">botao1</button>
+        </form>
+    </body>
+</html>
