@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template
-from init import ManagerCSV
+from app.init import ManagerCSV
 
 GET, POST = 'GET', 'POST'
 
