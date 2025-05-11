@@ -98,8 +98,8 @@ class ManagerJSON:
     como 'lote', 'cliente', 'fornecedor', etc.
     """
 
-    def __init__(self, caminho_arquivo):
-        self.caminho_arquivo = os.path.join('data', 'json', caminho_arquivo)
+    def __init__(self, name_arquivo):
+        self.caminho_arquivo = os.path.join('data', 'json', name_arquivo)
         self._garantir_arquivo()
         self.dados = self._carregar_dados()
 
