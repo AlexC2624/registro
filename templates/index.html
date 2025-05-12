@@ -13,6 +13,7 @@
 
     <nav>
         <a href="{{ url_for('index') }}">Início</a>
+        <a href="#">Cadastros</a>
         <a href="#">Relatórios</a>
         <a href="#">Estoque</a>
         <a href="#">Financeiro</a>
@@ -22,8 +23,8 @@
         <h2>Cadastro de Animais</h2>
 
         <form method="post" action="{{ url_for('index') }}">
-            <button type="submit" name="acao" value="animal_entrada">➕ Entrada de Animais</button>
-            <button type="submit" name="acao" value="animal_saida">➖ Saída de Animais</button>
+            <button type="submit" name="modo" value="Entrada">➕ Entrada de Animais</button>
+            <button type="submit" name="modo" value="Saída">➖ Saída de Animais</button>
         </form>
 
         <h2>Cadastros Complementares</h2>

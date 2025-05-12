@@ -2,23 +2,78 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Dropdown Exemplo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestão Pecuária</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        nav {
+            background-color: #333;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        section {
+            padding: 20px;
+        }
+        .content {
+            display: none;
+        }
+        .content.active {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-    {% if t %}
-        <h3>{{ t }}</h3>
-    {% endif %}
-    <h1>Escolha uma opção:</h1>
 
-    <form method="POST">
-        <label for="opcao">Opções:</label>
-        <select name="opcao" id="opcao">
-            <option value="opcao1">Opção 1</option>
-            <option value="opcao2">Opção 2</option>
-            <option value="opcao3">Opção 3</option>
-        </select>
-        <button type="submit">Enviar</button>
-    </form>
+    <nav>
+        <a href="#" onclick="showPage('cadastros')">Cadastros</a>
+        <a href="#" onclick="showPage('relatorios')">Relatórios</a>
+        <a href="#" onclick="showPage('estoque')">Estoque</a>
+        <a href="#" onclick="showPage('financeiro')">Financeiro</a>
+    </nav>
+
+    <section id="content">
+        <div id="cadastros" class="content active">
+            <h1>Cadastros</h1>
+            <p>Aqui você pode cadastrar novos itens no sistema.</p>
+        </div>
+        <div id="relatorios" class="content">
+            <h1>Relatórios</h1>
+            <p>Visualize relatórios gerenciais e de desempenho.</p>
+        </div>
+        <div id="estoque" class="content">
+            <h1>Estoque</h1>
+            <p>Gerencie o estoque de insumos e animais.</p>
+        </div>
+        <div id="financeiro" class="content">
+            <h1>Financeiro</h1>
+            <p>Aqui você pode visualizar informações financeiras.</p>
+        </div>
+    </section>
+
+    <script>
+        function showPage(page) {
+            const sections = document.querySelectorAll('.content');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(page).classList.add('active');
+        }
+    </script>
+
 </body>
 </html>
