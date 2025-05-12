@@ -12,8 +12,8 @@
     <div class="container">
         <h2>Escolha uma opção</h2>
         <form method="post" action="{{ url_for('index') }}">
-            <button type="submit" name="acao" value="animal_entrada">Cadastro de Entrada de Animais</button>
-            <!-- <button type="submit" name="acao" value="lote_animal">Cadastro de Lote de Animais</button> -->
+            <button type="submit" name="acao" value="animal_entrada">Cadastro de entrada de Animais</button>
+            <button type="submit" name="acao" value="animal_saida">Cadastro de saida de Animais</button>
         </form>
         <form action="{{ url_for('json_animal', categoria='lote') }}" method="get">
             <button type="submit">Cadastro de lote de Animais</button>
@@ -23,6 +23,9 @@
         </form>
         <form action="{{ url_for('json_animal', categoria='fornecedor') }}" method="get">
             <button type="submit">Cadastro de fornecedor de Animais</button>
+        </form>
+        <form action="{{ url_for('json_animal', categoria='cliente') }}" method="get">
+            <button type="submit">Cadastro de cliente de Animais</button>
         </form>
     </div>
 </body>
