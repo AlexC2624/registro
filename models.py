@@ -1,6 +1,7 @@
 import pandas as pd
 import json
 import os
+import shutil
 
 class ManagerCSV:
     def __init__(self, arquivo, colunas):
@@ -91,6 +92,7 @@ class ManagerCSV:
 
 # import json
 # import os
+# import shutil
 
 class ManagerJSON:
     """
@@ -128,7 +130,20 @@ class ManagerJSON:
             try:
                 return json.load(f)
             except json.JSONDecodeError:
+                if self._backup('restaurar_bak'):
+                    with open(self.caminho_arquivo, 'r', encoding='utf-8') as f:
+                        return json.load(f)
                 return {}
+
+    def _backup(self, metodo='criar_cache'):
+        try:
+            if metodo == 'criar_cache': shutil.copyfile(self.caminho_arquivo, self.caminho_arquivo + '.bak_cache')
+            elif metodo == 'cache_bak': shutil.copyfile(self.caminho_arquivo + '.bak_cache', self.caminho_arquivo + '.bak')
+            elif metodo == 'restaurar_bak': shutil.copyfile(self.caminho_arquivo + '.bak', self.caminho_arquivo)
+            return True
+        except FileNotFoundError as fileError:
+            if fileError.filename == self.caminho_arquivo + '.bak': return False
+            raise ValueError('Tentativa de .bak_cache -> .bak sem criar o .bak_cache')
 
     def salvar(self):
         with open(self.caminho_arquivo, 'w', encoding='utf-8') as f:
