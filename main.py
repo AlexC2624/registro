@@ -1,8 +1,19 @@
 import threading
 import webbrowser
 from init import app
+import socket
 
-PORT = 5000
+host, PORT = '0.0.0.0', 5000
+
+def ip_atual():
+    socket_UDP = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        socket_UDP.connect(('8.8.8.8', 80))
+        ip = socket_UDP.getsockname()[0]
+    except Exception: ip = '127.0.0.1'
+    finally: socket_UDP.close()
+    return ip
+local_ip = ip_atual()
 
 def main():
     """
@@ -22,7 +33,9 @@ def main():
         - As bibliotecas threading e webbrowser devem estar importadas.
     """
     print('Iniciando o servidor...')
-    # threading.Timer(3.0, lambda: webbrowser.open_new(f"http://127.0.0.1:{str(PORT)}")).start()
-    app.run(port=PORT, debug=True)
+    print(f"Rota de início http://{local_ip}:{str(PORT)}/")
+    print(f"Pata testes http://{local_ip}:{str(PORT)}/apidocs/")
+    # threading.Timer(3.0, lambda: webbrowser.open_new(f"http://{local_ip}:{str(PORT)}")).start()
+    app.run(host=host, port=PORT, debug=True)
 
 if __name__ == '__main__': main()
