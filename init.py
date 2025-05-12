@@ -95,15 +95,12 @@ def lote_animal():
     """
     status = None
     if request.method == POST:
-        acao = request.form.get('acao')
-        if acao == 'voltar': redirect(url_for('index'))
-        if acao == 'cadastrar':
-            nome = request.form.get('nome')
-            if nome:
-                json = ManagerJSON('animais.json')
-                json.atualizar_dado('lote', {'nome': nome if type(nome) is str else str(nome)})
-                status = f'Lote {nome} cadastrado!'
-            return render_template('lote_animal.html', status=status)
+        nome = request.form.get('nome_lote')
+        if nome:
+            json = ManagerJSON('animais.json')
+            json.atualizar_dado('lote', {'nome': nome if type(nome) is str else str(nome)})
+            status = f'Lote {nome} cadastrado!'
+        return render_template('lote_animal.html', status=status)
 
     return render_template('lote_animal.html', status=status)
 
@@ -148,7 +145,13 @@ def animal_entrada():
       200:
         description: Página de entrada de animais renderizada
     """
-    lote_opcoes = ['lote 1', 'lote 2']
+    lote_opcoes = ManagerJSON('animais.json')
+    lote_opcoes = lote_opcoes.obter_dado('lote')
+    lote_opcoes = [lote_opcoes[i]['nome'] for i in lote_opcoes.keys()]
+    if lote_opcoes == []:
+        status = 'Nenhum lote de animais cadastrado'
+        return render_template('animal_entrada.html', status=status)
+
     raca_opcoes = ['raca 1', 'raca 2']
     fornecedor_opcoes = ['fornecedor 1', 'fornecedor 2']
     status = None
