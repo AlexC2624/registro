@@ -31,7 +31,7 @@ def index():
     """
     if request.method == POST:
         acao = request.form.get('acao')
-        if acao == 'lote_animal': return redirect(url_for('lote_animal'))
+        # if acao == 'lote_animal': return redirect(url_for('lote_animal'))
         if acao == 'animal_entrada': return redirect(url_for('animal_entrada'))
     return render_template('index.html')
 
@@ -69,8 +69,8 @@ def tos():
     """
     return render_template('tos.html')
 
-@app.route('/lote_animal', methods= [GET, POST])
-def lote_animal():
+@app.route('/json_animal/<categoria>', methods= [GET, POST])
+def json_animal(categoria):
     """
     Cadastro de lotes.
     ---
@@ -95,14 +95,14 @@ def lote_animal():
     """
     status = None
     if request.method == POST:
-        nome = request.form.get('nome_lote')
+        nome = request.form.get('nome')
         if nome:
             json = ManagerJSON('animais.json')
-            json.atualizar_dado('lote', {'nome': nome if type(nome) is str else str(nome)})
+            json.atualizar_dado(categoria, {'nome': nome if type(nome) is str else str(nome)})
             status = f'Lote {nome} cadastrado!'
-        return render_template('lote_animal.html', status=status)
+        return render_template('cadastro_json_animais.html', categoria=categoria, status=status)
 
-    return render_template('lote_animal.html', status=status)
+    return render_template('cadastro_json_animais.html', categoria=categoria, status=status)
 
 @app.route('/animal_entrada', methods= [GET, POST])
 def animal_entrada():
@@ -152,8 +152,19 @@ def animal_entrada():
         status = 'Nenhum lote de animais cadastrado'
         return render_template('animal_entrada.html', status=status)
 
-    raca_opcoes = ['raca 1', 'raca 2']
-    fornecedor_opcoes = ['fornecedor 1', 'fornecedor 2']
+    raca_opcoes = ManagerJSON('animais.json')
+    raca_opcoes = raca_opcoes.obter_dado('raca')
+    raca_opcoes = [raca_opcoes[i]['nome'] for i in raca_opcoes.keys()]
+    if raca_opcoes == []:
+        status = 'Nenhuma raca de animais cadastrado'
+        return render_template('animal_entrada.html', status=status)
+
+    fornecedor_opcoes = ManagerJSON('animais.json')
+    fornecedor_opcoes = fornecedor_opcoes.obter_dado('fornecedor')
+    fornecedor_opcoes = [fornecedor_opcoes[i]['nome'] for i in fornecedor_opcoes.keys()]
+    if fornecedor_opcoes == []:
+        status = 'Nenhum fornecedor de animais cadastrado'
+        return render_template('animal_entrada.html', status=status)
     status = None
 
     if request.method == POST:
