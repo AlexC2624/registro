@@ -128,26 +128,27 @@ class ManagerJSON:
     def _carregar_dados(self):
         with open(self.caminho_arquivo, 'r', encoding='utf-8') as f:
             try:
-                return json.load(f)
+                conteudo = json.load(f)
+                self._backup('criar_bak')
+                return conteudo
             except json.JSONDecodeError:
                 if self._backup('restaurar_bak'):
                     with open(self.caminho_arquivo, 'r', encoding='utf-8') as f:
                         return json.load(f)
                 return {}
 
-    def _backup(self, metodo='criar_cache'):
+    def _backup(self, metodo='criar_bak'):
         try:
-            if metodo == 'criar_cache': shutil.copyfile(self.caminho_arquivo, self.caminho_arquivo + '.bak_cache')
-            elif metodo == 'cache_bak': shutil.copyfile(self.caminho_arquivo + '.bak_cache', self.caminho_arquivo + '.bak')
+            if metodo == 'criar_bak': shutil.copyfile(self.caminho_arquivo, self.caminho_arquivo + '.bak')
             elif metodo == 'restaurar_bak': shutil.copyfile(self.caminho_arquivo + '.bak', self.caminho_arquivo)
             return True
-        except FileNotFoundError as fileError:
-            if fileError.filename == self.caminho_arquivo + '.bak': return False
-            raise ValueError('Tentativa de .bak_cache -> .bak sem criar o .bak_cache')
+        except FileNotFoundError:
+            return False
 
     def salvar(self):
         with open(self.caminho_arquivo, 'w', encoding='utf-8') as f:
             json.dump(self.dados, f, ensure_ascii=False, indent=4)
+            self._backup('criar_bak')
 
     def atualizar_dado(self, categoria, valor):
         """
