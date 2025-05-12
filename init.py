@@ -33,6 +33,7 @@ def index():
         acao = request.form.get('acao')
         # if acao == 'lote_animal': return redirect(url_for('lote_animal'))
         if acao == 'animal_entrada': return redirect(url_for('animal_entrada'))
+        if acao == 'animal_saida': return redirect(url_for('animal_saida'))
     return render_template('index.html')
 
 @app.route('/teste')
@@ -201,5 +202,86 @@ def animal_entrada():
         lote_opcoes = lote_opcoes,
         raca_opcoes = raca_opcoes,
         fornecedor_opcoes = fornecedor_opcoes,
+        status = status
+    )
+
+@app.route('/animal_saida', methods= [GET, POST])
+def animal_saida():
+    """
+    Cadastro de entrada de animais.
+    ---
+    methods:
+      - GET
+      - POST
+    parameters:
+      - name: lote
+        in: formData
+        type: string
+        required: true
+      - name: raca
+        in: formData
+        type: string
+        required: true
+      - name: data_nascimento
+        in: formData
+        type: string
+        required: true
+      - name: fornecedor
+        in: formData
+        type: string
+        required: true
+      - name: data_entrada
+        in: formData
+        type: string
+        required: true
+      - name: peso_entrada
+        in: formData
+        type: string
+        required: true
+      - name: valor_entrada
+        in: formData
+        type: string
+        required: true
+    responses:
+      200:
+        description: Página de entrada de animais renderizada
+    """
+    cliente_opcoes = ManagerJSON('animais.json')
+    cliente_opcoes = cliente_opcoes.obter_dado('cliente')
+    cliente_opcoes = [cliente_opcoes[i]['nome'] for i in cliente_opcoes.keys()]
+    if cliente_opcoes == []:
+        status = 'Nenhum cliente de animal cadastrado'
+        return render_template('animal_saida.html', status=status)
+    
+    status = None
+
+    if request.method == POST:
+        idx_entrada = request.form['idx_entrada']
+        cliente = request.form['cliente']
+        data_saida = request.form['data_saida']
+        peso_saida = request.form['peso_saida']
+        valor_saida = request.form['valor_saida']
+
+        # Caminho do arquivo CSV
+        arquivo = 'data/animal_saida.csv'
+
+        # Criar dicionário com os dados recebidos
+        novo_animal = {
+            'idx_entrada': idx_entrada,
+            'cliente': cliente,
+            'data_saida': data_saida,
+            'peso_saida': peso_saida,
+            'valor_saida': valor_saida
+        }
+
+        # Verifica se o arquivo já existe
+        banco = ManagerCSV(arquivo, list(novo_animal.keys()))
+        banco.adicionar(novo_animal)
+
+        status = 'Salvo com sucesso!'
+
+    return render_template(
+        'animal_saida.html',
+        cliente_opcoes = cliente_opcoes,
         status = status
     )
