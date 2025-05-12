@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Animal</title>
+    <title>Cadastro de Saída de Animal</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
@@ -16,26 +16,27 @@
             window.history.back();
         </script>
         {% endif %}
-        <h1>Cadastro de saida de animal</h1>
+        
+        <h1>Cadastro de Saída de Animal</h1>
         <form action="/animal_saida" method="post">
             <label for="idx_entrada">Peso na Entrada (kg):</label>
             <input type="number" step="1" id="idx_entrada" name="idx_entrada" value="250" required>
 
-            <label for="cliente">Lote:</label>
+            <label for="cliente">Cliente:</label>
             <select name="cliente" id="cliente">
                 {% for cliente in cliente_opcoes %}
                 <option value="{{ cliente }}">{{ cliente }}</option>
                 {% endfor %}
             </select>
 
-            <label for="data_saida">Data de Saida:</label>
+            <label for="data_saida">Data de Saída:</label>
             <input type="date" id="data_saida" name="data_saida" required>
 
-            <label for="peso_saida">Peso de Saida:</label>
+            <label for="peso_saida">Peso de Saída (kg):</label>
             <input type="number" step="1" id="peso_saida" name="peso_saida" value="450" required>
 
-            <label for="valor_saida">Valor de Saida:</label>
-            <input type="number" step="1" id="valor_saida" name="valor_saida" value="9" required>
+            <label for="valor_saida">Valor de Saída (R$):</label>
+            <input type="number" step="0.1" id="valor_saida" name="valor_saida" value="9" required>
 
             <div class="button-container">
                 <button type="button" onclick="window.location.href='{{ url_for('index') }}'">Voltar</button>

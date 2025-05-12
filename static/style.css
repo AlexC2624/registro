@@ -1,103 +1,190 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Fundo e corpo da página */
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f4f4f9;
+  background-color: #f4f6f9; /* Fundo suave */
+  color: #333; /* Texto escuro para boa legibilidade */
+  line-height: 1.6;
+  padding: 20px;
 }
 
+/* Layout principal */
 .container {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 600px;
-    text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
-h1, h2 {
-    color: #333;
-    margin-bottom: 20px;
+/* Cabeçalho */
+header {
+  background-color: #1D3557; /* Azul escuro elegante */
+  color: white;
+  padding: 20px 40px;
+  border-radius: 12px 12px 0 0;
 }
 
-h5 {
-    color: #4CAF50;
-    font-size: 16px;
-    margin-bottom: 10px;
+header h1 {
+  font-size: 28px;
+}
+
+/* Navegação */
+nav {
+  background-color: #f1faee; /* Cor suave, mais acolhedora */
+  padding: 10px 20px;
+  border-radius: 0 0 12px 12px;
+  display: flex;
+  gap: 10px;
+}
+
+nav a {
+  color: #1D3557; /* Cor escura contrastante */
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+nav a:hover {
+  background-color: #A8DADC; /* Azul claro */
+}
+
+/* Títulos e seções */
+h2 {
+  color: #1D3557; /* Azul escuro */
+  font-size: 24px;
+  margin-bottom: 20px;
+  margin-top: 30px;
+}
+
+/* Formulários */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 10px;
 }
 
 label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
+  font-weight: bold;
+  margin-bottom: 4px;
 }
 
-select, input[type="date"], input[type="number"], input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+input,
+select,
+textarea {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fdfdfb;
+  font-size: 16px;
+  transition: border-color 0.2s ease;
 }
 
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #1D3557; /* Foco com cor do cabeçalho */
+  outline: none;
+}
+
+/* Botões */
 button {
-    width: 48%;
-    padding: 12px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button[type="button"] {
-    background-color: #f44336;
-    color: white;
-}
-
-button[type="submit"] {
-    background-color: #4CAF50;
-    color: white;
+  padding: 12px 24px;
+  background-color: #457B9D; /* Azul mais vibrante */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
 }
 
 button:hover {
-    opacity: 0.8;
+  background-color: #1D3557; /* Azul escuro ao passar o mouse */
 }
 
-.button-container {
-    display: flex;
-    justify-content: space-between;
+/* Tabela */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-/* Estilos específicos para botões de ação */
-button[name="acao"][value="animal_entrada"] {
-    background-color: #4CAF50;
-    color: white;
+th,
+td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
 }
 
-button[name="acao"][value="lote_animal"] {
-    background-color: #2196F3;
-    color: white;
+th {
+  background-color: #f1faee;
+  color: #1D3557;
 }
 
-.voltar-button {
-    background-color: #f44336;
-    color: white;
-    text-decoration: none;
-    display: inline-block;
-    width: 48%;
-    padding: 10px;
-    text-align: center;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+tr:hover {
+  background-color: #f0f3ed;
 }
 
-.voltar-button:hover {
-    opacity: 0.8;
+/* Rodapé */
+footer {
+  margin-top: 40px;
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+}
+
+/* Termos */
+.terms-content {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.terms-content h3 {
+  margin-top: 20px;
+  color: #457B9D; /* Azul mais claro */
+}
+
+.terms-content p {
+  text-align: justify;
+}
+
+.terms-content ul {
+  list-style-type: square;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .container {
+      padding: 20px;
+  }
+
+  nav {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  button {
+      width: 100%;
+  }
+
+  input,
+  select,
+  textarea {
+      width: 100%;
+  }
 }
