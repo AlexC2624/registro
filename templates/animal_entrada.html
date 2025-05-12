@@ -1,51 +1,59 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Animal</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
-    {% if status %}
+    <div class="container">
+        {% if status %}
         <h5>{{ status }}</h5>
-    {% endif %}
-    <h1>Cadastro de Animal</h1>
-    <form action="/animal_entrada" method="POST">
-        <label for="lote">Lote:</label>
-        <select name="lote" id="lote">
-            {% for item in lote_opcoes %}
+        {% endif %}
+        <h1>Cadastro de Animal</h1>
+        <form action="/animal_entrada" method="POST">
+            <label for="lote">Lote:</label>
+            <select name="lote" id="lote">
+                {% for item in lote_opcoes %}
                 <option value="{{ item }}">{{ item }}</option>
-            {% endfor %}
-        </select>
+                {% endfor %}
+            </select>
 
-        <label for="raca">Raça:</label>
-        <select name="raca" id="raca">
-            {% for item in raca_opcoes %}
+            <label for="raca">Raça:</label>
+            <select name="raca" id="raca">
+                {% for item in raca_opcoes %}
                 <option value="{{ item }}">{{ item }}</option>
-            {% endfor %}
-        </select>
+                {% endfor %}
+            </select>
 
-        <label for="data_nascimento">Data de Nascimento:</label>
-        <input type="date" id="data_nascimento" name="data_nascimento" required>
+            <label for="data_nascimento">Data de Nascimento:</label>
+            <input type="date" id="data_nascimento" name="data_nascimento" required>
 
-        <label for="fornecedor">Fornecedor:</label>
-        <select name="fornecedor" id="fornecedor">
-            {% for item in fornecedor_opcoes %}
+            <label for="fornecedor">Fornecedor:</label>
+            <select name="fornecedor" id="fornecedor">
+                {% for item in fornecedor_opcoes %}
                 <option value="{{ item }}">{{ item }}</option>
-            {% endfor %}
-        </select>
+                {% endfor %}
+            </select>
 
-        <label for="data_entrada">Data de Entrada:</label>
-        <input type="date" id="data_entrada" name="data_entrada" required>
+            <label for="data_entrada">Data de Entrada:</label>
+            <input type="date" id="data_entrada" name="data_entrada" required>
 
-        <label for="peso_entrada">Peso na Entrada (kg):</label>
-        <input type="number" step="1" id="peso_entrada" name="peso_entrada" value="250" required>
+            <label for="peso_entrada">Peso na Entrada (kg):</label>
+            <input type="number" step="1" id="peso_entrada" name="peso_entrada" value="250" required>
 
-        <label for="valor_entrada">Valor na Entrada (R$):</label>
-        <input type="number" step="0.1" id="valor_entrada" name="valor_entrada" value="8" required>
-        
-        <button type="button" onclick="window.location.href='{{ url_for('index') }}'">Voltar</button>
-        <button type="submit">Cadastrar</button>
-    </form>
+            <label for="valor_entrada">Valor na Entrada (R$):</label>
+            <input type="number" step="0.1" id="valor_entrada" name="valor_entrada" value="8" required>
+
+            <div class="button-container">
+                <button type="button" onclick="window.location.href='{{ url_for('index') }}'">Voltar</button>
+                <button type="submit">Cadastrar</button>
+            </div>
+        </form>
+    </div>
 </body>
+
 </html>

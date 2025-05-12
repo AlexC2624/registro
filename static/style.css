@@ -1,21 +1,103 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 40px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f9;
 }
-form {
-    max-width: 400px;
+
+.container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
 }
+
+h1, h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+h5 {
+    color: #4CAF50;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
 label {
     display: block;
-    margin-top: 10px;
+    margin-bottom: 8px;
     font-weight: bold;
 }
-input, select {
+
+select, input[type="date"], input[type="number"], input[type="text"] {
     width: 100%;
-    padding: 6px;
-    margin-top: 5px;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
+
 button {
-    margin-top: 20px;
-    padding: 10px 20px;
+    width: 48%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button[type="button"] {
+    background-color: #f44336;
+    color: white;
+}
+
+button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Estilos específicos para botões de ação */
+button[name="acao"][value="animal_entrada"] {
+    background-color: #4CAF50;
+    color: white;
+}
+
+button[name="acao"][value="lote_animal"] {
+    background-color: #2196F3;
+    color: white;
+}
+
+.voltar-button {
+    background-color: #f44336;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    width: 48%;
+    padding: 10px;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.voltar-button:hover {
+    opacity: 0.8;
 }

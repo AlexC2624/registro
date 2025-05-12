@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-    <body>
-        <!-- <a href="{{ url_for('animal_entrada') }}">
-            <button type="button">Ir para Cadastro de Animal</button>
-        </a>
-        <a href="{{ url_for('lote_cadastro') }}">
-            <button type="button">lote_cadastro</button>
-        </a> -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opções de Cadastro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Escolha uma opção</h2>
         <form method="post" action="{{ url_for('index') }}">
-            <button type="submit" name="acao" value="animal_entrada">animal_entrada</button>
-            <button type="submit" name="acao" value="lote_animal">lote_cadastro</button>
+            <button type="submit" name="acao" value="animal_entrada">Cadastro de Entrada de Animais</button>
+            <button type="submit" name="acao" value="lote_animal">Cadastro de Lote de Animais</button>
         </form>
-    </body>
+    </div>
+</body>
+
 </html>
