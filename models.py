@@ -182,23 +182,27 @@ class ManagerJSON:
         self.dados[categoria][novo_id] = valor
         self.salvar()
         return novo_id
-
-    def obter_dado(self, categoria, chave, padrao=None):
+    
+    def obter_dado(self, categoria, chave=None, padrao=None):
         """
         Retorna um dado específico armazenado dentro de uma categoria, utilizando o ID como chave.
 
-        Caso a categoria ou a chave não existam, será retornado o valor especificado em padrao 
-        (ou None, se não for informado).
+        Caso a categoria ou a chave não existam, será retornado o valor especificado em `padrao`
+        (ou `None`, se não for informado).
 
         Parâmetros:
             categoria (str): Nome da categoria onde o dado está armazenado.
-            chave (str): ID do item a ser recuperado.
-            padrao (any, opcional): Valor a ser retornado caso o dado não seja encontrado. Padrão é None.
+            chave (str, opcional): ID do item a ser recuperado. Caso não seja informado, retorna todos os dados da categoria.
+            padrao (any, opcional): Valor a ser retornado caso o dado não seja encontrado. Padrão é `None`.
 
         Retorna:
             any: O valor armazenado correspondente à chave dentro da categoria, ou o valor padrão se não existir.
+            dict: Dicionário com os IDs e seus valores, ou o valor padrão se não existir (caso `chave` seja `None`).
         """
-        return self.dados.get(categoria, {}).get(chave, padrao)
+        dados = self.dados.get(categoria, {})
+        if chave:
+            return dados.get(chave, padrao)
+        return dados
 
     def deletar_dado(self, categoria, chave):
         """
