@@ -11,7 +11,9 @@
 <body>
     <div class="container">
         {% if status %}
-        <h5>{{ status }}</h5>
+        <script>
+            alert('{{ status }}');
+        </script>
         {% endif %}
         <h1>Cadastro de Animal</h1>
         <form action="/animal_entrada" method="POST">
