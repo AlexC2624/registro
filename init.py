@@ -23,7 +23,7 @@ def index():
         in: formData
         type: string
         required: false
-        enum: ['lote_cadastro', 'animal_entrada']
+        enum: ['lote_animal', 'animal_entrada']
         description: Ação a ser executada
     responses:
       200:
@@ -31,7 +31,7 @@ def index():
     """
     if request.method == POST:
         acao = request.form.get('acao')
-        if acao == 'lote_cadastro': return redirect(url_for('lote_cadastro'))
+        if acao == 'lote_animal': return redirect(url_for('lote_animal'))
         if acao == 'animal_entrada': return redirect(url_for('animal_entrada'))
     return render_template('index.html')
 
@@ -69,8 +69,8 @@ def tos():
     """
     return render_template('tos.html')
 
-@app.route('/lote_cadastro', methods= [GET, POST])
-def lote_cadastro():
+@app.route('/lote_animal', methods= [GET, POST])
+def lote_animal():
     """
     Cadastro de lotes.
     ---
@@ -82,18 +82,30 @@ def lote_cadastro():
         in: formData
         type: string
         required: false
-        enum: ['botao1']
-        description: Ação executada no formulário
+        enum: ['voltar', 'cadastrar']
+        description: Ação executada no formulário ('voltar' retorna à página inicial, 'cadastrar' registra o novo lote)
+      - name: nome
+        in: formData
+        type: string
+        required: false
+        description: Nome do lote a ser cadastrado
     responses:
       200:
-        description: Página de cadastro de lote renderizada
+        description: Página de cadastro de lote renderizada com ou sem mensagem de status
     """
+    status = None
     if request.method == POST:
         acao = request.form.get('acao')
-        if acao == 'novo_lote':
-            return render_template('teste.html')
+        if acao == 'voltar': redirect(url_for('index'))
+        if acao == 'cadastrar':
+            nome = request.form.get('nome')
+            if nome:
+                json = ManagerJSON('animais.json')
+                json.atualizar_dado('lote', {'nome': nome if type(nome) is str else str(nome)})
+                status = f'Lote {nome} cadastrado!'
+            return render_template('lote_animal.html', status=status)
 
-    return render_template('lote_cadastro.html')
+    return render_template('lote_animal.html', status=status)
 
 @app.route('/animal_entrada', methods= [GET, POST])
 def animal_entrada():
