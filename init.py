@@ -1,6 +1,6 @@
 import os
 from models import ManagerCSV, ManagerJSON
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from flasgger import Swagger
 
 app = Flask(__name__)   # Inicia o app do flask
@@ -52,6 +52,10 @@ def teste():
               example: "API funcionando com Swagger!"
     """
     return render_template('teste.html', t=None)
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static', 'favicon.ico')
 
 @app.route('/tos')
 def tos():
