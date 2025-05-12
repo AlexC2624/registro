@@ -125,13 +125,15 @@ class ManagerJSON:
             with open(self.caminho_arquivo, 'w', encoding='utf-8') as f:
                 json.dump({}, f, ensure_ascii=False, indent=4)
 
-    def _carregar_dados(self):
+    def _carregar_dados(self, verificar_arq=False):
         with open(self.caminho_arquivo, 'r', encoding='utf-8') as f:
             try:
                 conteudo = json.load(f)
-                self._backup('criar_bak')
+                if verificar_arq: return True
+                self._backup()
                 return conteudo
             except json.JSONDecodeError:
+                if verificar_arq: return False
                 if self._backup('restaurar_bak'):
                     with open(self.caminho_arquivo, 'r', encoding='utf-8') as f:
                         return json.load(f)
@@ -146,9 +148,10 @@ class ManagerJSON:
             return False
 
     def salvar(self):
+        self._backup()
         with open(self.caminho_arquivo, 'w', encoding='utf-8') as f:
             json.dump(self.dados, f, ensure_ascii=False, indent=4)
-            self._backup('criar_bak')
+        if self._carregar_dados(True): self._backup()
 
     def atualizar_dado(self, categoria, valor):
         """
