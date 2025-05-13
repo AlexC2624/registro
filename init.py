@@ -78,6 +78,10 @@ def tos():
 
 @app.route('/cadastros', methods= [GET, POST])
 def cadastros():
+    if request.method == POST:
+        categoria = request.form.get('categoria')
+        if categoria: return redirect(url_for('json_animal', categoria=categoria))
+        return redirect(url_for('animal', modo = request.form.get('modo')))
     return render_template('cadastros.html')
 
 @app.route('/json_animal/<categoria>', methods= [GET, POST])
@@ -110,7 +114,7 @@ def json_animal(categoria):
         if nome:
             json = ManagerJSON('animais.json')
             json.atualizar_dado(categoria, {'nome': nome if type(nome) is str else str(nome)})
-            status = f'Lote {nome} cadastrado!'
+            status = f'{categoria} {nome} cadastrado!'
         return render_template('cadastro_json_animais.html', categoria=categoria, status=status)
 
     return render_template('cadastro_json_animais.html', categoria=categoria, status=status)
@@ -160,7 +164,7 @@ def animal(modo):
     status = None
     json = ManagerJSON('animais.json')
 
-    if modo == 'Entrada':
+    if modo == 'entrada':
         if request.method == POST:
             lote = request.form['lote']
             raca = request.form['raca']
@@ -206,7 +210,7 @@ def animal(modo):
         if fornecedor_opcoes == []:
             status = 'Nenhum fornecedor de animais cadastrado'
             return render_template('animal.html', status=status)
-    elif modo == 'Saída':
+    elif modo == 'saida':
         if request.method == POST:
             idx_entrada = request.form['idx_entrada']
             cliente = request.form['cliente']
@@ -237,7 +241,7 @@ def animal(modo):
             status = 'Nenhum cliente de animal cadastrado'
             return render_template('animal.html', status=status)
 
-    if modo == 'Entrada':
+    if modo == 'entrada':
         return render_template(
             'animal.html',
             modo = modo,
