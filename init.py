@@ -259,8 +259,32 @@ def animal(modo):
 
 @app.route('/relatorios', methods= [GET, POST])
 def relatorios():
-    # return render_template('relatorios.html')
-    return render_template('index.html')
+    if request.method == POST:
+        relatorio = request.form.get('relatorio')
+        if relatorio == 'estoque_animais':
+            # Geração de relatório do estoque atual de animais
+            pass
+
+        elif relatorio == 'movimentacoes_animais':
+            # Geração de relatório com entradas e saídas de animais
+            pass
+
+        elif relatorio == 'compras_insumos':
+            # Geração de relatório com as compras de insumos
+            pass
+
+        elif relatorio == 'consumo_insumos':
+            # Geração de relatório com os consumos de insumos
+            pass
+
+        elif relatorio == 'vendas_animais':
+            # Geração de relatório com os animais vendidos
+            pass
+
+        elif relatorio == 'balanco_geral':
+            # Geração de um balanço geral (entradas, saídas, custos, receitas)
+            pass
+    return render_template('relatorios.html')
 
 @app.route('/estoque', methods= [GET, POST])
 def estoque():
