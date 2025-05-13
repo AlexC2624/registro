@@ -4,16 +4,16 @@ import os
 import shutil
 
 class ManagerCSV:
-    def __init__(self, arquivo, colunas):
+    def __init__(self, nome_arquivo, colunas):
         """
         Inicializa o gerenciador de CSV.
 
         Args:
-            arquivo (str): Nome do arquivo CSV.
+            nome_arquivo (str): Nome do nome_arquivo CSV.
             colunas (list[str]): Lista de colunas (sem incluir 'id', que é automático).
         """
 
-        self.arquivo = arquivo
+        self.arquivo = os.path.join('data', nome_arquivo)
         self.colunas = ['id'] + colunas
         if not os.path.exists(self.arquivo):
             df = pd.DataFrame(columns=self.colunas)
