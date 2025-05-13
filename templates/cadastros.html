@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Cadastros - Sistema de Gestão de Gado de Corte</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body>
 
-    <div class="container mx-auto px-4 py-8">
+    <div>
 
-        <h1 class="text-3xl font-bold text-green-700 mb-8">📋 Página de Cadastros</h1>
+        <h1>📋 Página de Cadastros</h1>
 
         <!-- Cadastro de Animais -->
-        <section class="mb-12">
-            <h2 class="text-2xl font-semibold text-green-800 mb-4">🐮 Cadastro de Animais</h2>
-            <form method="post" action="{{ url_for('index') }}" class="flex gap-4">
-                <button type="submit" name="modo" value="Entrada" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+        <section>
+            <h2>🐮 Cadastro de Animais</h2>
+            <form method="post" action="{{ url_for('cadastros') }}">
+                <button type="submit" name="modo" value="entrada">
                     ➕ Entrada de Animais
                 </button>
-                <button type="submit" name="modo" value="Saída" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                <button type="submit" name="modo" value="saida">
                     ➖ Saída de Animais
                 </button>
             </form>
@@ -26,32 +26,34 @@
 
         <!-- Cadastros Complementares -->
         <section>
-            <h2 class="text-2xl font-semibold text-green-800 mb-4">🧾 Cadastros Complementares</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <h2>🧾 Cadastros Complementares</h2>
+            <div>
 
-                <form action="{{ url_for('json_animal', categoria='lote') }}" method="get">
-                    <button type="submit" class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                <form action="{{ url_for('cadastros') }}" method="post">
+                    <button type="submit" name="categoria" value="lote">
                         📦 Cadastro de Lote
                     </button>
                 </form>
 
-                <form action="{{ url_for('json_animal', categoria='raca') }}" method="get">
-                    <button type="submit" class="w-full bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
+                <form action="{{ url_for('cadastros') }}" method="post">
+                    <button type="submit" name="categoria" value="raca">
                         🐂 Cadastro de Raça
                     </button>
                 </form>
 
-                <form action="{{ url_for('json_animal', categoria='fornecedor') }}" method="get">
-                    <button type="submit" class="w-full bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+                <form action="{{ url_for('cadastros') }}" method="post">
+                    <button type="submit" name="categoria" value="fornecedor">
                         🚜 Cadastro de Fornecedor
                     </button>
                 </form>
 
-                <form action="{{ url_for('json_animal', categoria='cliente') }}" method="get">
-                    <button type="submit" class="w-full bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">
+                <form action="{{ url_for('cadastros') }}" method="post">
+                    <button type="submit" name="categoria" value="cliente">
                         👤 Cadastro de Cliente
                     </button>
                 </form>
+
+                <form action="{{ url_for('index') }}" method="get"><button type="submit">Voltar</button></form>
 
             </div>
         </section>
