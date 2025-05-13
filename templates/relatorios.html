@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatórios - Sistema de Gestão de Gado de Corte</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div>
+
+        <h1>📊 Página de Relatórios</h1>
+
+        <!-- Relatórios de Animais -->
+        <section>
+            <h2>🐮 Relatórios de Animais</h2>
+            <form method="post" action="{{ url_for('relatorios') }}">
+                <button type="submit" name="relatorio" value="estoque_animais">
+                    📋 Estoque Atual de Animais
+                </button>
+                <button type="submit" name="relatorio" value="movimentacoes_animais">
+                    🔄 Movimentações de Animais
+                </button>
+            </form>
+        </section>
+
+        <!-- Relatórios de Insumos -->
+        <section>
+            <h2>🌾 Relatórios de Insumos</h2>
+            <form method="post" action="{{ url_for('relatorios') }}">
+                <button type="submit" name="relatorio" value="compras_insumos">
+                    🛒 Compras de Insumos
+                </button>
+                <button type="submit" name="relatorio" value="consumo_insumos">
+                    🔥 Consumo de Insumos
+                </button>
+            </form>
+        </section>
+
+        <!-- Relatórios Financeiros -->
+        <section>
+            <h2>💰 Relatórios Financeiros</h2>
+            <form method="post" action="{{ url_for('relatorios') }}">
+                <button type="submit" name="relatorio" value="vendas_animais">
+                    💸 Vendas de Animais
+                </button>
+                <button type="submit" name="relatorio" value="balanco_geral">
+                    📈 Balanço Geral
+                </button>
+            </form>
+        </section>
+
+        <!-- Botão Voltar -->
+        <form action="{{ url_for('index') }}" method="get">
+            <button type="submit">Voltar</button>
+        </form>
+
+    </div>
+
+</body>
+</html>
