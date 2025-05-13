@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de {{ modo }} de Animal</title>
+    <title>Cadastro de {{ 'Entrada' if mode == 'entrada' else 'Saída' }} de Animal</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
@@ -17,7 +17,7 @@
         </script>
         {% endif %}
 
-        {% if modo == 'Entrada' %}
+        {% if modo == 'entrada' %}
         <h1>Cadastro de Entrada de Animal</h1>
         <form action="{{ url_for('animal', modo=modo) }}" method="POST">
             <label for="lote">Lote:</label>
@@ -54,13 +54,13 @@
             <input type="number" step="0.1" id="valor_entrada" name="valor_entrada" value="8" required>
 
             <div class="button-container">
-                <button type="button" onclick="window.location.href='{{ url_for('index') }}'">Voltar</button>
+                <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
                 <button type="submit">Cadastrar</button>
             </div>
         </form>
         {% endif %}
         
-        {% if modo == 'Saída' %}
+        {% if modo == 'saida' %}
             <h1>Cadastro de Saída de Animal</h1>
             <form action="{{ url_for('animal', modo=modo) }}" method="post">
                 <label for="idx_entrada">Peso na Entrada (kg):</label>
@@ -83,7 +83,7 @@
                 <input type="number" step="0.1" id="valor_saida" name="valor_saida" value="9" required>
 
                 <div class="button-container">
-                    <button type="button" onclick="window.location.href='{{ url_for('index') }}'">Voltar</button>
+                    <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
                     <button type="submit">Cadastrar</button>
                 </div>
             </form>
