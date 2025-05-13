@@ -19,7 +19,7 @@
 
         {% if modo == 'Entrada' %}
         <h1>Cadastro de Entrada de Animal</h1>
-        <form action="/animal_entrada" method="POST">
+        <form action="{{ url_for('animal', modo=modo) }}" method="POST">
             <label for="lote">Lote:</label>
             <select name="lote" id="lote">
                 {% for item in lote_opcoes %}
@@ -62,7 +62,7 @@
         
         {% if modo == 'Saída' %}
             <h1>Cadastro de Saída de Animal</h1>
-            <form action="/animal_saida" method="post">
+            <form action="{{ url_for('animal', modo=modo) }}" method="post">
                 <label for="idx_entrada">Peso na Entrada (kg):</label>
                 <input type="number" step="1" id="idx_entrada" name="idx_entrada" value="250" required>
 
