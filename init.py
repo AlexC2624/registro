@@ -30,10 +30,12 @@ def index():
         description: Página inicial carregada
     """
     if request.method == POST:
-        return redirect(url_for('animal', modo=request.form.get('modo')))
-        # if acao == 'lote_animal': return redirect(url_for('lote_animal'))
-        # if acao == 'animal_entrada': return redirect(url_for('animal_entrada', ))
-        # if acao == 'animal_saida': return redirect(url_for('animal_saida'))
+        valor = request.form.get('page')
+        if valor == 'cadastros': return redirect(url_for('cadastros'))
+        if valor == 'relatorios': return redirect(url_for('relatorios'))
+        if valor == 'estoque': return redirect(url_for('estoque'))
+        if valor == 'financeiro': return redirect(url_for('financeiro'))
+
     return render_template('index.html')
 
 @app.route('/teste')
@@ -73,6 +75,10 @@ def tos():
               example: "Aqui estão os termos de serviço."
     """
     return render_template('tos.html')
+
+@app.route('/cadastros', methods= [GET, POST])
+def cadastros():
+    return render_template('cadastros.html')
 
 @app.route('/json_animal/<categoria>', methods= [GET, POST])
 def json_animal(categoria):
