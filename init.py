@@ -2,6 +2,7 @@ import os
 from models import ManagerCSV, ManagerJSON
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from flasgger import Swagger
+from funcoes_relatorios import *
 
 app = Flask(__name__)   # Inicia o app do flask
 Swagger(app)
@@ -257,34 +258,28 @@ def animal(modo):
         status = status
     )
 
-@app.route('/relatorios', methods= [GET, POST])
+@app.route('/relatorios', methods=['GET', 'POST'])
 def relatorios():
-    if request.method == POST:
+    relatorio = None
+    conteudo = ""
+
+    if request.method == 'POST':
         relatorio = request.form.get('relatorio')
+
         if relatorio == 'estoque_animais':
-            # Geração de relatório do estoque atual de animais
-            pass
-
+            conteudo = gerar_relatorio_estoque_animais()
         elif relatorio == 'movimentacoes_animais':
-            # Geração de relatório com entradas e saídas de animais
-            pass
-
+            conteudo = gerar_relatorio_movimentacoes()
         elif relatorio == 'compras_insumos':
-            # Geração de relatório com as compras de insumos
-            pass
-
+            conteudo = gerar_relatorio_compras_insumos()
         elif relatorio == 'consumo_insumos':
-            # Geração de relatório com os consumos de insumos
-            pass
-
+            conteudo = gerar_relatorio_consumo_insumos()
         elif relatorio == 'vendas_animais':
-            # Geração de relatório com os animais vendidos
-            pass
-
+            conteudo = gerar_relatorio_vendas()
         elif relatorio == 'balanco_geral':
-            # Geração de um balanço geral (entradas, saídas, custos, receitas)
-            pass
-    return render_template('relatorios.html')
+            conteudo = gerar_relatorio_balanco()
+
+    return render_template('relatorios.html', relatorio=relatorio, conteudo=conteudo)
 
 @app.route('/estoque', methods= [GET, POST])
 def estoque():
