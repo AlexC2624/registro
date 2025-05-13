@@ -26,10 +26,14 @@ class ManagerCSV:
         df.to_csv(self.arquivo, index=False)
 
     def adicionar(self, dados):
-        """Adiciona um novo registro com ID automático.
+        """Adiciona um novo registro ao arquivo, gerando o ID automaticamente.
+
+        Este método carrega os dados existentes, determina o próximo ID disponível
+        com base no maior valor atual (ou inicia em 1 se estiver vazio), adiciona
+        o novo registro e salva novamente no arquivo.
 
         Args:
-            dados (dict): Dicionário com os dados (sem 'id').
+            dados (dict): Dicionário contendo os dados do novo registro, sem o campo 'id'.
         """
         
         df = self._carregar()
