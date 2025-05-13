@@ -2,76 +2,95 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestão Pecuária</title>
+    <title>Relatório Detalhado</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        nav {
-            background-color: #333;
-            padding: 10px;
-            text-align: center;
-        }
-        nav a {
-            color: white;
-            margin: 0 15px;
-            text-decoration: none;
-            font-size: 18px;
-        }
-        nav a:hover {
-            text-decoration: underline;
-        }
-        section {
-            padding: 20px;
-        }
-        .content {
-            display: none;
-        }
-        .content.active {
-            display: block;
-        }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-    <nav>
-        <a href="#" onclick="showPage('cadastros')">Cadastros</a>
-        <a href="#" onclick="showPage('relatorios')">Relatórios</a>
-        <a href="#" onclick="showPage('estoque')">Estoque</a>
-        <a href="#" onclick="showPage('financeiro')">Financeiro</a>
-    </nav>
+    <h1>📄 Relatório Detalhado</h1>
 
-    <section id="content">
-        <div id="cadastros" class="content active">
-            <h1>Cadastros</h1>
-            <p>Aqui você pode cadastrar novos itens no sistema.</p>
-        </div>
-        <div id="relatorios" class="content">
-            <h1>Relatórios</h1>
-            <p>Visualize relatórios gerenciais e de desempenho.</p>
-        </div>
-        <div id="estoque" class="content">
-            <h1>Estoque</h1>
-            <p>Gerencie o estoque de insumos e animais.</p>
-        </div>
-        <div id="financeiro" class="content">
-            <h1>Financeiro</h1>
-            <p>Aqui você pode visualizar informações financeiras.</p>
-        </div>
+    <!-- Botões de Ação -->
+    <div class="acoes">
+        <form method="get" action="{{ url_for('relatorios') }}">
+            <button type="submit">🔙 Voltar</button>
+        </form>
+        <button onclick="window.print()">🖨️ Imprimir</button>
+        <button onclick="exportarCSV()">📁 Exportar CSV</button>
+    </div>
+
+    <!-- Gráfico -->
+    <section>
+        <h2>📊 Gráfico de Exemplo</h2>
+        <canvas id="graficoRelatorio" width="600" height="300"></canvas>
+    </section>
+
+    <!-- Tabela -->
+    <section>
+        <h2>📋 Tabela de Dados</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Data</th>
+                    <th>Tipo</th>
+                    <th>Quantidade</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>001</td>
+                    <td>2025-01-10</td>
+                    <td>Compra</td>
+                    <td>20</td>
+                    <td>R$ 5.000</td>
+                </tr>
+                <tr>
+                    <td>002</td>
+                    <td>2025-02-05</td>
+                    <td>Venda</td>
+                    <td>15</td>
+                    <td>R$ 6.750</td>
+                </tr>
+                <!-- Adicione mais linhas dinamicamente com Flask -->
+            </tbody>
+        </table>
     </section>
 
     <script>
-        function showPage(page) {
-            const sections = document.querySelectorAll('.content');
-            sections.forEach(section => {
-                section.classList.remove('active');
+        // Gráfico com Chart.js
+        const ctx = document.getElementById('graficoRelatorio').getContext('2d');
+        const grafico = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar'],
+                datasets: [{
+                    label: 'Movimentações (R$)',
+                    data: [5000, 6750, 4200],
+                    backgroundColor: ['#4CAF50', '#2196F3', '#FFC107']
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Exportar CSV (simples)
+        function exportarCSV() {
+            let csv = "ID,Data,Tipo,Quantidade,Valor\n";
+            document.querySelectorAll("tbody tr").forEach(tr => {
+                const dados = Array.from(tr.children).map(td => td.textContent);
+                csv += dados.join(",") + "\n";
             });
-            document.getElementById(page).classList.add('active');
+            const blob = new Blob([csv], { type: "text/csv" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "relatorio.csv";
+            link.click();
         }
     </script>
 
