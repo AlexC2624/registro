@@ -252,3 +252,18 @@ def animal(modo):
         cliente_opcoes = cliente_opcoes,
         status = status
     )
+
+@app.route('/relatorios', methods= [GET, POST])
+def relatorios():
+    # return render_template('relatorios.html')
+    return render_template('index.html')
+
+@app.route('/estoque', methods= [GET, POST])
+def estoque():
+    # return render_template('estoque.html')
+    return render_template('index.html')
+
+@app.route('/financeiro', methods= [GET, POST])
+def financeiro():
+    # return render_template('financeiro.html')
+    return render_template('index.html')
