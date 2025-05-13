@@ -6,54 +6,82 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div>
-        <h1>📊 Página de Relatórios</h1>
+    <div class="container">
+        {% if conteudo == '' %}
+            <h1>📊 Página de Relatórios</h1>
 
-        <!-- Relatórios de Animais -->
-        <section>
-            <h2>🐮 Relatórios de Animais</h2>
-            <form method="post" action="{{ url_for('relatorios') }}">
-                <button type="submit" name="relatorio" value="estoque_animais">
-                    📋 Estoque Atual de Animais
-                </button>
-                <button type="submit" name="relatorio" value="movimentacoes_animais">
-                    🔄 Movimentações de Animais
-                </button>
+            <section>
+                <fieldset>
+                    <legend>🐮 Relatórios de Animais</legend>
+                    <form method="post" action="{{ url_for('relatorios') }}">
+                        <button type="submit" name="relatorio" value="estoque_animais">📋 Estoque Atual de Animais</button>
+                        <button type="submit" name="relatorio" value="movimentacoes_animais">🔄 Movimentações de Animais</button>
+                    </form>
+                </fieldset>
+
+                <fieldset>
+                    <legend>🌾 Relatórios de Insumos</legend>
+                    <form method="post" action="{{ url_for('relatorios') }}">
+                        <button type="submit" name="relatorio" value="compras_insumos">🛒 Compras de Insumos</button>
+                        <button type="submit" name="relatorio" value="consumo_insumos">🔥 Consumo de Insumos</button>
+                    </form>
+                </fieldset>
+
+                <fieldset>
+                    <legend>💰 Relatórios Financeiros</legend>
+                    <form method="post" action="{{ url_for('relatorios') }}">
+                        <button type="submit" name="relatorio" value="vendas_animais">💸 Vendas de Animais</button>
+                        <button type="submit" name="relatorio" value="balanco_geral">📈 Balanço Geral</button>
+                    </form>
+                </fieldset>
+            </section>
+
+            <form action="{{ url_for('index') }}">
+                <button type="submit">⬅️ Voltar</button>
             </form>
-        </section>
+        {% endif %}
 
-        <!-- Relatórios de Insumos -->
-        <section>
-            <h2>🌾 Relatórios de Insumos</h2>
-            <form method="post" action="{{ url_for('relatorios') }}">
-                <button type="submit" name="relatorio" value="compras_insumos">
-                    🛒 Compras de Insumos
-                </button>
-                <button type="submit" name="relatorio" value="consumo_insumos">
-                    🔥 Consumo de Insumos
-                </button>
+        {% if relatorio %}
+            <section class="relatorio">
+                <h3>
+                    {% if relatorio == 'estoque_animais' %}📋 Estoque Atual de Animais
+                    {% elif relatorio == 'movimentacoes_animais' %}🔄 Movimentações de Animais
+                    {% elif relatorio == 'compras_insumos' %}🛒 Compras de Insumos
+                    {% elif relatorio == 'consumo_insumos' %}🔥 Consumo de Insumos
+                    {% elif relatorio == 'vendas_animais' %}💸 Vendas de Animais
+                    {% elif relatorio == 'balanco_geral' %}📈 Balanço Geral
+                    {% endif %}
+                </h3>
+
+                <div class="relatorio-options">
+                    <button onclick="alert('Exportar CSV ainda não implementado.')">📤 Exportar CSV</button>
+                    <button onclick="alert('Filtro ainda não implementado.')">🔍 Filtro</button>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            {% for col in colunas %}
+                                <th>{{ col }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for linha in conteudo %}
+                            <tr>
+                                {% for item in linha %}
+                                    <td>{{ item }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+
+            <form action="{{ url_for('relatorios') }}">
+                <button type="submit">⬅️ Voltar</button>
             </form>
-        </section>
-
-        <!-- Relatórios Financeiros -->
-        <section>
-            <h2>💰 Relatórios Financeiros</h2>
-            <form method="post" action="{{ url_for('relatorios') }}">
-                <button type="submit" name="relatorio" value="vendas_animais">
-                    💸 Vendas de Animais
-                </button>
-                <button type="submit" name="relatorio" value="balanco_geral">
-                    📈 Balanço Geral
-                </button>
-            </form>
-        </section>
-
-        <!-- Botão Voltar -->
-        <form action="{{ url_for('index') }}">
-            <button type="submit">Voltar</button>
-        </form>
-
+        {% endif %}
     </div>
-
 </body>
 </html>
