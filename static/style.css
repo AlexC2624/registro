@@ -184,6 +184,38 @@ footer {
   list-style-type: square;
 }
 
+/* Outros */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 1em;
+}
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+th {
+  background-color: #eee;
+}
+.relatorio-options {
+  margin-top: 0.5em;
+  margin-bottom: 1em;
+}
+fieldset {
+  border: 1px solid #ddd;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-radius: 8px;
+}
+legend {
+  font-weight: bold;
+}
+.container {
+  max-width: 960px;
+  margin: auto;
+  padding: 1em;
+}
+
 /* Responsivo */
 @media (max-width: 768px) {
   .container {
