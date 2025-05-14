@@ -261,25 +261,25 @@ def animal(modo):
 @app.route('/relatorios', methods=['GET', 'POST'])
 def relatorios():
     relatorio = None
-    conteudo = ""
+    colunas, conteudo = "", ""
 
     if request.method == 'POST':
         relatorio = request.form.get('relatorio')
 
         if relatorio == 'estoque_animais':
-            conteudo = gerar_relatorio_estoque_animais()
+            colunas, conteudo = gerar_relatorio_estoque_animais()
         elif relatorio == 'movimentacoes_animais':
-            conteudo = gerar_relatorio_movimentacoes()
+            colunas, conteudo = gerar_relatorio_movimentacoes()
         elif relatorio == 'compras_insumos':
-            conteudo = gerar_relatorio_compras_insumos()
+            colunas, conteudo = gerar_relatorio_compras_insumos()
         elif relatorio == 'consumo_insumos':
-            conteudo = gerar_relatorio_consumo_insumos()
+            colunas, conteudo = gerar_relatorio_consumo_insumos()
         elif relatorio == 'vendas_animais':
-            conteudo = gerar_relatorio_vendas()
+            colunas, conteudo = gerar_relatorio_vendas()
         elif relatorio == 'balanco_geral':
-            conteudo = gerar_relatorio_balanco()
+            colunas, conteudo = gerar_relatorio_balanco()
 
-    return render_template('relatorios.html', relatorio=relatorio, conteudo=conteudo)
+    return render_template('relatorios.html', relatorio=relatorio, colunas=colunas, conteudo=conteudo)
 
 @app.route('/estoque', methods= [GET, POST])
 def estoque():
