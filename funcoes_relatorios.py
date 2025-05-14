@@ -1,11 +1,9 @@
+from models import ManagerCSV, ManagerJSON
+
 def gerar_relatorio_estoque_animais():
-    colunas = ["ID", "Nome", "Peso", "Status"]
-    conteudo = [
-        ["001", "Boi 1", "450kg", "Ativo"],
-        ["002", "Boi 2", "510kg", "Ativo"],
-        ["003", "Boi 3", "470kg", "Ativo"],
-    ]
-    return colunas, conteudo
+    csv = ManagerCSV('animal_entrada.csv')
+    csv_ler = csv.ler()
+    return csv_ler['colunas'], csv_ler['valores']
 
 def gerar_relatorio_movimentacoes():
     colunas = ["Data", "Tipo", "Animal", "Peso"]
