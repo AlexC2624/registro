@@ -264,12 +264,12 @@ def relatorios():
     colunas, conteudo = "", ""
 
     if request.method == 'POST':
+        form_animais = request.form.get('animais')
         relatorio = request.form.get('relatorio')
-
-        if relatorio == 'estoque_animais':
-            colunas, conteudo = gerar_relatorio_estoque_animais()
-        elif relatorio == 'movimentacoes_animais':
-            colunas, conteudo = gerar_relatorio_movimentacoes()
+        if form_animais: 
+            colunas, conteudo = animais(form_animais)
+            print(colunas, conteudo, form_animais, sep='\n')
+            relatorio = form_animais
         elif relatorio == 'compras_insumos':
             colunas, conteudo = gerar_relatorio_compras_insumos()
         elif relatorio == 'consumo_insumos':
