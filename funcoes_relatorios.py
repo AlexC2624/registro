@@ -1,7 +1,8 @@
 from models import ManagerCSV, ManagerJSON
 
-def gerar_relatorio_estoque_animais():
-    csv = ManagerCSV('animal_entrada.csv')
+def animais(arquivo):
+    arquivo = f'{arquivo}.csv'
+    csv = ManagerCSV(arquivo)
     csv_ler = csv.ler()
     return csv_ler['colunas'], csv_ler['valores']
 
