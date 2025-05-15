@@ -14,8 +14,8 @@
                 <fieldset>
                     <legend>🐮 Relatórios de Animais</legend>
                     <form method="post" action="{{ url_for('relatorios') }}">
-                        <button type="submit" name="relatorio" value="estoque_animais">📋 Estoque Atual de Animais</button>
-                        <button type="submit" name="relatorio" value="movimentacoes_animais">🔄 Movimentações de Animais</button>
+                        <button type="submit" name="animais" value="animais_entrada">📋 animais_entrada</button>
+                        <button type="submit" name="animais" value="animais_saida">🔄 animais_saida</button>
                     </form>
                 </fieldset>
 
@@ -40,12 +40,14 @@
                 <button type="submit">⬅️ Voltar</button>
             </form>
         {% endif %}
-
+        
         {% if relatorio %}
             <section class="relatorio">
                 <h3>
                     {% if relatorio == 'estoque_animais' %}📋 Estoque Atual de Animais
                     {% elif relatorio == 'movimentacoes_animais' %}🔄 Movimentações de Animais
+                    {% elif relatorio == 'animais_entrada' %}🔄 animais_entrada
+                    {% elif relatorio == 'animais_saida' %}🔄 animais_saida
                     {% elif relatorio == 'compras_insumos' %}🛒 Compras de Insumos
                     {% elif relatorio == 'consumo_insumos' %}🔥 Consumo de Insumos
                     {% elif relatorio == 'vendas_animais' %}💸 Vendas de Animais
