@@ -270,14 +270,14 @@ def relatorios():
             colunas, conteudo = animais(form_animais)
             print(colunas, conteudo, form_animais, sep='\n')
             relatorio = form_animais
-        elif relatorio == 'compras_insumos':
-            colunas, conteudo = gerar_relatorio_compras_insumos()
-        elif relatorio == 'consumo_insumos':
-            colunas, conteudo = gerar_relatorio_consumo_insumos()
-        elif relatorio == 'vendas_animais':
-            colunas, conteudo = gerar_relatorio_vendas()
-        elif relatorio == 'balanco_geral':
-            colunas, conteudo = gerar_relatorio_balanco()
+        # elif relatorio == 'compras_insumos':
+        #     colunas, conteudo = gerar_relatorio_compras_insumos()
+        # elif relatorio == 'consumo_insumos':
+        #     colunas, conteudo = gerar_relatorio_consumo_insumos()
+        # elif relatorio == 'vendas_animais':
+        #     colunas, conteudo = gerar_relatorio_vendas()
+        # elif relatorio == 'balanco_geral':
+        #     colunas, conteudo = gerar_relatorio_balanco()
 
     return render_template('relatorios.html', relatorio=relatorio, colunas=colunas, conteudo=conteudo)
 
