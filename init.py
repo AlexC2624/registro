@@ -81,8 +81,16 @@ def tos():
 def cadastros():
     if request.method == POST:
         categoria = request.form.get('categoria')
+        animal = request.form.get('animal')
+        insumo = request.form.get('insumo')
+
         if categoria: return redirect(url_for('json_animal', categoria=categoria))
-        return redirect(url_for('animal', modo = request.form.get('modo')))
+        elif animal: return redirect(url_for('animal', modo=animal))
+
+        elif insumo:
+            if insumo == 'novo': return redirect(url_for('insumo', modo=insumo))
+            return redirect(url_for('insumo', modo=insumo))
+
     return render_template('cadastros.html')
 
 @app.route('/json_animal/<categoria>', methods= [GET, POST])
@@ -176,7 +184,7 @@ def animal(modo):
             valor_entrada = request.form['valor_entrada']
 
             # Caminho do arquivo CSV
-            arquivo = 'data/animal_entrada.csv'
+            arquivo = 'animal_entrada.csv'
 
             # Criar dicionário com os dados recebidos
             novo_registro = {
@@ -220,7 +228,7 @@ def animal(modo):
             valor_saida = request.form['valor_saida']
 
             # Caminho do arquivo CSV
-            arquivo = 'data/animal_saida.csv'
+            arquivo = 'animal_saida.csv'
 
             # Criar dicionário com os dados recebidos
             novo_registro = {
@@ -256,6 +264,122 @@ def animal(modo):
         modo = modo,
         cliente_opcoes = cliente_opcoes,
         status = status
+    )
+
+@app.route('/insumo/<modo>', methods=[GET, POST])
+def insumo(modo):
+    status = None
+    json = ManagerJSON('insumos.json')
+    
+    if modo == 'novo':
+        if request.method == POST:
+            nome = request.form['nome']
+            fornecedor = request.form['fornecedor']
+            tipo = request.form['tipo']
+            unidade = request.form['unidade']
+
+            # Caminho do arquivo JSON correto
+            arquivo = 'animais.json'
+
+            # Criar dicionário com os dados recebidos
+            novo_registro = {
+                'nome': nome,
+                'fornecedor': fornecedor,
+                'tipo': tipo,
+                'unidade': unidade
+            }
+
+            banco = ManagerJSON(arquivo)
+            banco.atualizar_dado('insumo', novo_registro)
+
+            status = 'Insumo cadastrado com sucesso!'
+
+        fornecedor_opcoes = json.obter_dado('fornecedor')
+        fornecedor_opcoes = [fornecedor_opcoes[i]['nome'] for i in fornecedor_opcoes.keys()]
+        if fornecedor_opcoes == []:
+            status = 'Nenhum fornecedor cadastrado'
+            return render_template('insumo.html', status=status)
+        return render_template(
+            'insumo.html',
+            status = status,
+            modo = modo,
+            insumo_opcoes = None,
+            fornecedor_opcoes = None,
+        )
+
+    elif modo == 'compra':
+        if request.method == POST:
+            nome = request.form['nome']
+            fornecedor = request.form['fornecedor']
+            data_compra = request.form['data_compra']
+            data_validade = request.form['data_validade']
+            quantidade = request.form['quantidade']
+            valor_entrada = request.form['valor_entrada']
+
+            # Caminho do arquivo CSV correto
+            arquivo = 'insumo_comprado.csv'
+
+            # Criar dicionário com os dados recebidos
+            novo_registro = {
+                'nome': nome,
+                'data_compra': data_compra,
+                'fornecedor': fornecedor,
+                'data_validade': data_validade,
+                'quantidade': quantidade,
+                'valor_unitario': valor_entrada
+            }
+
+            banco = ManagerCSV(arquivo, list(novo_registro.keys()))
+            banco.adicionar(novo_registro)
+
+            status = 'Compra registrada com sucesso!'
+
+        nome_opcoes = json.obter_dado('insumo')
+        nome_opcoes = [nome_opcoes[i]['nome'] for i in nome_opcoes.keys()]
+        if nome_opcoes == []:
+            status = 'Nenhum insumo cadastrado'
+            return render_template('insumo.html', status=status)
+
+        fornecedor_opcoes = json.obter_dado('fornecedor')
+        fornecedor_opcoes = [fornecedor_opcoes[i]['nome'] for i in fornecedor_opcoes.keys()]
+        if fornecedor_opcoes == []:
+            status = 'Nenhum fornecedor cadastrado'
+            return render_template('insumo.html', status=status)
+
+    elif modo == 'consumo':
+        if request.method == POST:
+            nome = request.form['nome']
+            data_consumo = request.form['data_consumo']
+            quantidade = request.form['quantidade']
+            observacao = request.form['observacao']
+
+            # Caminho do arquivo CSV para consumo
+            arquivo = 'insumo_consumo.csv'
+
+            novo_registro = {
+                'nome': nome,
+                'data': data_consumo,
+                'quantidade': quantidade,
+                'observacao': observacao
+            }
+
+            banco = ManagerCSV(arquivo, list(novo_registro.keys()))
+            banco.adicionar(novo_registro)
+
+            status = 'Consumo registrado com sucesso!'
+
+        nome_opcoes = json.obter_dado('insumo')
+        nome_opcoes = [nome_opcoes[i]['nome'] for i in nome_opcoes.keys()]
+        if nome_opcoes == []:
+            status = 'Nenhum insumo cadastrado'
+            return render_template('insumo.html', status=status)
+
+    return render_template(
+        'insumo.html',
+        status = status,
+        modo = modo,
+        insumo_opcoes = nome_opcoes,
+        fornecedor_opcoes = fornecedor_opcoes,
     )
 
 @app.route('/relatorios', methods=['GET', 'POST'])
