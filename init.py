@@ -80,21 +80,19 @@ def tos():
 @app.route('/cadastros', methods= [GET, POST])
 def cadastros():
     if request.method == POST:
-        categoria = request.form.get('categoria')
         animal = request.form.get('animal')
         insumo = request.form.get('insumo')
+        json_categoria = request.form.get('json_categoria')
 
-        if categoria: return redirect(url_for('json_animal', categoria=categoria))
+        if json_categoria: return redirect(url_for('json_animal', json_categoria=json_categoria))
         elif animal: return redirect(url_for('animal', modo=animal))
 
-        elif insumo:
-            if insumo == 'novo': return redirect(url_for('insumo', modo=insumo))
-            return redirect(url_for('insumo', modo=insumo))
+        elif insumo: return redirect(url_for('insumo', modo=insumo))
 
     return render_template('cadastros.html')
 
-@app.route('/json_animal/<categoria>', methods= [GET, POST])
-def json_animal(categoria):
+@app.route('/json_animal/<json_categoria>', methods= [GET, POST])
+def json_animal(json_categoria):
     """
     Cadastro de lotes.
     ---
@@ -122,11 +120,11 @@ def json_animal(categoria):
         nome = request.form.get('nome')
         if nome:
             json = ManagerJSON('animais.json')
-            json.atualizar_dado(categoria, {'nome': nome if type(nome) is str else str(nome)})
-            status = f'{categoria} {nome} cadastrado!'
-        return render_template('cadastro_json_animais.html', categoria=categoria, status=status)
+            json.atualizar_dado(json_categoria, {'nome': nome if type(nome) is str else str(nome)})
+            status = f'{json_categoria} {nome} cadastrado!'
+        return render_template('cadastro_json_animais.html', json_categoria=json_categoria, status=status)
 
-    return render_template('cadastro_json_animais.html', categoria=categoria, status=status)
+    return render_template('cadastro_json_animais.html', json_categoria=json_categoria, status=status)
 
 @app.route('/animal/<modo>', methods= [GET, POST])
 def animal(modo):
@@ -169,7 +167,7 @@ def animal(modo):
       200:
         description: Página de entrada de animais renderizada
     """
-    
+
     status = None
     json = ManagerJSON('animais.json')
 
@@ -269,7 +267,7 @@ def animal(modo):
 @app.route('/insumo/<modo>', methods=[GET, POST])
 def insumo(modo):
     status = None
-    json = ManagerJSON('insumos.json')
+    json_animais = ManagerJSON('animais.json')
     
     if modo == 'novo':
         if request.method == POST:
@@ -277,9 +275,6 @@ def insumo(modo):
             fornecedor = request.form['fornecedor']
             tipo = request.form['tipo']
             unidade = request.form['unidade']
-
-            # Caminho do arquivo JSON correto
-            arquivo = 'animais.json'
 
             # Criar dicionário com os dados recebidos
             novo_registro = {
@@ -289,22 +284,21 @@ def insumo(modo):
                 'unidade': unidade
             }
 
-            banco = ManagerJSON(arquivo)
-            banco.atualizar_dado('insumo', novo_registro)
+            json_animais.atualizar_dado('insumo', novo_registro)
 
             status = 'Insumo cadastrado com sucesso!'
 
-        fornecedor_opcoes = json.obter_dado('fornecedor')
+        fornecedor_opcoes = json_animais.obter_dado('fornecedor')
         fornecedor_opcoes = [fornecedor_opcoes[i]['nome'] for i in fornecedor_opcoes.keys()]
         if fornecedor_opcoes == []:
             status = 'Nenhum fornecedor cadastrado'
             return render_template('insumo.html', status=status)
         return render_template(
             'insumo.html',
-            status = status,
+            status = status if status in locals() else None,
             modo = modo,
             insumo_opcoes = None,
-            fornecedor_opcoes = None,
+            fornecedor_opcoes = fornecedor_opcoes,
         )
 
     elif modo == 'compra':
