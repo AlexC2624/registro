@@ -52,15 +52,21 @@
 
             <label for="unidade">Unidade:</label>
             <select id="unidade" name="unidade" required>
-                <option value="kg">kg</option>
-                <option value="g">g</option>
-                <option value="L">L</option>
-                <option value="ml">ml</option>
-                <option value="ton">ton</option>
-                <option value="saco">saco</option>
-                <option value="m">m</option>
-                <option value="cm">cm</option>
-                <option value="m³">m³</option>
+                <optgroup label="Peso">
+                    <option value="g">g</option>
+                    <option value="kg">kg</option>
+                    <option value="ton">ton</option>
+                </optgroup>
+                <optgroup label="Volume">
+                    <option value="ml">ml</option>
+                    <option value="L">L</option>
+                    <option value="m³">m³</option>
+                    <option value="saco">saco</option>
+                </optgroup>
+                <optgroup label="Comprimento">
+                    <option value="cm">cm</option>
+                    <option value="m">m</option>
+                </optgroup>
             </select>
 
             <div class="button-container">
