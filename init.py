@@ -268,6 +268,7 @@ def animal(modo):
 def insumo(modo):
     status = None
     json_animais = ManagerJSON('animais.json')
+    json_insumo = ManagerJSON('insumos.json')
     
     if modo == 'novo':
         if request.method == POST:
@@ -284,7 +285,7 @@ def insumo(modo):
                 'unidade': unidade
             }
 
-            json_animais.atualizar_dado('insumo', novo_registro)
+            json_insumo.atualizar_dado('insumo', novo_registro)
 
             status = 'Insumo cadastrado com sucesso!'
 
@@ -293,9 +294,10 @@ def insumo(modo):
         if fornecedor_opcoes == []:
             status = 'Nenhum fornecedor cadastrado'
             return render_template('insumo.html', status=status)
+        
         return render_template(
             'insumo.html',
-            status = status if status in locals() else None,
+            status = locals().get('status', None),
             modo = modo,
             insumo_opcoes = None,
             fornecedor_opcoes = fornecedor_opcoes,
