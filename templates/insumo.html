@@ -13,7 +13,6 @@
         {% if status %}
         <script>
             alert('{{ status }}');
-            window.history.back();
         </script>
         {% endif %}
 
@@ -32,10 +31,37 @@
             </select>
 
             <label for="tipo">Tipo:</label>
-            <input type="text" id="tipo" name="tipo" required>
+            <select id="tipo" name="tipo" required>
+                <optgroup label="Saúde">
+                    <option value="medicamento">Medicamento</option>
+                    <option value="vacina">Vacina</option>
+                </optgroup>
+                <optgroup label="Suplementos">
+                    <option value="suplemento">Suplemento</option>
+                    <option value="sal mineral">Sal mineral</option>
+                    <option value="aditivo">Aditivo</option>
+                    <option value="núcleo">Núcleo</option>
+                </optgroup>
+                <optgroup label="Alimentos">
+                    <option value="ração">Ração</option>
+                    <option value="silagem">Silagem</option>
+                    <option value="concentrado">Concentrado</option>
+                    <option value="farelo">Farelo</option>
+                </optgroup>
+            </select>
 
             <label for="unidade">Unidade:</label>
-            <input type="text" id="unidade" name="unidade" required>
+            <select id="unidade" name="unidade" required>
+                <option value="kg">kg</option>
+                <option value="g">g</option>
+                <option value="L">L</option>
+                <option value="ml">ml</option>
+                <option value="ton">ton</option>
+                <option value="saco">saco</option>
+                <option value="m">m</option>
+                <option value="cm">cm</option>
+                <option value="m³">m³</option>
+            </select>
 
             <div class="button-container">
                 <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
