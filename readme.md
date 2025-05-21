@@ -28,15 +28,34 @@ Um projeto para gerenciar e registrar informações importantes de forma simples
 
 ## Como usar
 
-1. Clone o repositório:
+1. **Clone o repositório:**
     ```bash
     git clone https://github.com/AlexC2624/registro.git
+    cd registro
     ```
-2. Instale as dependências:
+
+2. **Crie e ative um ambiente virtual (recomendado):**
+
+    **No Linux/macOS:**
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate
+    ```
+
+    **No Windows (CMD):**
+    ```cmd
+    python -m venv .venv
+    .venv\Scripts\activate
+    ```
+
+    > Após ativar, o terminal deverá exibir algo como `(.venv)` no início da linha.
+
+3. **Instale as dependências:**
     ```bash
     pip install -r requirements.txt
     ```
-3. Execute o projeto:
+
+4. **Execute o projeto:**
     ```bash
     python main.py
     ```
