@@ -17,18 +17,45 @@
         </script>
         {% endif %}
 
+        {% if modo == 'novo' %}
+        <h1>Cadastro de Novo Insumo</h1>
+        <form action="{{ url_for('insumo', modo=modo) }}" method="POST">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" required>
+
+            <label for="fornecedor">Fornecedor:</label>
+            <select name="fornecedor" id="fornecedor" required>
+                <option value="">Selecione o Fornecedor</option>
+                {% for item in fornecedor_opcoes %}
+                <option value="{{ item }}">{{ item }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="tipo">Tipo:</label>
+            <input type="text" id="tipo" name="tipo" required>
+
+            <label for="unidade">Unidade:</label>
+            <input type="text" id="unidade" name="unidade" required>
+
+            <div class="button-container">
+                <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
+                <button type="submit">Cadastrar</button>
+            </div>
+        </form>
+        {% endif %}
+
         {% if modo == 'compra' %}
         <h1>Cadastro de Compra de Insumo</h1>
         <form action="{{ url_for('insumo', modo=modo) }}" method="POST">
             <label for="insumo">Insumo:</label>
-            <select name="insumo" id="insumo">
+            <select name="insumo" id="insumo" required>
                 {% for item in insumo_opcoes %}
                 <option value="{{ item }}">{{ item }}</option>
                 {% endfor %}
             </select>
 
             <label for="fornecedor">Fornecedor:</label>
-            <select name="fornecedor" id="fornecedor">
+            <select name="fornecedor" id="fornecedor" required>
                 {% for item in fornecedor_opcoes %}
                 <option value="{{ item }}">{{ item }}</option>
                 {% endfor %}
@@ -54,7 +81,7 @@
         <h1>Cadastro de Consumo de Insumo</h1>
         <form action="{{ url_for('insumo', modo=modo) }}" method="POST">
             <label for="insumo">Insumo:</label>
-            <select name="insumo" id="insumo">
+            <select name="insumo" id="insumo" required>
                 {% for item in insumo_opcoes %}
                 <option value="{{ item }}">{{ item }}</option>
                 {% endfor %}
