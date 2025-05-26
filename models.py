@@ -11,14 +11,14 @@ class ManagerCSV:
         Args:
             nome_arquivo (str): Nome do nome_arquivo CSV.
             colunas (list[str]): Lista de colunas (sem incluir 'id', que é automático). Padrão é None.
-        Raise:
-            FileNotFoundError: Se o 
+        Return:
+            str, int: Mensagem de erro e 404 se colunas não forem definidas.
         """
 
         self.arquivo = os.path.join('data', nome_arquivo)
         if not os.path.exists(self.arquivo):
             if colunas == None:
-                raise FileNotFoundError(f'O arquivo {self.arquivo}, não foi encontrado!')
+                return 'Colunas não definidas. Por favor, forneça uma lista de colunas.', 404
             colunas = ['id'] + colunas
             df = pd.DataFrame(columns=colunas)
             df.to_csv(self.arquivo, index=False)
