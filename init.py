@@ -257,12 +257,18 @@ def animal(modo):
             fornecedor_opcoes = fornecedor_opcoes,
             status = status
         )
-    return render_template(
-        'animal.html',
-        modo = modo,
-        cliente_opcoes = cliente_opcoes,
-        status = status
-    )
+    elif modo == 'saida':
+        return render_template(
+            'animal.html',
+            status = status,
+            modo = modo,
+            cliente_opcoes = cliente_opcoes
+        )
+    else:
+        status = 'O servidor está funcionando, o problema é que '
+        status += 'esta tendo uma tentativa de acesso a uma rota inexistente'
+        return render_template('animal.html', status=status)
+
 
 @app.route('/insumo/<modo>', methods=[GET, POST])
 def insumo(modo):
@@ -277,6 +283,13 @@ def insumo(modo):
             tipo = request.form['tipo']
             unidade = request.form['unidade']
 
+            if not nome or not fornecedor or not tipo or not unidade:
+                status = 'Preencha todos os campos!'
+                return render_template('insumo.html', status=status)
+
+            if nome in [json_insumo.obter_dado('insumo')[i]['nome'] for i in json_insumo.obter_dado('insumo').keys()]:
+                status = 'O nome do insumo já existe, tente outro!'
+
             # Criar dicionário com os dados recebidos
             novo_registro = {
                 'nome': nome,
@@ -284,10 +297,10 @@ def insumo(modo):
                 'tipo': tipo,
                 'unidade': unidade
             }
-
-            json_insumo.atualizar_dado('insumo', novo_registro)
-
-            status = 'Insumo cadastrado com sucesso!'
+            
+            if locals().get('status') is None:
+                json_insumo.atualizar_dado('insumo', novo_registro)
+                status = 'Insumo cadastrado com sucesso!'
 
         fornecedor_opcoes = json_animais.obter_dado('fornecedor')
         fornecedor_opcoes = [fornecedor_opcoes[i]['nome'] for i in fornecedor_opcoes.keys()]
