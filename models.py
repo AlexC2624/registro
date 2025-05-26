@@ -101,6 +101,11 @@ class ManagerCSV:
         df = self._carregar()
         df = df[df['id'] != id_alvo]
         self._salvar(df)
+    
+    def linhas(self):
+        """Retorna o número de linhas no arquivo CSV."""
+        df = self._carregar()
+        return len(df) - 1  # Exclui o cabeçalho da contagem
 
 # import json
 # import os
