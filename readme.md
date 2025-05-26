@@ -24,7 +24,7 @@ Um projeto para gerenciar e registrar informações importantes de forma simples
     - send_from_directory
 - flasgger
     - Swagger
-
+- [UIVerse](https://uiverse.io/) – Biblioteca de componentes visuais (HTML + CSS) para estilização da interface
 
 ## Como usar
 
