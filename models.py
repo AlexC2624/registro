@@ -53,7 +53,10 @@ class ManagerCSV:
         self._salvar(df)
 
     def ler(self):
-        """Retorna todos os registros."""
+        """Lê o arquivo CSV e retorna os dados em formato de dicionário.
+        Retorna:
+            dict: Dicionário contendo as colunas e os valores do CSV. Chaves 'colunas' e 'valores'.
+        """
         csv_ler = self._carregar()
         return {'colunas': csv_ler.columns.tolist(), 'valores': csv_ler.values.tolist()}
 
