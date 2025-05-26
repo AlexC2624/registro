@@ -5,22 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opções de Cadastro</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .pagina-index header {
+            background-color: #2e7d32;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+    </style>
 </head>
-<body>
+<body class="pagina-index">
     <header>
         <h1>Sistema de Gestão de Gado de Corte</h1>
     </header>
 
-    <form action="{{ url_for('index') }}" method="post" class="nav">
-        <button type="submit" id="page" name="page" value="inicio">Início</button>
-        <button type="submit" id="page" name="page" value="cadastros">Cadastros</button>
-        <button type="submit" id="page" name="page" value="relatorios">Relatórios</button>
-        <!-- <button type="submit" id="page" name="page" value="estoque">Estoque</button>
-        <button type="submit" id="page" name="page" value="financeiro">Financeiro</button> -->
-    </form>
+    <nav>
+        <form action="{{ url_for('index') }}" method="post" class="nav">
+            <button type="submit" name="page" value="inicio">Início</button>
+            <button type="submit" name="page" value="cadastros">Cadastros</button>
+            <button type="submit" name="page" value="relatorios">Relatórios</button>
+            <!-- Botões comentados para uso futuro -->
+            <!--
+            <button type="submit" name="page" value="estoque">Estoque</button>
+            <button type="submit" name="page" value="financeiro">Financeiro</button>
+            -->
+        </form>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Bem-vindo!</h2>
+            <p>Escolha uma das opções acima para navegar pelo sistema.</p>
+        </section>
+    </main>
 
     <footer>
-        &copy; 2025 - Sistema de Gestão de Gado de Corte | <a href="{{ url_for('tos') }}">Termos de Serviço</a>
+        <p>&copy; 2025 - Sistema de Gestão de Gado de Corte | 
+        <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
     </footer>
 </body>
 </html>

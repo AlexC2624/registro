@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Leia os termos de serviço do sistema de gestão.">
     <title>Termos de Serviço</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -27,6 +28,14 @@
             <p>Se você tiver dúvidas sobre esses termos, entre em contato conosco através do email: exemplo@dominio.com</p>
         </div>
     </div>
+    <div class="button-container">
+        <button onclick="window.location.href='{{ url_for('inicio') }}'">Voltar</button>
+    </div>
+    <footer>
+        <p>&copy; 2025 - Sistema de Gestão de Gado de Corte</p>
+    </footer>
+</div>
+</div>
 
 </body>
 </html>

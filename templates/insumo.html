@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de {{ 'Compra' if modo == 'compra' else 'Consumo' }} de Insumo</title>
+    <title>Cadastro de {{ 'Compra' if modo == 'compra' else 'Consumo' if modo == 'consumo' else 'Novo' }} de Insumo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
@@ -18,13 +18,13 @@
 
         {% if modo == 'novo' %}
         <h1>Cadastro de Novo Insumo</h1>
-        <form action="{{ url_for('insumo', modo=modo) }}" method="POST">
+        <form action="{{ url_for('insumo', modo=modo) }}" method="post">
             <label for="nome">Nome:</label>
-            <input type="text" id="nome" name="nome" required>
+            <input type="text" id="nome" name="nome" placeholder="Ex: Silagem de Milho" required>
 
             <label for="fornecedor">Fornecedor:</label>
             <select name="fornecedor" id="fornecedor" required>
-                <option value="">Selecione o Fornecedor</option>
+                <option value="" disabled selected>Selecione o Fornecedor</option>
                 {% for item in fornecedor_opcoes %}
                 <option value="{{ item }}">{{ item }}</option>
                 {% endfor %}
@@ -32,13 +32,14 @@
 
             <label for="tipo">Tipo:</label>
             <select id="tipo" name="tipo" required>
+                <option value="" disabled selected>Selecione o Tipo</option>
                 <optgroup label="Saúde">
                     <option value="medicamento">Medicamento</option>
                     <option value="vacina">Vacina</option>
                 </optgroup>
                 <optgroup label="Suplementos">
                     <option value="suplemento">Suplemento</option>
-                    <option value="sal mineral">Sal mineral</option>
+                    <option value="sal mineral">Sal Mineral</option>
                     <option value="aditivo">Aditivo</option>
                     <option value="núcleo">Núcleo</option>
                 </optgroup>
@@ -52,6 +53,7 @@
 
             <label for="unidade">Unidade:</label>
             <select id="unidade" name="unidade" required>
+                <option value="" disabled selected>Selecione a Unidade</option>
                 <optgroup label="Peso">
                     <option value="g">g</option>
                     <option value="kg">kg</option>
@@ -78,9 +80,10 @@
 
         {% if modo == 'compra' %}
         <h1>Cadastro de Compra de Insumo</h1>
-        <form action="{{ url_for('insumo', modo=modo) }}" method="POST">
+        <form action="{{ url_for('insumo', modo=modo) }}" method="post">
             <label for="insumo">Insumo:</label>
             <select name="insumo" id="insumo" required>
+                <option value="" disabled selected>Selecione o Insumo</option>
                 {% for item in insumo_opcoes %}
                 <option value="{{ item }}">{{ item }}</option>
                 {% endfor %}
@@ -88,6 +91,7 @@
 
             <label for="fornecedor">Fornecedor:</label>
             <select name="fornecedor" id="fornecedor" required>
+                <option value="" disabled selected>Selecione o Fornecedor</option>
                 {% for item in fornecedor_opcoes %}
                 <option value="{{ item }}">{{ item }}</option>
                 {% endfor %}
@@ -97,10 +101,10 @@
             <input type="date" id="data" name="data" required>
 
             <label for="quantidade">Quantidade:</label>
-            <input type="number" step="0.1" id="quantidade" name="quantidade" required>
+            <input type="number" step="0.1" id="quantidade" name="quantidade" placeholder="Ex: 150.0" required>
 
             <label for="valor_unitario">Valor Unitário (R$):</label>
-            <input type="number" step="0.01" id="valor_unitario" name="valor_unitario" required>
+            <input type="number" step="0.01" id="valor_unitario" name="valor_unitario" placeholder="Ex: 12.50" required>
 
             <div class="button-container">
                 <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
@@ -111,9 +115,10 @@
 
         {% if modo == 'consumo' %}
         <h1>Cadastro de Consumo de Insumo</h1>
-        <form action="{{ url_for('insumo', modo=modo) }}" method="POST">
+        <form action="{{ url_for('insumo', modo=modo) }}" method="post">
             <label for="insumo">Insumo:</label>
             <select name="insumo" id="insumo" required>
+                <option value="" disabled selected>Selecione o Insumo</option>
                 {% for item in insumo_opcoes %}
                 <option value="{{ item }}">{{ item }}</option>
                 {% endfor %}
@@ -123,10 +128,10 @@
             <input type="date" id="data" name="data" required>
 
             <label for="quantidade">Quantidade:</label>
-            <input type="number" step="0.1" id="quantidade" name="quantidade" required>
+            <input type="number" step="0.1" id="quantidade" name="quantidade" placeholder="Ex: 75.0" required>
 
             <label for="obs">Observação:</label>
-            <input type="text" id="obs" name="obs">
+            <input type="text" id="obs" name="obs" placeholder="Opcional">
 
             <div class="button-container">
                 <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
@@ -135,6 +140,11 @@
         </form>
         {% endif %}
     </div>
+
+    <footer>
+        <p>&copy; 2025 - Sistema de Gestão de Gado de Corte | 
+        <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
+    </footer>
 </body>
 
 </html>

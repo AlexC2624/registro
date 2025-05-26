@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de {{ 'Entrada' if mode == 'entrada' else 'Saída' }} de Animal</title>
+    <title>Cadastro de {{ 'Entrada' if modo == 'entrada' else 'Saída' }} de Animal</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-<body>
-    <div class="container">
+<body class="pagina-animal">
+    <main class="container">
         {% if status %}
         <script>
             alert('{{ status }}');
@@ -18,56 +18,61 @@
         {% endif %}
 
         {% if modo == 'entrada' %}
-        <h1>Cadastro de Entrada de Animal</h1>
-        <form action="{{ url_for('animal', modo=modo) }}" method="POST">
-            <label for="lote">Lote:</label>
-            <select name="lote" id="lote">
-                {% for item in lote_opcoes %}
-                <option value="{{ item }}">{{ item }}</option>
-                {% endfor %}
-            </select>
-
-            <label for="raca">Raça:</label>
-            <select name="raca" id="raca">
-                {% for item in raca_opcoes %}
-                <option value="{{ item }}">{{ item }}</option>
-                {% endfor %}
-            </select>
-
-            <label for="data_nascimento">Data de Nascimento:</label>
-            <input type="date" id="data_nascimento" name="data_nascimento" required>
-
-            <label for="fornecedor">Fornecedor:</label>
-            <select name="fornecedor" id="fornecedor">
-                {% for item in fornecedor_opcoes %}
-                <option value="{{ item }}">{{ item }}</option>
-                {% endfor %}
-            </select>
-
-            <label for="data_entrada">Data de Entrada:</label>
-            <input type="date" id="data_entrada" name="data_entrada" required>
-
-            <label for="peso_entrada">Peso na Entrada (kg):</label>
-            <input type="number" step="1" id="peso_entrada" name="peso_entrada" value="250" required>
-
-            <label for="valor_entrada">Valor na Entrada (R$):</label>
-            <input type="number" step="0.1" id="valor_entrada" name="valor_entrada" value="8" required>
-
-            <div class="button-container">
-                <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
-                <button type="submit">Cadastrar</button>
-            </div>
-        </form>
-        {% endif %}
-        
-        {% if modo == 'saida' %}
-            <h1>Cadastro de Saída de Animal</h1>
+        <section>
+            <h1>🐮 Cadastro de Entrada de Animal</h1>
             <form action="{{ url_for('animal', modo=modo) }}" method="post">
+
+                <label for="lote">Lote:</label>
+                <select name="lote" id="lote" required>
+                    {% for item in lote_opcoes %}
+                    <option value="{{ item }}">{{ item }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="raca">Raça:</label>
+                <select name="raca" id="raca" required>
+                    {% for item in raca_opcoes %}
+                    <option value="{{ item }}">{{ item }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="data_nascimento">Data de Nascimento:</label>
+                <input type="date" id="data_nascimento" name="data_nascimento" required>
+
+                <label for="fornecedor">Fornecedor:</label>
+                <select name="fornecedor" id="fornecedor" required>
+                    {% for item in fornecedor_opcoes %}
+                    <option value="{{ item }}">{{ item }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="data_entrada">Data de Entrada:</label>
+                <input type="date" id="data_entrada" name="data_entrada" required>
+
+                <label for="peso_entrada">Peso na Entrada (kg):</label>
+                <input type="number" id="peso_entrada" name="peso_entrada" value="250" step="1" required>
+
+                <label for="valor_entrada">Valor na Entrada (R$):</label>
+                <input type="number" id="valor_entrada" name="valor_entrada" value="8" step="0.1" required>
+
+                <div class="button-container">
+                    <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">⬅️ Voltar</button>
+                    <button type="submit">✅ Cadastrar</button>
+                </div>
+            </form>
+        </section>
+        {% endif %}
+
+        {% if modo == 'saida' %}
+        <section>
+            <h1>📤 Cadastro de Saída de Animal</h1>
+            <form action="{{ url_for('animal', modo=modo) }}" method="post">
+
                 <label for="idx_entrada">Peso na Entrada (kg):</label>
-                <input type="number" step="1" id="idx_entrada" name="idx_entrada" value="250" required>
+                <input type="number" id="idx_entrada" name="idx_entrada" value="250" step="1" required>
 
                 <label for="cliente">Cliente:</label>
-                <select name="cliente" id="cliente">
+                <select name="cliente" id="cliente" required>
                     {% for cliente in cliente_opcoes %}
                     <option value="{{ cliente }}">{{ cliente }}</option>
                     {% endfor %}
@@ -77,18 +82,24 @@
                 <input type="date" id="data_saida" name="data_saida" required>
 
                 <label for="peso_saida">Peso de Saída (kg):</label>
-                <input type="number" step="1" id="peso_saida" name="peso_saida" value="450" required>
+                <input type="number" id="peso_saida" name="peso_saida" value="450" step="1" required>
 
                 <label for="valor_saida">Valor de Saída (R$):</label>
-                <input type="number" step="0.1" id="valor_saida" name="valor_saida" value="9" required>
+                <input type="number" id="valor_saida" name="valor_saida" value="9" step="0.1" required>
 
                 <div class="button-container">
-                    <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
-                    <button type="submit">Cadastrar</button>
+                    <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">⬅️ Voltar</button>
+                    <button type="submit">✅ Cadastrar</button>
                 </div>
             </form>
+        </section>
         {% endif %}
-    </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 - Sistema de Gestão de Gado de Corte | 
+        <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
+    </footer>
 </body>
 
 </html>
