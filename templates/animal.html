@@ -68,8 +68,18 @@
             <h1>📤 Cadastro de Saída de Animal</h1>
             <form action="{{ url_for('animal', modo=modo) }}" method="post">
 
-                <label for="idx_entrada">Peso na Entrada (kg):</label>
-                <input type="number" id="idx_entrada" name="idx_entrada" value="250" step="1" required>
+                <label for="lote_entrada">Lote de entrada:</label>
+                <select id="lote_entrada" name="lote_entrada" required>
+                    <option></option>
+                    {% for item in lote_opcoes %}
+                    <option value="{{ item }}">{{ item }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="animais_entrada">Animais no Lote:</label>
+                <select id="animais_entrada" name="animais_entrada" required>
+                    <!-- As opções serão preenchidas via JavaScript -->
+                </select>
 
                 <label for="cliente">Cliente:</label>
                 <select name="cliente" id="cliente" required>
@@ -100,6 +110,52 @@
         <p>&copy; 2025 - Sistema de Gestão de Gado de Corte | 
         <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
     </footer>
+
+    <p id="resultado">Resultado: </p>
+
+    <script>
+        // Dados: categorias e suas opções
+        const dados = {
+            "Frutas": ["Maçã", "Banana", "Laranja", "Uva"],
+            "Legumes": ["Cenoura", "Batata", "Abobrinha", "Chuchu"],
+            "Verduras": ["Alface", "Rúcula", "Couve", "Espinafre"]
+        };
+
+        const loteEntrada = document.getElementById("lote_entrada");
+        const animaisEntrada = document.getElementById("animais_entrada");
+        const resultado = document.getElementById("resultado");
+
+        for (let lote in dados) {
+            let option = document.createElement("option");
+            option.value = lote;
+            option.text = lote;
+            loteEntrada.add(option);
+        }
+
+        loteEntrada.addEventListener('change', function () {
+            const selecionado = this.value;
+
+            // Limpa a sublista atual
+            animaisEntrada.innerHTML = '<option value="">-- Selecione --</option>';
+
+            if (selecionado && dados[selecionado]) {
+                dados[selecionado].forEach(function (animal) {
+                    let opt = document.createElement("option");
+                    opt.value = animal.toLowerCase();
+                    opt.text = animal;
+                    animaisEntrada.add(opt);
+                });
+            }
+            resultado.textContent = ""; // Limpa resultado
+        });
+        animaisEntrada.addEventListener('change', function () {
+            if (this.value) {
+                resultado.textContent = "Resultado: " + this.value;
+            } else {
+                resultado.textContent = "Resultado: ";
+            }
+        });
+    </script>
 </body>
 
 </html>
