@@ -84,15 +84,15 @@ def cadastros():
         insumo = request.form.get('insumo')
         json_categoria = request.form.get('json_categoria')
 
-        if json_categoria: return redirect(url_for('json_animal', json_categoria=json_categoria))
+        if json_categoria: return redirect(url_for('json_animal', categoria=json_categoria))
         elif animal: return redirect(url_for('animal', modo=animal))
 
         elif insumo: return redirect(url_for('insumo', modo=insumo))
 
     return render_template('cadastros.html')
 
-@app.route('/json_animal/<json_categoria>', methods= [GET, POST])
-def json_animal(json_categoria):
+@app.route('/json_animal/<categoria>', methods= [GET, POST])
+def json_animal(categoria):
     """
     Cadastro de lotes.
     ---
@@ -120,11 +120,11 @@ def json_animal(json_categoria):
         nome = request.form.get('nome')
         if nome:
             json = ManagerJSON('animais.json')
-            json.atualizar_dado(json_categoria, {'nome': nome if type(nome) is str else str(nome)})
-            status = f'{json_categoria} {nome} cadastrado!'
-        return render_template('cadastro_json_animais.html', json_categoria=json_categoria, status=status)
+            json.atualizar_dado(categoria, {'nome': nome if type(nome) is str else str(nome)})
+            status = f'{categoria} {nome} cadastrado!'
+        return render_template('cadastro_json_animais.html', categoria=categoria, status=status)
 
-    return render_template('cadastro_json_animais.html', json_categoria=json_categoria, status=status)
+    return render_template('cadastro_json_animais.html', categoria=categoria, status=status)
 
 @app.route('/animal/<modo>', methods= [GET, POST])
 def animal(modo):
@@ -202,23 +202,38 @@ def animal(modo):
 
         lote_opcoes = json.obter_dado('lote')
         lote_opcoes = [lote_opcoes[i]['nome'] for i in lote_opcoes.keys()]
+
+        # Verifica se há lotes cadastrados
         if lote_opcoes == []:
             status = 'Nenhum lote de animais cadastrado'
             return render_template('animal.html', status=status)
 
+        # Verifica se há raças cadastradas
         raca_opcoes = json.obter_dado('raca')
         raca_opcoes = [raca_opcoes[i]['nome'] for i in raca_opcoes.keys()]
         if raca_opcoes == []:
             status = 'Nenhuma raca de animais cadastrado'
             return render_template('animal.html', status=status)
 
+        # Verifica se há fornecedores cadastrados
         fornecedor_opcoes = json.obter_dado('fornecedor')
         fornecedor_opcoes = [fornecedor_opcoes[i]['nome'] for i in fornecedor_opcoes.keys()]
         if fornecedor_opcoes == []:
             status = 'Nenhum fornecedor de animais cadastrado'
             return render_template('animal.html', status=status)
+
+        return render_template(
+            'animal.html',
+            modo = modo,
+            lote_opcoes = lote_opcoes,
+            raca_opcoes = raca_opcoes,
+            fornecedor_opcoes = fornecedor_opcoes,
+            status = status
+        )
+
     elif modo == 'saida':
         if request.method == POST:
+            idx_lote = request.form['idx_lote']
             idx_entrada = request.form['idx_entrada']
             cliente = request.form['cliente']
             data_saida = request.form['data_saida']
@@ -241,34 +256,39 @@ def animal(modo):
             banco.adicionar(novo_registro)
 
             status = 'Salvo com sucesso!'
+        
+        # Verifica se há lote cadastrado
+        lote = json.obter_dado('lote')
+        lote = [lote[i]['nome'] for i in lote.keys()]
+        if lote == []:
+            status = 'Nenhum lote de animais cadastrado'
+            return render_template('animal.html', status=status)
+        
+        # Verifica se há entrada de animal
+        animal_entrada = ManagerCSV('animal_entrada.csv')
+        if animal_entrada.linhas == 0:
+            status = 'Nenhum animal cadastrado'
+            return render_template('animal.html', status=status)
+        
+        animal_entrada = animal_entrada.ler()
+        animal_entrada = animal_entrada['valores']
 
+
+        # Verifica se há clientes cadastrados
         cliente_opcoes = json.obter_dado('cliente')
         cliente_opcoes = [cliente_opcoes[i]['nome'] for i in cliente_opcoes.keys()]
         if cliente_opcoes == []:
             status = 'Nenhum cliente de animal cadastrado'
             return render_template('animal.html', status=status)
 
-    if modo == 'entrada':
-        return render_template(
-            'animal.html',
-            modo = modo,
-            lote_opcoes = lote_opcoes,
-            raca_opcoes = raca_opcoes,
-            fornecedor_opcoes = fornecedor_opcoes,
-            status = status
-        )
-    elif modo == 'saida':
         return render_template(
             'animal.html',
             status = status,
             modo = modo,
+            lote_opcoes = lote,
+            animal_entrada_opcoes = animal_entrada,
             cliente_opcoes = cliente_opcoes
         )
-    else:
-        status = 'O servidor está funcionando, o problema é que '
-        status += 'esta tendo uma tentativa de acesso a uma rota inexistente'
-        return render_template('animal.html', status=status)
-
 
 @app.route('/insumo/<modo>', methods=[GET, POST])
 def insumo(modo):
