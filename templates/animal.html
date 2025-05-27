@@ -70,7 +70,7 @@
 
                 <label for="lote_entrada">Lote de entrada:</label>
                 <select id="lote_entrada" name="lote_entrada" required>
-                    <option></option>
+                    <option value="">Selecione um lote cadastrado</option>
                     {% for item in lote_opcoes %}
                     <option value="{{ item }}">{{ item }}</option>
                     {% endfor %}
@@ -78,6 +78,7 @@
 
                 <label for="animais_entrada">Animais no Lote:</label>
                 <select id="animais_entrada" name="animais_entrada" required>
+                    <option value="">Selecione um lote primeiro</option>
                     <!-- As opções serão preenchidas via JavaScript -->
                 </select>
 
