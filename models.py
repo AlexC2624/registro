@@ -107,8 +107,10 @@ class ManagerCSV:
     
     def linhas(self):
         """Retorna o número de linhas no arquivo CSV."""
-        df = self._carregar()
-        return len(df) - 1  # Exclui o cabeçalho da contagem
+        try: df = self._carregar()
+        except FileNotFoundError:
+            return 0
+        return len(df)
 
 # import json
 # import os
