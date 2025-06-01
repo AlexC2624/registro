@@ -5,60 +5,68 @@
     <title>Cadastros - Sistema de Gestão de Gado de Corte</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-
-    <div>
-
+<body class="pagina-cadastros">
+    <header>
         <h1>📋 Página de Cadastros</h1>
+    </header>
 
+    <main>
         <!-- Cadastro de Animais -->
         <section>
             <h2>🐮 Cadastro de Animais</h2>
-            <form method="post" action="{{ url_for('cadastros') }}">
-                <button type="submit" name="modo" value="entrada">
-                    ➕ Entrada de Animais
-                </button>
-                <button type="submit" name="modo" value="saida">
-                    ➖ Saída de Animais
-                </button>
+            <form method="post" action="{{ url_for('cadastros') }}" class="form-group">
+                <button type="submit" name="animal" value="entrada">➕ Entrada de Animais</button>
+                <button type="submit" name="animal" value="saida">➖ Saída de Animais</button>
+            </form>
+        </section>
+
+        <!-- Cadastro de Insumos -->
+        <section>
+            <h2>🌽 Cadastro de Insumos</h2>
+            <form method="post" action="{{ url_for('cadastros') }}" class="form-group">
+                <button type="submit" name="insumo" value="novo">➕ Novo Insumo</button>
+                <button type="submit" name="insumo" value="compra">➕ Compra de Insumos</button>
+                <button type="submit" name="insumo" value="consumo">➖ Consumo de Insumos</button>
             </form>
         </section>
 
         <!-- Cadastros Complementares -->
         <section>
             <h2>🧾 Cadastros Complementares</h2>
-            <div>
-
-                <form action="{{ url_for('cadastros') }}" method="post">
-                    <button type="submit" name="categoria" value="lote">
-                        📦 Cadastro de Lote
-                    </button>
+            <div class="form-group">
+                <form method="post" action="{{ url_for('cadastros') }}">
+                    <button type="submit" name="json_categoria" value="lote">📦 Cadastro de Lote</button>
                 </form>
 
-                <form action="{{ url_for('cadastros') }}" method="post">
-                    <button type="submit" name="categoria" value="raca">
-                        🐂 Cadastro de Raça
-                    </button>
+                <form method="post" action="{{ url_for('cadastros') }}">
+                    <button type="submit" name="json_categoria" value="raca">🐂 Cadastro de Raça</button>
                 </form>
 
-                <form action="{{ url_for('cadastros') }}" method="post">
-                    <button type="submit" name="categoria" value="fornecedor">
-                        🚜 Cadastro de Fornecedor
-                    </button>
+                <form method="post" action="{{ url_for('cadastros') }}">
+                    <button type="submit" name="json_categoria" value="fornecedor">🚜 Cadastro de Fornecedor</button>
                 </form>
 
-                <form action="{{ url_for('cadastros') }}" method="post">
-                    <button type="submit" name="categoria" value="cliente">
-                        👤 Cadastro de Cliente
-                    </button>
+                <form method="post" action="{{ url_for('cadastros') }}">
+                    <button type="submit" name="json_categoria" value="insumo">🧪 Cadastro de Insumo</button>
                 </form>
 
-                <form action="{{ url_for('index') }}" method="get"><button type="submit">Voltar</button></form>
-
+                <form method="post" action="{{ url_for('cadastros') }}">
+                    <button type="submit" name="json_categoria" value="cliente">👤 Cadastro de Cliente</button>
+                </form>
             </div>
         </section>
 
-    </div>
+        <!-- Voltar -->
+        <section>
+            <form method="get" action="{{ url_for('index') }}">
+                <button type="submit">⬅️ Voltar</button>
+            </form>
+        </section>
+    </main>
 
+    <footer>
+        <p>&copy; 2025 - Sistema de Gestão de Gado de Corte | 
+        <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
+    </footer>
 </body>
 </html>

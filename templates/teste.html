@@ -1,98 +1,66 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Relatório Detalhado</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <title>Enviar IDs selecionados</title>
 </head>
 <body>
 
-    <h1>📄 Relatório Detalhado</h1>
+  <h2>Selecione os animais</h2>
 
-    <!-- Botões de Ação -->
-    <div class="acoes">
-        <form method="get" action="{{ url_for('relatorios') }}">
-            <button type="submit">🔙 Voltar</button>
-        </form>
-        <button onclick="window.print()">🖨️ Imprimir</button>
-        <button onclick="exportarCSV()">📁 Exportar CSV</button>
-    </div>
+  <form action="/processar" method="POST">
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Selecionar</th>
+          <th>ID</th>
+          <th>Nome</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaAnimais">
+        <!-- Preenchido com JS -->
+      </tbody>
+    </table>
 
-    <!-- Gráfico -->
-    <section>
-        <h2>📊 Gráfico de Exemplo</h2>
-        <canvas id="graficoRelatorio" width="600" height="300"></canvas>
-    </section>
+    <br>
+    <button type="submit">Enviar selecionados</button>
+  </form>
 
-    <!-- Tabela -->
-    <section>
-        <h2>📋 Tabela de Dados</h2>
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Data</th>
-                    <th>Tipo</th>
-                    <th>Quantidade</th>
-                    <th>Valor</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>001</td>
-                    <td>2025-01-10</td>
-                    <td>Compra</td>
-                    <td>20</td>
-                    <td>R$ 5.000</td>
-                </tr>
-                <tr>
-                    <td>002</td>
-                    <td>2025-02-05</td>
-                    <td>Venda</td>
-                    <td>15</td>
-                    <td>R$ 6.750</td>
-                </tr>
-                <!-- Adicione mais linhas dinamicamente com Flask -->
-            </tbody>
-        </table>
-    </section>
+  <script>
+    // Lista de listas: [id, nome]
+    const animais = [
+      [1, "Angus"],
+      [2, "Nelore"],
+      [3, "Guzerá"]
+    ];
 
-    <script>
-        // Gráfico com Chart.js
-        const ctx = document.getElementById('graficoRelatorio').getContext('2d');
-        const grafico = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Fev', 'Mar'],
-                datasets: [{
-                    label: 'Movimentações (R$)',
-                    data: [5000, 6750, 4200],
-                    backgroundColor: ['#4CAF50', '#2196F3', '#FFC107']
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { beginAtZero: true }
-                }
-            }
-        });
+    const tabela = document.getElementById("tabelaAnimais");
 
-        // Exportar CSV (simples)
-        function exportarCSV() {
-            let csv = "ID,Data,Tipo,Quantidade,Valor\n";
-            document.querySelectorAll("tbody tr").forEach(tr => {
-                const dados = Array.from(tr.children).map(td => td.textContent);
-                csv += dados.join(",") + "\n";
-            });
-            const blob = new Blob([csv], { type: "text/csv" });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "relatorio.csv";
-            link.click();
-        }
-    </script>
+    animais.forEach(function (animal) {
+      const linha = document.createElement("tr");
+
+      // Coluna 1 - checkbox
+      const colCheck = document.createElement("td");
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.name = "animaisSelecionados[]";
+      checkbox.value = animal[0];  // ID
+      colCheck.appendChild(checkbox);
+
+      // Coluna 2 - ID
+      const colId = document.createElement("td");
+      colId.textContent = animal[0];
+
+      // Coluna 3 - Nome
+      const colNome = document.createElement("td");
+      colNome.textContent = animal[1];
+
+      linha.appendChild(colCheck);
+      linha.appendChild(colId);
+      linha.appendChild(colNome);
+      tabela.appendChild(linha);
+    });
+  </script>
 
 </body>
 </html>

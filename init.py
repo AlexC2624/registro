@@ -2,6 +2,7 @@ import os
 from models import ManagerCSV, ManagerJSON
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from flasgger import Swagger
+from funcoes_relatorios import *
 
 app = Flask(__name__)   # Inicia o app do flask
 Swagger(app)
@@ -38,22 +39,14 @@ def index():
 
     return render_template('index.html')
 
-@app.route('/teste')
+@app.route('/teste', methods=["GET", "POST"])
 def teste():
-    """
-    Teste de rota Swagger.
-    ---
-    responses:
-      200:
-        description: Página de teste carregada
-        schema:
-          type: object
-          properties:
-            mensagem:
-              type: string
-              example: "API funcionando com Swagger!"
-    """
-    return render_template('teste.html', t=None)
+    if request.method == "POST":
+        ids = request.form.getlist("animaisSelecionados[]")
+        print(ids)  # Ex: ['1', '2']
+        # Aqui você pode converter para int, consultar banco etc.
+        return "IDs recebidos: " + ", ".join(ids)
+    return render_template('teste.html')
 
 @app.route('/favicon.ico')
 def favicon():
@@ -79,9 +72,15 @@ def tos():
 @app.route('/cadastros', methods= [GET, POST])
 def cadastros():
     if request.method == POST:
-        categoria = request.form.get('categoria')
-        if categoria: return redirect(url_for('json_animal', categoria=categoria))
-        return redirect(url_for('animal', modo = request.form.get('modo')))
+        animal = request.form.get('animal')
+        insumo = request.form.get('insumo')
+        json_categoria = request.form.get('json_categoria')
+
+        if json_categoria: return redirect(url_for('json_animal', categoria=json_categoria))
+        elif animal: return redirect(url_for('animal', modo=animal))
+
+        elif insumo: return redirect(url_for('insumo', modo=insumo))
+
     return render_template('cadastros.html')
 
 @app.route('/json_animal/<categoria>', methods= [GET, POST])
@@ -160,7 +159,7 @@ def animal(modo):
       200:
         description: Página de entrada de animais renderizada
     """
-    
+
     status = None
     json = ManagerJSON('animais.json')
 
@@ -175,7 +174,7 @@ def animal(modo):
             valor_entrada = request.form['valor_entrada']
 
             # Caminho do arquivo CSV
-            arquivo = 'data/animal_entrada.csv'
+            arquivo = 'animal_entrada.csv'
 
             # Criar dicionário com os dados recebidos
             novo_registro = {
@@ -194,54 +193,26 @@ def animal(modo):
             status = 'Salvo com sucesso!'
 
         lote_opcoes = json.obter_dado('lote')
-        lote_opcoes = [lote_opcoes[i]['nome'] for i in lote_opcoes.keys()]
+
+        # Verifica se há lotes cadastrados
         if lote_opcoes == []:
             status = 'Nenhum lote de animais cadastrado'
             return render_template('animal.html', status=status)
 
+        # Verifica se há raças cadastradas
         raca_opcoes = json.obter_dado('raca')
         raca_opcoes = [raca_opcoes[i]['nome'] for i in raca_opcoes.keys()]
         if raca_opcoes == []:
             status = 'Nenhuma raca de animais cadastrado'
             return render_template('animal.html', status=status)
 
+        # Verifica se há fornecedores cadastrados
         fornecedor_opcoes = json.obter_dado('fornecedor')
         fornecedor_opcoes = [fornecedor_opcoes[i]['nome'] for i in fornecedor_opcoes.keys()]
         if fornecedor_opcoes == []:
             status = 'Nenhum fornecedor de animais cadastrado'
             return render_template('animal.html', status=status)
-    elif modo == 'saida':
-        if request.method == POST:
-            idx_entrada = request.form['idx_entrada']
-            cliente = request.form['cliente']
-            data_saida = request.form['data_saida']
-            peso_saida = request.form['peso_saida']
-            valor_saida = request.form['valor_saida']
-
-            # Caminho do arquivo CSV
-            arquivo = 'data/animal_saida.csv'
-
-            # Criar dicionário com os dados recebidos
-            novo_registro = {
-                'idx_entrada': idx_entrada,
-                'cliente': cliente,
-                'data_saida': data_saida,
-                'peso_saida': peso_saida,
-                'valor_saida': valor_saida
-            }
-
-            banco = ManagerCSV(arquivo, list(novo_registro.keys()))
-            banco.adicionar(novo_registro)
-
-            status = 'Salvo com sucesso!'
-
-        cliente_opcoes = json.obter_dado('cliente')
-        cliente_opcoes = [cliente_opcoes[i]['nome'] for i in cliente_opcoes.keys()]
-        if cliente_opcoes == []:
-            status = 'Nenhum cliente de animal cadastrado'
-            return render_template('animal.html', status=status)
-
-    if modo == 'entrada':
+        
         return render_template(
             'animal.html',
             modo = modo,
@@ -250,41 +221,242 @@ def animal(modo):
             fornecedor_opcoes = fornecedor_opcoes,
             status = status
         )
+
+    elif modo == 'saida':
+        if request.method == POST:
+            idx_entrada = request.form.getlist('animaisSelecionados[]')  # Agora é uma lista
+            cliente = request.form['cliente']
+            data_saida = request.form['data_saida']
+            peso_saida = request.form['peso_saida']
+            valor_saida = request.form['valor_saida']
+            # print(idx_entrada, cliente, data_saida, peso_saida, valor_saida, sep='\n')
+
+            # Caminho do arquivo CSV
+            arquivo = 'animal_entrada.csv'
+            banco_entrada = ManagerCSV(arquivo)
+            # Verifica se há entradas de animais
+            if banco_entrada.linhas() == 0:
+                status = 'Nenhum animal cadastrado para saída'
+                return render_template('animal.html', status=status)
+            
+            # Lê os dados de entrada
+            dados_entrada = banco_entrada.ler()['valores']
+
+            # Caminho do arquivo CSV
+            arquivo = 'animal_saida.csv'
+            colunas = ['idx_entrada','lote','raca', 'data_nascimento', 'fornecedor',
+                       'data_entrada', 'peso_entrada', 'valor_entrada', 'cliente',
+                       'data_saida', 'peso_saida', 'valor_saida']
+            banco_saida = ManagerCSV(arquivo, colunas)
+
+            for idx in idx_entrada:
+                idx = int(idx)  # Converte o ID para inteiro
+                for linha in dados_entrada:
+                    if linha[0] == idx:  # Busca a linha correspondente ao ID
+                        # Criar dicionário com os dados recebidos
+                        novo_registro = {
+                            # Valores de entrada
+                            'idx_entrada': linha[0],
+                            'lote': linha[1],
+                            'raca': linha[2],
+                            'data_nascimento': linha[3],
+                            'fornecedor': linha[4],
+                            'data_entrada': linha[5],
+                            'peso_entrada': linha[6],
+                            'valor_entrada': linha[7],
+                            # Valores de saída
+                            'cliente': cliente,
+                            'data_saida': data_saida,
+                            'peso_saida': peso_saida,
+                            'valor_saida': valor_saida
+                        }
+
+                        banco_saida.adicionar(novo_registro)
+
+                banco_entrada.excluir(idx)  # Remove a entrada do animal após registro do mesmo na saída
+
+            status = 'Salvo com sucesso!'
+        
+        # Verifica se há lote cadastrado
+        lote = json.obter_dado('lote')
+        if lote == []:
+            status = 'Nenhum lote de animais cadastrado'
+            return render_template('animal.html', status=status)
+        
+        # Verifica se há entrada de animal
+        animal_entrada = ManagerCSV('animal_entrada.csv')
+        if animal_entrada.linhas() == 0:
+            status = 'Nenhum animal cadastrado' if not status else status
+            return render_template('animal.html', status=status)
+        animal_entrada = animal_entrada.ler()
+        animal_entrada = animal_entrada['valores']
+        
+        # Verifica se há saída de animal
+        animal_saida = ManagerCSV('animal_saida.csv')
+        if animal_saida.linhas() > 0:
+            animal_saida = animal_saida.ler()['valores']
+            saida_ids = [saida[1] for saida in animal_saida]
+            animal_entrada = [entrada for entrada in animal_entrada if entrada[0] not in saida_ids]
+
+        # Verifica se há clientes cadastrados
+        cliente_opcoes = json.obter_dado('cliente')
+        cliente_opcoes = [cliente_opcoes[i]['nome'] for i in cliente_opcoes.keys()]
+        if cliente_opcoes == []:
+            status = 'Nenhum cliente de animal cadastrado'
+            return render_template('animal.html', status=status)
+
+        return render_template(
+            'animal.html',
+            status = status,
+            modo = modo,
+            lote_opcoes = lote,
+            animal_entrada_opcoes = animal_entrada if animal_entrada else None,
+            cliente_opcoes = cliente_opcoes
+        )
+
+@app.route('/insumo/<modo>', methods=[GET, POST])
+def insumo(modo):
+    status = None
+    json_animais = ManagerJSON('animais.json')
+    json_insumo = ManagerJSON('insumos.json')
+    
+    if modo == 'novo':
+        if request.method == POST:
+            nome = request.form['nome']
+            fornecedor = request.form['fornecedor']
+            tipo = request.form['tipo']
+            unidade = request.form['unidade']
+
+            if not nome or not fornecedor or not tipo or not unidade:
+                status = 'Preencha todos os campos!'
+                return render_template('insumo.html', status=status)
+
+            if nome in [json_insumo.obter_dado('insumo')[i]['nome'] for i in json_insumo.obter_dado('insumo').keys()]:
+                status = 'O nome do insumo já existe, tente outro!'
+
+            # Criar dicionário com os dados recebidos
+            novo_registro = {
+                'nome': nome,
+                'fornecedor': fornecedor,
+                'tipo': tipo,
+                'unidade': unidade
+            }
+            
+            if locals().get('status') is None:
+                json_insumo.atualizar_dado('insumo', novo_registro)
+                status = 'Insumo cadastrado com sucesso!'
+
+        fornecedor_opcoes = json_animais.obter_dado('fornecedor')
+        fornecedor_opcoes = [fornecedor_opcoes[i]['nome'] for i in fornecedor_opcoes.keys()]
+        if fornecedor_opcoes == []:
+            status = 'Nenhum fornecedor cadastrado'
+            return render_template('insumo.html', status=status)
+        
+        return render_template(
+            'insumo.html',
+            status = locals().get('status', None),
+            modo = modo,
+            insumo_opcoes = None,
+            fornecedor_opcoes = fornecedor_opcoes,
+        )
+
+    elif modo == 'compra':
+        if request.method == POST:
+            nome = request.form['nome']
+            fornecedor = request.form['fornecedor']
+            data_compra = request.form['data_compra']
+            data_validade = request.form['data_validade']
+            quantidade = request.form['quantidade']
+            valor_entrada = request.form['valor_entrada']
+
+            # Caminho do arquivo CSV correto
+            arquivo = 'insumo_comprado.csv'
+
+            # Criar dicionário com os dados recebidos
+            novo_registro = {
+                'nome': nome,
+                'data_compra': data_compra,
+                'fornecedor': fornecedor,
+                'data_validade': data_validade,
+                'quantidade': quantidade,
+                'valor_unitario': valor_entrada
+            }
+
+            banco = ManagerCSV(arquivo, list(novo_registro.keys()))
+            banco.adicionar(novo_registro)
+
+            status = 'Compra registrada com sucesso!'
+
+        nome_opcoes = json_animais.obter_dado('insumo')
+        nome_opcoes = [nome_opcoes[i]['nome'] for i in nome_opcoes.keys()]
+        if nome_opcoes == []:
+            status = 'Nenhum insumo cadastrado'
+            return render_template('insumo.html', status=status)
+
+        fornecedor_opcoes = json_animais.obter_dado('fornecedor')
+        fornecedor_opcoes = [fornecedor_opcoes[i]['nome'] for i in fornecedor_opcoes.keys()]
+        if fornecedor_opcoes == []:
+            status = 'Nenhum fornecedor cadastrado'
+            return render_template('insumo.html', status=status)
+
+    elif modo == 'consumo':
+        if request.method == POST:
+            nome = request.form['nome']
+            data_consumo = request.form['data_consumo']
+            quantidade = request.form['quantidade']
+            observacao = request.form['observacao']
+
+            # Caminho do arquivo CSV para consumo
+            arquivo = 'insumo_consumo.csv'
+
+            novo_registro = {
+                'nome': nome,
+                'data': data_consumo,
+                'quantidade': quantidade,
+                'observacao': observacao
+            }
+
+            banco = ManagerCSV(arquivo, list(novo_registro.keys()))
+            banco.adicionar(novo_registro)
+
+            status = 'Consumo registrado com sucesso!'
+
+        nome_opcoes = json_animais.obter_dado('insumo')
+        nome_opcoes = [nome_opcoes[i]['nome'] for i in nome_opcoes.keys()]
+        if nome_opcoes == []:
+            status = 'Nenhum insumo cadastrado'
+            return render_template('insumo.html', status=status)
+
     return render_template(
-        'animal.html',
+        'insumo.html',
+        status = status,
         modo = modo,
-        cliente_opcoes = cliente_opcoes,
-        status = status
+        insumo_opcoes = nome_opcoes,
+        fornecedor_opcoes = fornecedor_opcoes,
     )
 
-@app.route('/relatorios', methods= [GET, POST])
+@app.route('/relatorios', methods=['GET', 'POST'])
 def relatorios():
-    if request.method == POST:
+    relatorio = None
+    colunas, conteudo = "", ""
+
+    if request.method == 'POST':
+        form_animais = request.form.get('animais')
         relatorio = request.form.get('relatorio')
-        if relatorio == 'estoque_animais':
-            # Geração de relatório do estoque atual de animais
-            pass
+        if form_animais: 
+            colunas, conteudo = animais(form_animais)
+            print(colunas, conteudo, form_animais, sep='\n')
+            relatorio = form_animais
+        # elif relatorio == 'compras_insumos':
+        #     colunas, conteudo = gerar_relatorio_compras_insumos()
+        # elif relatorio == 'consumo_insumos':
+        #     colunas, conteudo = gerar_relatorio_consumo_insumos()
+        # elif relatorio == 'vendas_animais':
+        #     colunas, conteudo = gerar_relatorio_vendas()
+        # elif relatorio == 'balanco_geral':
+        #     colunas, conteudo = gerar_relatorio_balanco()
 
-        elif relatorio == 'movimentacoes_animais':
-            # Geração de relatório com entradas e saídas de animais
-            pass
-
-        elif relatorio == 'compras_insumos':
-            # Geração de relatório com as compras de insumos
-            pass
-
-        elif relatorio == 'consumo_insumos':
-            # Geração de relatório com os consumos de insumos
-            pass
-
-        elif relatorio == 'vendas_animais':
-            # Geração de relatório com os animais vendidos
-            pass
-
-        elif relatorio == 'balanco_geral':
-            # Geração de um balanço geral (entradas, saídas, custos, receitas)
-            pass
-    return render_template('relatorios.html')
+    return render_template('relatorios.html', relatorio=relatorio, colunas=colunas, conteudo=conteudo)
 
 @app.route('/estoque', methods= [GET, POST])
 def estoque():

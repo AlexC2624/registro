@@ -4,20 +4,27 @@ import os
 import shutil
 
 class ManagerCSV:
-    def __init__(self, arquivo, colunas):
+    def __init__(self, nome_arquivo, colunas=None):
         """
         Inicializa o gerenciador de CSV.
 
         Args:
-            arquivo (str): Nome do arquivo CSV.
-            colunas (list[str]): Lista de colunas (sem incluir 'id', que é automático).
+            nome_arquivo (str): Nome do nome_arquivo CSV.
+            colunas (list[str]): Lista de colunas (sem incluir 'id', que é automático). Padrão é None.
+        Efeitos colaterais:
+            - Cria o diretório 'data' se não existir.
+            - Cria o arquivo CSV com as colunas especificadas, incluindo 'id' como primeira coluna.
+            - Se o arquivo já existir, não faz nada.
+        Exceções:
+            - FileNotFoundError: Se o diretório 'data' não puder ser criado.
         """
 
-        self.arquivo = arquivo
-        self.colunas = ['id'] + colunas
+        self.arquivo = os.path.join('data', nome_arquivo)
         if not os.path.exists(self.arquivo):
-            df = pd.DataFrame(columns=self.colunas)
-            df.to_csv(self.arquivo, index=False)
+            if not colunas == None:
+                colunas = ['id'] + colunas
+                df = pd.DataFrame(columns=colunas)
+                df.to_csv(self.arquivo, index=False)
 
     def _carregar(self):
         return pd.read_csv(self.arquivo)
@@ -26,10 +33,14 @@ class ManagerCSV:
         df.to_csv(self.arquivo, index=False)
 
     def adicionar(self, dados):
-        """Adiciona um novo registro com ID automático.
+        """Adiciona um novo registro ao arquivo, gerando o ID automaticamente.
+
+        Este método carrega os dados existentes, determina o próximo ID disponível
+        com base no maior valor atual (ou inicia em 1 se estiver vazio), adiciona
+        o novo registro e salva novamente no arquivo.
 
         Args:
-            dados (dict): Dicionário com os dados (sem 'id').
+            dados (dict): Dicionário contendo os dados do novo registro, sem o campo 'id'.
         """
         
         df = self._carregar()
@@ -42,8 +53,12 @@ class ManagerCSV:
         self._salvar(df)
 
     def ler(self):
-        """Retorna todos os registros."""
-        return self._carregar()
+        """Lê o arquivo CSV e retorna os dados em formato de dicionário.
+        Retorna:
+            dict: Dicionário contendo as colunas e os valores do CSV. Chaves 'colunas' e 'valores'.
+        """
+        csv_ler = self._carregar()
+        return {'colunas': csv_ler.columns.tolist(), 'valores': csv_ler.values.tolist()}
 
     def buscar(self, campo, valor):
         """Busca registros com base no campo e valor.
@@ -89,6 +104,13 @@ class ManagerCSV:
         df = self._carregar()
         df = df[df['id'] != id_alvo]
         self._salvar(df)
+    
+    def linhas(self):
+        """Retorna o número de linhas no arquivo CSV."""
+        try: df = self._carregar()
+        except FileNotFoundError:
+            return 0
+        return len(df)
 
 # import json
 # import os
