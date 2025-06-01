@@ -286,7 +286,7 @@ def animal(modo):
         # Verifica se há entrada de animal
         animal_entrada = ManagerCSV('animal_entrada.csv')
         if animal_entrada.linhas() == 0:
-            status = 'Nenhum animal cadastrado'
+            status = 'Nenhum animal cadastrado' if not status else status
             return render_template('animal.html', status=status)
         animal_entrada = animal_entrada.ler()
         animal_entrada = animal_entrada['valores']
@@ -310,7 +310,7 @@ def animal(modo):
             status = status,
             modo = modo,
             lote_opcoes = lote,
-            animal_entrada_opcoes = animal_entrada,
+            animal_entrada_opcoes = animal_entrada if animal_entrada else None,
             cliente_opcoes = cliente_opcoes
         )
 
@@ -387,13 +387,13 @@ def insumo(modo):
 
             status = 'Compra registrada com sucesso!'
 
-        nome_opcoes = json.obter_dado('insumo')
+        nome_opcoes = json_animais.obter_dado('insumo')
         nome_opcoes = [nome_opcoes[i]['nome'] for i in nome_opcoes.keys()]
         if nome_opcoes == []:
             status = 'Nenhum insumo cadastrado'
             return render_template('insumo.html', status=status)
 
-        fornecedor_opcoes = json.obter_dado('fornecedor')
+        fornecedor_opcoes = json_animais.obter_dado('fornecedor')
         fornecedor_opcoes = [fornecedor_opcoes[i]['nome'] for i in fornecedor_opcoes.keys()]
         if fornecedor_opcoes == []:
             status = 'Nenhum fornecedor cadastrado'
@@ -421,7 +421,7 @@ def insumo(modo):
 
             status = 'Consumo registrado com sucesso!'
 
-        nome_opcoes = json.obter_dado('insumo')
+        nome_opcoes = json_animais.obter_dado('insumo')
         nome_opcoes = [nome_opcoes[i]['nome'] for i in nome_opcoes.keys()]
         if nome_opcoes == []:
             status = 'Nenhum insumo cadastrado'
