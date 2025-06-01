@@ -39,22 +39,14 @@ def index():
 
     return render_template('index.html')
 
-@app.route('/teste')
+@app.route('/teste', methods=["GET", "POST"])
 def teste():
-    """
-    Teste de rota Swagger.
-    ---
-    responses:
-      200:
-        description: Página de teste carregada
-        schema:
-          type: object
-          properties:
-            mensagem:
-              type: string
-              example: "API funcionando com Swagger!"
-    """
-    return render_template('teste.html', t=None)
+    if request.method == "POST":
+        ids = request.form.getlist("animaisSelecionados[]")
+        print(ids)  # Ex: ['1', '2']
+        # Aqui você pode converter para int, consultar banco etc.
+        return "IDs recebidos: " + ", ".join(ids)
+    return render_template('teste.html')
 
 @app.route('/favicon.ico')
 def favicon():
@@ -201,7 +193,6 @@ def animal(modo):
             status = 'Salvo com sucesso!'
 
         lote_opcoes = json.obter_dado('lote')
-        lote_opcoes = [lote_opcoes[i]['nome'] for i in lote_opcoes.keys()]
 
         # Verifica se há lotes cadastrados
         if lote_opcoes == []:
@@ -221,7 +212,6 @@ def animal(modo):
         if fornecedor_opcoes == []:
             status = 'Nenhum fornecedor de animais cadastrado'
             return render_template('animal.html', status=status)
-
         return render_template(
             'animal.html',
             modo = modo,
@@ -259,7 +249,6 @@ def animal(modo):
         
         # Verifica se há lote cadastrado
         lote = json.obter_dado('lote')
-        lote = [lote[i]['nome'] for i in lote.keys()]
         if lote == []:
             status = 'Nenhum lote de animais cadastrado'
             return render_template('animal.html', status=status)
@@ -272,7 +261,6 @@ def animal(modo):
         
         animal_entrada = animal_entrada.ler()
         animal_entrada = animal_entrada['valores']
-
 
         # Verifica se há clientes cadastrados
         cliente_opcoes = json.obter_dado('cliente')
