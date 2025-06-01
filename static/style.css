@@ -14,10 +14,10 @@ header, footer {
     padding: 1rem;
 }
 
-/* h1, h2 {
+h1, h2 {
     text-align: center;
-    color: #2e7d32;
-} */
+    color: #333;
+}
 
 label {
     font-weight: bold;
@@ -97,6 +97,7 @@ button:hover {
 .pagina-json-animal .container {
     max-width: 600px;
     margin: auto;
+    margin-block: 20px;
     padding: 1.5rem;
     background: #fff;
     border-radius: 8px;
