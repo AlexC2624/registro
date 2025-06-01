@@ -232,20 +232,48 @@ def animal(modo):
             # print(idx_entrada, cliente, data_saida, peso_saida, valor_saida, sep='\n')
 
             # Caminho do arquivo CSV
+            arquivo = 'animal_entrada.csv'
+            banco_entrada = ManagerCSV(arquivo)
+            # Verifica se há entradas de animais
+            if banco_entrada.linhas() == 0:
+                status = 'Nenhum animal cadastrado para saída'
+                return render_template('animal.html', status=status)
+            
+            # Lê os dados de entrada
+            dados_entrada = banco_entrada.ler()['valores']
+
+            # Caminho do arquivo CSV
             arquivo = 'animal_saida.csv'
+            colunas = ['idx_entrada','lote','raca', 'data_nascimento', 'fornecedor',
+                       'data_entrada', 'peso_entrada', 'valor_entrada', 'cliente',
+                       'data_saida', 'peso_saida', 'valor_saida']
+            banco_saida = ManagerCSV(arquivo, colunas)
 
             for idx in idx_entrada:
-                # Criar dicionário com os dados recebidos
-                novo_registro = {
-                    'idx_entrada': idx,
-                    'cliente': cliente,
-                    'data_saida': data_saida,
-                    'peso_saida': peso_saida,
-                    'valor_saida': valor_saida
-                }
+                idx = int(idx)  # Converte o ID para inteiro
+                for linha in dados_entrada:
+                    if linha[0] == idx:  # Busca a linha correspondente ao ID
+                        # Criar dicionário com os dados recebidos
+                        novo_registro = {
+                            # Valores de entrada
+                            'idx_entrada': linha[0],
+                            'lote': linha[1],
+                            'raca': linha[2],
+                            'data_nascimento': linha[3],
+                            'fornecedor': linha[4],
+                            'data_entrada': linha[5],
+                            'peso_entrada': linha[6],
+                            'valor_entrada': linha[7],
+                            # Valores de saída
+                            'cliente': cliente,
+                            'data_saida': data_saida,
+                            'peso_saida': peso_saida,
+                            'valor_saida': valor_saida
+                        }
 
-                banco = ManagerCSV(arquivo, list(novo_registro.keys()))
-                banco.adicionar(novo_registro)
+                        banco_saida.adicionar(novo_registro)
+
+                banco_entrada.excluir(idx)  # Remove a entrada do animal após registro do mesmo na saída
 
             status = 'Salvo com sucesso!'
         
