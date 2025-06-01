@@ -8,7 +8,7 @@
 
   <h2>Selecione os animais</h2>
 
-  <form action="/teste" method="POST">
+  <form action="/processar" method="POST">
     <table border="1">
       <thead>
         <tr>
@@ -18,7 +18,7 @@
         </tr>
       </thead>
       <tbody id="tabelaAnimais">
-        <!-- Criado via JS -->
+        <!-- Preenchido com JS -->
       </tbody>
     </table>
 
@@ -27,11 +27,11 @@
   </form>
 
   <script>
-    // Exemplo de dados: lista de animais com ID e nome
+    // Lista de listas: [id, nome]
     const animais = [
-      { id: 1, nome: "Angus" },
-      { id: 2, nome: "Nelore" },
-      { id: 3, nome: "Guzerá" }
+      [1, "Angus"],
+      [2, "Nelore"],
+      [3, "Guzerá"]
     ];
 
     const tabela = document.getElementById("tabelaAnimais");
@@ -39,21 +39,21 @@
     animais.forEach(function (animal) {
       const linha = document.createElement("tr");
 
-      // Coluna 1 - checkbox com ID no value
+      // Coluna 1 - checkbox
       const colCheck = document.createElement("td");
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
-      checkbox.name = "animaisSelecionados[]";  // Enviado como lista
-      checkbox.value = animal.id;
+      checkbox.name = "animaisSelecionados[]";
+      checkbox.value = animal[0];  // ID
       colCheck.appendChild(checkbox);
 
       // Coluna 2 - ID
       const colId = document.createElement("td");
-      colId.textContent = animal.id;
+      colId.textContent = animal[0];
 
       // Coluna 3 - Nome
       const colNome = document.createElement("td");
-      colNome.textContent = animal.nome;
+      colNome.textContent = animal[1];
 
       linha.appendChild(colCheck);
       linha.appendChild(colId);
