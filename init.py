@@ -228,22 +228,22 @@ def animal(modo):
             data_saida = request.form['data_saida']
             peso_saida = request.form['peso_saida']
             valor_saida = request.form['valor_saida']
-            print(idx_entrada, cliente, data_saida, peso_saida, valor_saida, sep='\n')
+            # print(idx_entrada, cliente, data_saida, peso_saida, valor_saida, sep='\n')
 
-            # # Caminho do arquivo CSV
-            # arquivo = 'animal_saida.csv'
+            # Caminho do arquivo CSV
+            arquivo = 'animal_saida.csv'
 
-            # # Criar dicionário com os dados recebidos
-            # novo_registro = {
-            #     'idx_entrada': idx_entrada,
-            #     'cliente': cliente,
-            #     'data_saida': data_saida,
-            #     'peso_saida': peso_saida,
-            #     'valor_saida': valor_saida
-            # }
+            # Criar dicionário com os dados recebidos
+            novo_registro = {
+                'idx_entrada': idx_entrada,
+                'cliente': cliente,
+                'data_saida': data_saida,
+                'peso_saida': peso_saida,
+                'valor_saida': valor_saida
+            }
 
-            # banco = ManagerCSV(arquivo, list(novo_registro.keys()))
-            # banco.adicionar(novo_registro)
+            banco = ManagerCSV(arquivo, list(novo_registro.keys()))
+            banco.adicionar(novo_registro)
 
             status = 'Salvo com sucesso!'
         
