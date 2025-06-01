@@ -24,8 +24,8 @@
 
                 <label for="lote">Lote:</label>
                 <select name="lote" id="lote" required>
-                    {% for item in lote_opcoes %}
-                    <option value="{{ item }}">{{ item }}</option>
+                    {% for chave in lote_opcoes.keys() %}
+                    <option value="{{ chave }}">{{ lote_opcoes[chave]['nome'] }}</option>
                     {% endfor %}
                 </select>
 
@@ -67,20 +67,37 @@
         <section>
             <h1>📤 Cadastro de Saída de Animal</h1>
             <form action="{{ url_for('animal', modo=modo) }}" method="post">
-
+                <p>{{ lote_opcoes }}</p>
                 <label for="lote_entrada">Lote de entrada:</label>
                 <select id="lote_entrada" name="lote_entrada" required>
-                    <option value="">Selecione um lote cadastrado</option>
-                    {% for item in lote_opcoes %}
-                    <option value="{{ item }}">{{ item }}</option>
+                    <option value="" disabled selected>Selecione um lote cadastrado</option>
+                    {% for chave in lote_opcoes.keys() %}
+                    <option value="{{ chave }}">{{ lote_opcoes[chave]['nome'], chave }}</option>
                     {% endfor %}
                 </select>
 
                 <label for="animais_entrada">Animais no Lote:</label>
                 <select id="animais_entrada" name="animais_entrada" required>
-                    <option value="">Selecione um lote primeiro</option>
+                    <option value="" disabled selected>Selecione um lote primeiro</option>
                     <!-- As opções serão preenchidas via JavaScript -->
                 </select>
+
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Selecione</th>
+                            <th>ID</th>
+                            <th>Raça</th>
+                            <th>Fornecedor</th>
+                            <th>Peso (kg)</th>
+                            <th>Valor (R$)</th>
+                            <th>Data de Entrada</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaAnimais">
+                        <!-- Preenchido via JavaScript -->
+                    </tbody>
+                </table>
 
                 <label for="cliente">Cliente:</label>
                 <select name="cliente" id="cliente" required>
@@ -113,50 +130,131 @@
     </footer>
 
     <p id="resultado">Resultado: </p>
+    <p id="resultado2">Resultado2: </p>
+    <p>{{ animal_entrada_opcoes }}</p>
 
     <script>
-        // Dados: categorias e suas opções
-        const dados = {
-            "Frutas": ["Maçã", "Banana", "Laranja", "Uva"],
-            "Legumes": ["Cenoura", "Batata", "Abobrinha", "Chuchu"],
-            "Verduras": ["Alface", "Rúcula", "Couve", "Espinafre"]
-        };
-
+        // Dados fornecidos pelo servidor
+        const animal_entrada_opcoes = {{ animal_entrada_opcoes | tojson }};
+            
+        // Seleção dos elementos do DOM, captura de elementos HTML pelo ID
         const loteEntrada = document.getElementById("lote_entrada");
         const animaisEntrada = document.getElementById("animais_entrada");
         const resultado = document.getElementById("resultado");
+        const resultado2 = document.getElementById("resultado2");
 
-        for (let lote in dados) {
-            let option = document.createElement("option");
-            option.value = lote;
-            option.text = lote;
-            loteEntrada.add(option);
-        }
+        console.log('teste1')
 
         loteEntrada.addEventListener('change', function () {
-            const selecionado = this.value;
+
+            console.log('teste2')
+            const selecionado = Number(this.value);
+            console.log('selecionado', selecionado, 'tipo' , typeof selecionado)
 
             // Limpa a sublista atual
-            animaisEntrada.innerHTML = '<option value="">-- Selecione --</option>';
-
-            if (selecionado && dados[selecionado]) {
-                dados[selecionado].forEach(function (animal) {
-                    let opt = document.createElement("option");
-                    opt.value = animal.toLowerCase();
-                    opt.text = animal;
-                    animaisEntrada.add(opt);
+            animaisEntrada.innerHTML = '<option value="" disabled selected>-- Selecione --</option>';
+            
+            console.log(animal_entrada_opcoes)
+            // Verifica se o lote selecionado tem Animais
+//            let encontrado = false;
+//            for (let linha = 0; linha < animal_entrada_opcoes.length; linha++) {
+//                if (Number(animal_entrada_opcoes[linha][1]) === selecionado) {
+//                    encontrado = true;
+//                    break;
+//                }
+//            }
+            if (selecionado) {
+                let encontrado = false;
+                animal_entrada_opcoes.forEach(function (linha) {
+                    if (linha[1] === selecionado) {
+                        encontrado = true
+                        let opt = document.createElement("option");
+                        opt.value = linha[0];
+                        opt.text = `${linha[0]} - ${linha[2]} - Forn. ${linha[4]} - ${linha[6]}kg - R$${linha[7]} - ${linha[5]}`;
+                        animaisEntrada.add(opt);
+                    }
                 });
+                console.log('encontrado', encontrado)
+                if (!encontrado) {
+                    if (animaisEntrada.options[0].value === "") { animaisEntrada.remove(0); }
+
+                    let opt = document.createElement("option");
+                    opt.value = "";
+                    opt.text = 'Nenhum animal encontrado';
+                    animaisEntrada.add(opt);
+                };
             }
-            resultado.textContent = ""; // Limpa resultado
-        });
-        animaisEntrada.addEventListener('change', function () {
-            if (this.value) {
-                resultado.textContent = "Resultado: " + this.value;
+
+            // Atualiza o resultado
+            if (selecionado) {
+                resultado.textContent = "Resultado: " + selecionado;
             } else {
                 resultado.textContent = "Resultado: ";
             }
         });
+
+        animaisEntrada.addEventListener('change', function () {
+            if (this.value) {
+                resultado2.textContent = "Resultado2: " + this.value;
+            } else {
+                resultado2.textContent = "Resultado2: ";
+            }
+        });
+
+        // ######################################################################
+
+        const animais = [
+            { id: 1, raca: "Angus", fornecedor: "Fornecedor A", peso: 250, valor: 8, data_entrada: "2025-01-01" },
+            { id: 2, raca: "Nelore", fornecedor: "Fornecedor B", peso: 300, valor: 9, data_entrada: "2025-01-02" },
+            { id: 3, raca: "Guzerá", fornecedor: "Fornecedor C", peso: 350, valor: 10, data_entrada: "2025-01-03" }
+        ]
+        const tabelaAnimais = document.getElementById("tabelaAnimais");
+
+        animais.forEach(function (animal) {
+            const linha = document.createElement("tr");
+
+            // Coluna 1 - checkbox com ID no value
+            const colCheck = document.createElement("td");
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.name = "animaisSelecionados[]";  // Enviado como lista
+            checkbox.value = animal.id;
+            colCheck.appendChild(checkbox);
+
+            // Coluna 2 - ID
+            const colId = document.createElement("td");
+            colId.textContent = animal.id;
+
+            // Coluna 3 - Raça
+            const colRaca = document.createElement("td");
+            colRaca.textContent = animal.raca;
+
+            // Coluna 4 - Fornecedor
+            const colFornecedor = document.createElement("td");
+            colFornecedor.textContent = animal.fornecedor;
+
+            // Coluna 5 - Peso
+            const colPeso = document.createElement("td");
+            colPeso.textContent = animal.peso;
+
+            // Coluna 6 - Valor
+            const colValor = document.createElement("td");
+            colValor.textContent = animal.valor;
+
+            // Coluna 7 - Data de Entrada
+            const colDataEntrada = document.createElement("td");
+            colDataEntrada.textContent = animal.data_entrada;
+
+            linha.appendChild(colCheck);
+            linha.appendChild(colId);
+            linha.appendChild(colRaca);
+            linha.appendChild(colFornecedor);
+            linha.appendChild(colPeso);
+            linha.appendChild(colValor);
+            linha.appendChild(colDataEntrada);
+            
+            tabelaAnimais.appendChild(linha);
+        });
     </script>
 </body>
-
 </html>
