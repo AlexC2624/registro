@@ -60,6 +60,20 @@ Um projeto para gerenciar e registrar informações importantes de forma simples
     python main.py
     ```
 
+5. **Comandos extras**
+    #### Liste as branch atuais localmente, remotamente e a selecionada:
+    ```bash
+    git branch -a
+    ```
+    #### Altere de branch:
+    ```bash
+    git checkout nome-da-branch
+    ```
+    #### Atualizar as referências ao remoto
+    ```bash
+    git pull
+    ```
+        
 ## Contribuição
 
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou enviar pull requests.
