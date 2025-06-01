@@ -212,6 +212,7 @@ def animal(modo):
         if fornecedor_opcoes == []:
             status = 'Nenhum fornecedor de animais cadastrado'
             return render_template('animal.html', status=status)
+        print(lote_opcoes, raca_opcoes, fornecedor_opcoes, status, sep='\n')
         return render_template(
             'animal.html',
             modo = modo,

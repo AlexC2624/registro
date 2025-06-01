@@ -115,6 +115,72 @@
                 </div>
             </form>
         </section>
+
+        <script>
+            // Dados fornecidos pelo servidor
+            const animal_entrada_opcoes = {{ animal_entrada_opcoes | tojson }};
+                
+            // Seleção dos elementos do DOM, captura de elementos HTML pelo ID
+            const loteEntrada = document.getElementById("lote_entrada");
+            const tabelaAnimais = document.getElementById("tabelaAnimais");
+
+            loteEntrada.addEventListener('change', function () {
+                const selecionado = Number(this.value);
+
+                tabelaAnimais.innerHTML = "";
+                if (selecionado) {
+                    animal_entrada_opcoes.forEach(function (linha) {
+                        if (linha[1] === selecionado) {
+                            const tb_tr = document.createElement("tr");
+
+                            // coluna 1 - checkbox
+                            const tb_td = document.createElement("td");
+                            const tb_input = document.createElement("input");
+                            tb_input.type = "checkbox";
+                            tb_input.name = "animaisSelecionados[]";
+                            tb_input.value = linha[0];
+                            tb_td.appendChild(tb_input);
+
+                            // coluna 2 - ID
+                            const tb_td2 = document.createElement("td");
+                            tb_td2.textContent = linha[0];
+
+                            // coluna 3 - Raça
+                            const tb_td3 = document.createElement("td");
+                            tb_td3.textContent = linha[2];
+
+                            // coluna 4 - Fornecedor
+                            const tb_td4 = document.createElement("td");
+                            tb_td4.textContent = linha[4];
+
+                            // coluna 5 - Peso (kg)
+                            const tb_td5 = document.createElement("td");
+                            tb_td5.textContent = linha[6] + 'kg';
+
+                            // coluna 6 - Valor (R$)
+                            const tb_td6 = document.createElement("td");
+                            tb_td6.textContent = 'R$' + linha[7];
+
+                            // coluna 7 - Data de Entrada
+                            const tb_td7 = document.createElement("td");
+                            tb_td7.textContent = linha[5];
+
+                            // Adiciona as colunas à linha da tabela
+                            tb_tr.appendChild(tb_td);
+                            tb_tr.appendChild(tb_td2);
+                            tb_tr.appendChild(tb_td3);
+                            tb_tr.appendChild(tb_td4);
+                            tb_tr.appendChild(tb_td5);
+                            tb_tr.appendChild(tb_td6);
+                            tb_tr.appendChild(tb_td7);
+
+                            // Adiciona a linha à tabela
+                            tabelaAnimais.appendChild(tb_tr);
+                        };
+                    });
+                };
+            });
+        </script>
         {% endif %}
     </main>
 
@@ -122,71 +188,5 @@
         <p>&copy; 2025 - Sistema de Gestão de Gado de Corte | 
         <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
     </footer>
-
-    <script>
-        // Dados fornecidos pelo servidor
-        const animal_entrada_opcoes = {{ animal_entrada_opcoes | tojson }};
-            
-        // Seleção dos elementos do DOM, captura de elementos HTML pelo ID
-        const loteEntrada = document.getElementById("lote_entrada");
-        const tabelaAnimais = document.getElementById("tabelaAnimais");
-
-        loteEntrada.addEventListener('change', function () {
-            const selecionado = Number(this.value);
-
-            tabelaAnimais.innerHTML = "";
-            if (selecionado) {
-                animal_entrada_opcoes.forEach(function (linha) {
-                    if (linha[1] === selecionado) {
-                        const tb_tr = document.createElement("tr");
-
-                        // coluna 1 - checkbox
-                        const tb_td = document.createElement("td");
-                        const tb_input = document.createElement("input");
-                        tb_input.type = "checkbox";
-                        tb_input.name = "animaisSelecionados[]";
-                        tb_input.value = linha[0];
-                        tb_td.appendChild(tb_input);
-
-                        // coluna 2 - ID
-                        const tb_td2 = document.createElement("td");
-                        tb_td2.textContent = linha[0];
-
-                        // coluna 3 - Raça
-                        const tb_td3 = document.createElement("td");
-                        tb_td3.textContent = linha[2];
-
-                        // coluna 4 - Fornecedor
-                        const tb_td4 = document.createElement("td");
-                        tb_td4.textContent = linha[4];
-
-                        // coluna 5 - Peso (kg)
-                        const tb_td5 = document.createElement("td");
-                        tb_td5.textContent = linha[6] + 'kg';
-
-                        // coluna 6 - Valor (R$)
-                        const tb_td6 = document.createElement("td");
-                        tb_td6.textContent = 'R$' + linha[7];
-
-                        // coluna 7 - Data de Entrada
-                        const tb_td7 = document.createElement("td");
-                        tb_td7.textContent = linha[5];
-
-                        // Adiciona as colunas à linha da tabela
-                        tb_tr.appendChild(tb_td);
-                        tb_tr.appendChild(tb_td2);
-                        tb_tr.appendChild(tb_td3);
-                        tb_tr.appendChild(tb_td4);
-                        tb_tr.appendChild(tb_td5);
-                        tb_tr.appendChild(tb_td6);
-                        tb_tr.appendChild(tb_td7);
-
-                        // Adiciona a linha à tabela
-                        tabelaAnimais.appendChild(tb_tr);
-                    };
-                });
-            };
-        });
-    </script>
 </body>
 </html>
