@@ -212,7 +212,7 @@ def animal(modo):
         if fornecedor_opcoes == []:
             status = 'Nenhum fornecedor de animais cadastrado'
             return render_template('animal.html', status=status)
-        print(lote_opcoes, raca_opcoes, fornecedor_opcoes, status, sep='\n')
+        
         return render_template(
             'animal.html',
             modo = modo,
@@ -234,17 +234,18 @@ def animal(modo):
             # Caminho do arquivo CSV
             arquivo = 'animal_saida.csv'
 
-            # Criar dicionário com os dados recebidos
-            novo_registro = {
-                'idx_entrada': idx_entrada,
-                'cliente': cliente,
-                'data_saida': data_saida,
-                'peso_saida': peso_saida,
-                'valor_saida': valor_saida
-            }
+            for idx in idx_entrada:
+                # Criar dicionário com os dados recebidos
+                novo_registro = {
+                    'idx_entrada': idx,
+                    'cliente': cliente,
+                    'data_saida': data_saida,
+                    'peso_saida': peso_saida,
+                    'valor_saida': valor_saida
+                }
 
-            banco = ManagerCSV(arquivo, list(novo_registro.keys()))
-            banco.adicionar(novo_registro)
+                banco = ManagerCSV(arquivo, list(novo_registro.keys()))
+                banco.adicionar(novo_registro)
 
             status = 'Salvo com sucesso!'
         
@@ -256,12 +257,18 @@ def animal(modo):
         
         # Verifica se há entrada de animal
         animal_entrada = ManagerCSV('animal_entrada.csv')
-        if animal_entrada.linhas == 0:
+        if animal_entrada.linhas() == 0:
             status = 'Nenhum animal cadastrado'
             return render_template('animal.html', status=status)
-        
         animal_entrada = animal_entrada.ler()
         animal_entrada = animal_entrada['valores']
+        
+        # Verifica se há saída de animal
+        animal_saida = ManagerCSV('animal_saida.csv')
+        if animal_saida.linhas() > 0:
+            animal_saida = animal_saida.ler()['valores']
+            saida_ids = [saida[1] for saida in animal_saida]
+            animal_entrada = [entrada for entrada in animal_entrada if entrada[0] not in saida_ids]
 
         # Verifica se há clientes cadastrados
         cliente_opcoes = json.obter_dado('cliente')
