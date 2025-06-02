@@ -342,6 +342,7 @@ def insumo(modo):
                 'nome': nome,
                 'fornecedor': fornecedor,
                 'tipo': tipo,
+                'estoque': 0,  # Inicializa o estoque como 0
                 'unidade': unidade
             }
             
@@ -384,6 +385,11 @@ def insumo(modo):
             banco = ManagerCSV(arquivo, list(novo_registro.keys()))
             banco.adicionar(novo_registro)
 
+            # Atualiza o estoque do insumo
+            insumo_dados = json_insumo.obter_dado('insumo', insumo)
+            insumo_dados['estoque'] += int(quantidade)
+            json_insumo.editar_dado('insumo', insumo, insumo_dados)
+
             status = 'Compra registrada com sucesso!'
 
         insumo_opcoes = json_insumo.obter_dado('insumo')
@@ -413,10 +419,14 @@ def insumo(modo):
             banco = ManagerCSV(arquivo, list(novo_registro.keys()))
             banco.adicionar(novo_registro)
 
+            # Atualiza o estoque do insumo
+            insumo_dados = json_insumo.obter_dado('insumo', insumo)
+            insumo_dados['estoque'] -= int(quantidade)
+            json_insumo.editar_dado('insumo', insumo, insumo_dados)
+
             status = 'Consumo registrado com sucesso!'
 
         insumo_opcoes = json_insumo.obter_dado('insumo')
-        # nome_opcoes = [nome_opcoes[i]['nome'] for i in nome_opcoes.keys()]
         if insumo_opcoes == {}:
             status = 'Nenhum insumo cadastrado'
             return render_template('insumo.html', status=status)
