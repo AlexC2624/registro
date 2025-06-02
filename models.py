@@ -205,6 +205,28 @@ class ManagerJSON:
         self.salvar()
         return novo_id
     
+    def editar_dado(self, categoria, chave, valor):
+        """
+        Edita um dado específico dentro de uma categoria, utilizando o ID como chave.
+
+        Se a categoria ou a chave não existirem, uma mensagem de erro será retornada.
+        Caso contrário, o valor será atualizado e os dados serão salvos.
+
+        Parâmetros:
+            categoria (str): Nome da categoria onde o dado está armazenado.
+            chave (str): ID do item a ser editado.
+            valor (any): Novo valor a ser atribuído ao item.
+
+        Retorna:
+            str: Mensagem indicando se a edição foi realizada com sucesso ou se o item não foi encontrado.
+            bool: Indica se a edição foi bem-sucedida ou não.
+        """
+        if categoria in self.dados and chave in self.dados[categoria]:
+            self.dados[categoria][chave] = valor
+            self.salvar()
+            return f'Registro {chave} de {categoria} editado com sucesso!', True
+        return f'Registro {chave} de {categoria} não encontrado!', False
+
     def obter_dado(self, categoria, chave=None, padrao=None):
         """
         Retorna um dado específico armazenado dentro de uma categoria, utilizando o ID como chave.
