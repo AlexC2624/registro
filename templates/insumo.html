@@ -148,19 +148,42 @@
                 <label for="insumo">Insumo:</label>
                 <select name="insumo" id="insumo" required>
                     <option value="" disabled selected>Selecione o Insumo</option>
-                    {% for item in insumo_opcoes %}
-                    <option value="{{ item[0] }}">{{ item[0] }}</option>
+                    {% for k in insumo_opcoes.keys() %}
+                    <option value="{{ k }}">{{ insumo_opcoes[k]['nome'] }} - {{ insumo_opcoes[k]['fornecedor'] }}</option>
                     {% endfor %}
                 </select>
 
                 <label for="data">Data do Consumo:</label>
                 <input type="date" id="data" name="data" required>
+                <script>
+                    const hoje = new Date();
+                    const ano = hoje.getFullYear();
+                    const mes = String(hoje.getMonth() + 1).padStart(2, '0'); // meses de 0 a 11
+                    const dia = String(hoje.getDate()).padStart(2, '0');
+
+                    const dataFormatada = `${ano}-${mes}-${dia}`;
+                    document.getElementById("data").value = dataFormatada;
+                </script>
 
                 <label for="quantidade">Quantidade:</label>
                 <input type="number" step="0.1" id="quantidade" name="quantidade" placeholder="Ex: 75.0" required>
+                <script>
+                    let insumo = {{ insumo_opcoes | tojson }};
+                    let sel_insumo = document.getElementById("insumo");
+                    let label_quantidade = document.querySelector("label[for='quantidade']");
+                    sel_insumo.addEventListener("change", function () {
+                        let insumo_selecionado = sel_insumo.value;
+                        insumo_selecionado = Number(insumo_selecionado);
+                        if (insumo[insumo_selecionado]) {
+                            label_quantidade.textContent = `Quantidade (${insumo[insumo_selecionado]['unidade']}):`;
+                        } else {
+                            label_quantidade.textContent = "Quantidade:";
+                        }
+                    });
+                </script>
 
-                <label for="obs">Observação:</label>
-                <input type="text" id="obs" name="obs" placeholder="Opcional">
+                <label for="observacao">Observação:</label>
+                <input type="text" id="observacao" name="observacao" placeholder="Opcional">
 
                 <div class="button-container">
                     <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
