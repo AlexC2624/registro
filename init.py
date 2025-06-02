@@ -361,34 +361,31 @@ def insumo(modo):
 
     elif modo == 'compra':
         if request.method == POST:
-            nome = request.form['nome']
+            insumo = request.form['insumo']
             fornecedor = request.form['fornecedor']
-            data_compra = request.form['data_compra']
-            data_validade = request.form['data_validade']
+            data = request.form['data']
             quantidade = request.form['quantidade']
-            valor_entrada = request.form['valor_entrada']
-
-            # Caminho do arquivo CSV correto
-            arquivo = 'insumo_comprado.csv'
+            valor_unitario = request.form['valor_unitario']
 
             # Criar dicionário com os dados recebidos
             novo_registro = {
-                'nome': nome,
-                'data_compra': data_compra,
+                'insumo': insumo,
                 'fornecedor': fornecedor,
-                'data_validade': data_validade,
+                'data': data,
                 'quantidade': quantidade,
-                'valor_unitario': valor_entrada
+                'valor_unitario': valor_unitario
             }
+
+            # Caminho do arquivo CSV correto
+            arquivo = 'insumo_comprado.csv'
 
             banco = ManagerCSV(arquivo, list(novo_registro.keys()))
             banco.adicionar(novo_registro)
 
             status = 'Compra registrada com sucesso!'
 
-        nome_opcoes = json_animais.obter_dado('insumo')
-        nome_opcoes = [nome_opcoes[i]['nome'] for i in nome_opcoes.keys()]
-        if nome_opcoes == []:
+        insumo_opcoes = json_insumo.obter_dado('insumo')
+        if insumo_opcoes == []:
             status = 'Nenhum insumo cadastrado'
             return render_template('insumo.html', status=status)
 
@@ -430,7 +427,7 @@ def insumo(modo):
         'insumo.html',
         status = status,
         modo = modo,
-        insumo_opcoes = nome_opcoes,
+        insumo_opcoes = insumo_opcoes,
         fornecedor_opcoes = fornecedor_opcoes,
     )
 
