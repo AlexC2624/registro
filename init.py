@@ -397,31 +397,32 @@ def insumo(modo):
 
     elif modo == 'consumo':
         if request.method == POST:
-            nome = request.form['nome']
-            data_consumo = request.form['data_consumo']
+            insumo = request.form['insumo']
+            data = request.form['data']
             quantidade = request.form['quantidade']
             observacao = request.form['observacao']
 
-            # Caminho do arquivo CSV para consumo
-            arquivo = 'insumo_consumo.csv'
-
             novo_registro = {
-                'nome': nome,
-                'data': data_consumo,
+                'insumo': insumo,
+                'data': data,
                 'quantidade': quantidade,
                 'observacao': observacao
             }
+
+            # Caminho do arquivo CSV para consumo
+            arquivo = 'insumo_consumo.csv'
 
             banco = ManagerCSV(arquivo, list(novo_registro.keys()))
             banco.adicionar(novo_registro)
 
             status = 'Consumo registrado com sucesso!'
 
-        nome_opcoes = json_animais.obter_dado('insumo')
-        nome_opcoes = [nome_opcoes[i]['nome'] for i in nome_opcoes.keys()]
-        if nome_opcoes == []:
+        insumo_opcoes = json_insumo.obter_dado('insumo')
+        # nome_opcoes = [nome_opcoes[i]['nome'] for i in nome_opcoes.keys()]
+        if insumo_opcoes == []:
             status = 'Nenhum insumo cadastrado'
             return render_template('insumo.html', status=status)
+        fornecedor_opcoes = None
 
     return render_template(
         'insumo.html',
