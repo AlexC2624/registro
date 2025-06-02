@@ -2,65 +2,32 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Enviar IDs selecionados</title>
+  <title>Exemplo de Lista com Input</title>
 </head>
 <body>
+  <label for="produto">Escolha um produto:</label>
+  <select id="produto" name="produto">
+    <option value="" disabled selected>Selecione...</option>
+    <option value="milho" data-max="100">Milho (máximo 100)</option>
+    <option value="soja" data-max="50">Soja (máximo 50)</option>
+    <option value="ração" data-max="200">Ração (máximo 200)</option>
+  </select>
 
-  <h2>Selecione os animais</h2>
+  <br><br>
 
-  <form action="/processar" method="POST">
-    <table border="1">
-      <thead>
-        <tr>
-          <th>Selecionar</th>
-          <th>ID</th>
-          <th>Nome</th>
-        </tr>
-      </thead>
-      <tbody id="tabelaAnimais">
-        <!-- Preenchido com JS -->
-      </tbody>
-    </table>
-
-    <br>
-    <button type="submit">Enviar selecionados</button>
-  </form>
+  <label for="quantidade">Quantidade:</label>
+  <input type="number" id="quantidade" name="quantidade" min="1" required>
 
   <script>
-    // Lista de listas: [id, nome]
-    const animais = [
-      [1, "Angus"],
-      [2, "Nelore"],
-      [3, "Guzerá"]
-    ];
+    const selectProduto = document.getElementById("produto");
+    const inputQuantidade = document.getElementById("quantidade");
 
-    const tabela = document.getElementById("tabelaAnimais");
-
-    animais.forEach(function (animal) {
-      const linha = document.createElement("tr");
-
-      // Coluna 1 - checkbox
-      const colCheck = document.createElement("td");
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.name = "animaisSelecionados[]";
-      checkbox.value = animal[0];  // ID
-      colCheck.appendChild(checkbox);
-
-      // Coluna 2 - ID
-      const colId = document.createElement("td");
-      colId.textContent = animal[0];
-
-      // Coluna 3 - Nome
-      const colNome = document.createElement("td");
-      colNome.textContent = animal[1];
-
-      linha.appendChild(colCheck);
-      linha.appendChild(colId);
-      linha.appendChild(colNome);
-      tabela.appendChild(linha);
+    selectProduto.addEventListener("change", () => {
+      const max = selectProduto.options[selectProduto.selectedIndex].dataset.max;
+      inputQuantidade.max = max;
+      inputQuantidade.value = ""; // limpa o campo para evitar valores inválidos
+      inputQuantidade.placeholder = `Máx: ${max}`;
     });
   </script>
-
 </body>
 </html>
