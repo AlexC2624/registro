@@ -394,13 +394,15 @@ def insumo(modo):
     elif modo == 'consumo':
         if request.method == POST:
             insumo = request.form['insumo']
-            data = request.form['data']
+            data_inicio = request.form['data_inicio']
+            data_fim = request.form['data_fim']
             quantidade = request.form['quantidade']
             observacao = request.form['observacao']
 
             novo_registro = {
                 'insumo': insumo,
-                'data': data,
+                'data_inicio': data_inicio,
+                'data_fim': data_fim,
                 'quantidade': quantidade,
                 'observacao': observacao
             }
