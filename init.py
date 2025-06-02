@@ -366,7 +366,6 @@ def insumo(modo):
     elif modo == 'compra':
         if request.method == POST:
             insumo = request.form['insumo']
-            fornecedor = request.form['fornecedor']
             data = request.form['data']
             quantidade = request.form['quantidade']
             valor_unitario = request.form['valor_unitario']
@@ -374,7 +373,6 @@ def insumo(modo):
             # Criar dicionário com os dados recebidos
             novo_registro = {
                 'insumo': insumo,
-                'fornecedor': fornecedor,
                 'data': data,
                 'quantidade': quantidade,
                 'valor_unitario': valor_unitario
@@ -391,12 +389,6 @@ def insumo(modo):
         insumo_opcoes = json_insumo.obter_dado('insumo')
         if insumo_opcoes == {}:
             status = 'Nenhum insumo cadastrado'
-            return render_template('insumo.html', status=status)
-
-        fornecedor_opcoes = json_animais.obter_dado('fornecedor')
-        fornecedor_opcoes = [fornecedor_opcoes[i]['nome'] for i in fornecedor_opcoes.keys()]
-        if fornecedor_opcoes == []:
-            status = 'Nenhum fornecedor cadastrado'
             return render_template('insumo.html', status=status)
 
     elif modo == 'consumo':

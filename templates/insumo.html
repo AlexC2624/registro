@@ -93,14 +93,6 @@
                     {% endfor %}
                 </select>
 
-                <label for="fornecedor">Fornecedor:</label>
-                <select name="fornecedor" id="fornecedor" required>
-                    <option value="" disabled selected>Selecione o Fornecedor</option>
-                    {% for item in fornecedor_opcoes %}
-                    <option value="{{ item }}">{{ item }}</option>
-                    {% endfor %}
-                </select>
-
                 <label for="data">Data da Compra:</label>
                 <input type="date" id="data" name="data" required>
                 <script>
