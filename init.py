@@ -389,7 +389,7 @@ def insumo(modo):
             status = 'Compra registrada com sucesso!'
 
         insumo_opcoes = json_insumo.obter_dado('insumo')
-        if insumo_opcoes == []:
+        if insumo_opcoes == {}:
             status = 'Nenhum insumo cadastrado'
             return render_template('insumo.html', status=status)
 
@@ -423,7 +423,7 @@ def insumo(modo):
 
         insumo_opcoes = json_insumo.obter_dado('insumo')
         # nome_opcoes = [nome_opcoes[i]['nome'] for i in nome_opcoes.keys()]
-        if insumo_opcoes == []:
+        if insumo_opcoes == {}:
             status = 'Nenhum insumo cadastrado'
             return render_template('insumo.html', status=status)
 
