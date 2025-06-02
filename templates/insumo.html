@@ -145,8 +145,9 @@
                     {% endfor %}
                 </select>
 
-                <label for="data">Data do Consumo:</label>
-                <input type="date" id="data" name="data" required>
+                <label for="data">Período do Consumo:</label>
+                <input type="date" id="data_inicio" name="data_inicio" required>
+                <input type="date" id="data_fim" name="data_fim" required>
                 <script>
                     const hoje = new Date();
                     const ano = hoje.getFullYear();
@@ -154,7 +155,8 @@
                     const dia = String(hoje.getDate()).padStart(2, '0');
 
                     const dataFormatada = `${ano}-${mes}-${dia}`;
-                    document.getElementById("data").value = dataFormatada;
+                    document.getElementById("data_inicio").value = dataFormatada;
+                    document.getElementById("data_fim").value = dataFormatada;
                 </script>
 
                 <label for="quantidade">Quantidade:</label>
