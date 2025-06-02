@@ -13,131 +13,161 @@
         {% if status %}
         <script>
             alert('{{ status }}');
+            window.history.back();
         </script>
         {% endif %}
 
         {% if modo == 'novo' %}
-        <h1>Cadastro de Novo Insumo</h1>
-        <form action="{{ url_for('insumo', modo=modo) }}" method="post">
-            <label for="nome">Nome:</label>
-            <input type="text" id="nome" name="nome" placeholder="Ex: Silagem de Milho" required>
+        <section>
+            <h1>Cadastro de Novo Insumo</h1>
+            <form action="{{ url_for('insumo', modo=modo) }}" method="post">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" placeholder="Ex: Silagem de Milho" required>
 
-            <label for="fornecedor">Fornecedor:</label>
-            <select name="fornecedor" id="fornecedor" required>
-                <option value="" disabled selected>Selecione o Fornecedor</option>
-                {% for item in fornecedor_opcoes %}
-                <option value="{{ item }}">{{ item }}</option>
-                {% endfor %}
-            </select>
+                <label for="fornecedor">Fornecedor:</label>
+                <select name="fornecedor" id="fornecedor" required>
+                    <option value="" disabled selected>Selecione o Fornecedor</option>
+                    {% for item in fornecedor_opcoes %}
+                    <option value="{{ item }}">{{ item }}</option>
+                    {% endfor %}
+                </select>
 
-            <label for="tipo">Tipo:</label>
-            <select id="tipo" name="tipo" required>
-                <option value="" disabled selected>Selecione o Tipo</option>
-                <optgroup label="Saúde">
-                    <option value="medicamento">Medicamento</option>
-                    <option value="vacina">Vacina</option>
-                </optgroup>
-                <optgroup label="Suplementos">
-                    <option value="suplemento">Suplemento</option>
-                    <option value="sal mineral">Sal Mineral</option>
-                    <option value="aditivo">Aditivo</option>
-                    <option value="núcleo">Núcleo</option>
-                </optgroup>
-                <optgroup label="Alimentos">
-                    <option value="ração">Ração</option>
-                    <option value="silagem">Silagem</option>
-                    <option value="concentrado">Concentrado</option>
-                    <option value="farelo">Farelo</option>
-                </optgroup>
-            </select>
+                <label for="tipo">Tipo:</label>
+                <select id="tipo" name="tipo" required>
+                    <option value="" disabled selected>Selecione o Tipo</option>
+                    <optgroup label="Saúde">
+                        <option value="medicamento">Medicamento</option>
+                        <option value="vacina">Vacina</option>
+                    </optgroup>
+                    <optgroup label="Suplementos">
+                        <option value="suplemento">Suplemento</option>
+                        <option value="sal mineral">Sal Mineral</option>
+                        <option value="aditivo">Aditivo</option>
+                        <option value="núcleo">Núcleo</option>
+                    </optgroup>
+                    <optgroup label="Alimentos">
+                        <option value="ração">Ração</option>
+                        <option value="silagem">Silagem</option>
+                        <option value="concentrado">Concentrado</option>
+                        <option value="farelo">Farelo</option>
+                    </optgroup>
+                </select>
 
-            <label for="unidade">Unidade:</label>
-            <select id="unidade" name="unidade" required>
-                <option value="" disabled selected>Selecione a Unidade</option>
-                <optgroup label="Peso">
-                    <option value="g">g</option>
-                    <option value="kg">kg</option>
-                    <option value="ton">ton</option>
-                </optgroup>
-                <optgroup label="Volume">
-                    <option value="ml">ml</option>
-                    <option value="L">L</option>
-                    <option value="m³">m³</option>
-                    <option value="saco">saco</option>
-                </optgroup>
-                <optgroup label="Comprimento">
-                    <option value="cm">cm</option>
-                    <option value="m">m</option>
-                </optgroup>
-            </select>
+                <label for="unidade">Unidade:</label>
+                <select id="unidade" name="unidade" required>
+                    <option value="" disabled selected>Selecione a Unidade</option>
+                    <optgroup label="Peso">
+                        <option value="g">g</option>
+                        <option value="kg">kg</option>
+                        <option value="ton">ton</option>
+                    </optgroup>
+                    <optgroup label="Volume">
+                        <option value="ml">ml</option>
+                        <option value="L">L</option>
+                        <option value="m³">m³</option>
+                        <option value="saco">saco</option>
+                    </optgroup>
+                    <optgroup label="Comprimento">
+                        <option value="cm">cm</option>
+                        <option value="m">m</option>
+                    </optgroup>
+                </select>
 
-            <div class="button-container">
-                <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
-                <button type="submit">Cadastrar</button>
-            </div>
-        </form>
+                <div class="button-container">
+                    <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
+                    <button type="submit">Cadastrar</button>
+                </div>
+            </form>
+        </section>
         {% endif %}
 
         {% if modo == 'compra' %}
-        <h1>Cadastro de Compra de Insumo</h1>
-        <form action="{{ url_for('insumo', modo=modo) }}" method="post">
-            <label for="insumo">Insumo:</label>
-            <select name="insumo" id="insumo" required>
-                <option value="" disabled selected>Selecione o Insumo</option>
-                {% for item in insumo_opcoes %}
-                <option value="{{ item }}">{{ item }}</option>
-                {% endfor %}
-            </select>
+        <section>
+            <h1>Cadastro de Compra de Insumo</h1>
+            <form action="{{ url_for('insumo', modo=modo) }}" method="post">
+                <label for="insumo">Insumo:</label>
+                <select name="insumo" id="insumo" required>
+                    <option value="" disabled selected>Selecione o Insumo</option>
+                    {% for k in insumo_opcoes.keys() %}
+                    <option value="{{ k }}">{{insumo_opcoes[k]['nome']}} - {{insumo_opcoes[k]['fornecedor']}}</option>
+                    {% endfor %}
+                </select>
 
-            <label for="fornecedor">Fornecedor:</label>
-            <select name="fornecedor" id="fornecedor" required>
-                <option value="" disabled selected>Selecione o Fornecedor</option>
-                {% for item in fornecedor_opcoes %}
-                <option value="{{ item }}">{{ item }}</option>
-                {% endfor %}
-            </select>
+                <label for="fornecedor">Fornecedor:</label>
+                <select name="fornecedor" id="fornecedor" required>
+                    <option value="" disabled selected>Selecione o Fornecedor</option>
+                    {% for item in fornecedor_opcoes %}
+                    <option value="{{ item }}">{{ item }}</option>
+                    {% endfor %}
+                </select>
 
-            <label for="data">Data da Compra:</label>
-            <input type="date" id="data" name="data" required>
+                <label for="data">Data da Compra:</label>
+                <input type="date" id="data" name="data" required>
+                <script>
+                    const hoje = new Date();
+                    const ano = hoje.getFullYear();
+                    const mes = String(hoje.getMonth() + 1).padStart(2, '0'); // meses de 0 a 11
+                    const dia = String(hoje.getDate()).padStart(2, '0');
 
-            <label for="quantidade">Quantidade:</label>
-            <input type="number" step="0.1" id="quantidade" name="quantidade" placeholder="Ex: 150.0" required>
+                    const dataFormatada = `${ano}-${mes}-${dia}`;
+                    document.getElementById("data").value = dataFormatada;
+                </script>
 
-            <label for="valor_unitario">Valor Unitário (R$):</label>
-            <input type="number" step="0.01" id="valor_unitario" name="valor_unitario" placeholder="Ex: 12.50" required>
+                <label for="quantidade">Quantidade:</label>
+                <input type="number" step="1" id="quantidade" name="quantidade" placeholder="Ex: 150" required>
+                <script>
+                    let insumo = {{ insumo_opcoes | tojson }};
+                    let sel_insumo = document.getElementById("insumo");
+                    let label_quantidade = document.querySelector("label[for='quantidade']");
+                    sel_insumo.addEventListener("change", function () {
+                        let insumo_selecionado = sel_insumo.value;
+                        insumo_selecionado = Number(insumo_selecionado);
+                        if (insumo[insumo_selecionado]) {
+                            label_quantidade.textContent = `Quantidade (${insumo[insumo_selecionado]['unidade']}):`;
+                        } else {
+                            label_quantidade.textContent = "Quantidade:";
+                        }
+                    });
+                </script>
 
-            <div class="button-container">
-                <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
-                <button type="submit">Cadastrar</button>
-            </div>
-        </form>
+                <label for="valor_unitario">Valor Unitário (R$):</label>
+                <input type="number" step="0.01" id="valor_unitario" name="valor_unitario" placeholder="Ex: 8.50" required>
+
+                <div class="button-container">
+                    <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
+                    <button type="submit">Cadastrar</button>
+                </div>
+            </form>
+        </section>
         {% endif %}
 
         {% if modo == 'consumo' %}
-        <h1>Cadastro de Consumo de Insumo</h1>
-        <form action="{{ url_for('insumo', modo=modo) }}" method="post">
-            <label for="insumo">Insumo:</label>
-            <select name="insumo" id="insumo" required>
-                <option value="" disabled selected>Selecione o Insumo</option>
-                {% for item in insumo_opcoes %}
-                <option value="{{ item }}">{{ item }}</option>
-                {% endfor %}
-            </select>
+        <section>
+            <h1>Cadastro de Consumo de Insumo</h1>
+            <form action="{{ url_for('insumo', modo=modo) }}" method="post">
+                <label for="insumo">Insumo:</label>
+                <select name="insumo" id="insumo" required>
+                    <option value="" disabled selected>Selecione o Insumo</option>
+                    {% for item in insumo_opcoes %}
+                    <option value="{{ item[0] }}">{{ item[0] }}</option>
+                    {% endfor %}
+                </select>
 
-            <label for="data">Data do Consumo:</label>
-            <input type="date" id="data" name="data" required>
+                <label for="data">Data do Consumo:</label>
+                <input type="date" id="data" name="data" required>
 
-            <label for="quantidade">Quantidade:</label>
-            <input type="number" step="0.1" id="quantidade" name="quantidade" placeholder="Ex: 75.0" required>
+                <label for="quantidade">Quantidade:</label>
+                <input type="number" step="0.1" id="quantidade" name="quantidade" placeholder="Ex: 75.0" required>
 
-            <label for="obs">Observação:</label>
-            <input type="text" id="obs" name="obs" placeholder="Opcional">
+                <label for="obs">Observação:</label>
+                <input type="text" id="obs" name="obs" placeholder="Opcional">
 
-            <div class="button-container">
-                <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
-                <button type="submit">Cadastrar</button>
-            </div>
-        </form>
+                <div class="button-container">
+                    <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
+                    <button type="submit">Cadastrar</button>
+                </div>
+            </form>
+        </section>
         {% endif %}
     </div>
 
