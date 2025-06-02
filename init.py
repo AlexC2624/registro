@@ -192,10 +192,9 @@ def animal(modo):
 
             status = 'Salvo com sucesso!'
 
-        lote_opcoes = json.obter_dado('lote')
-
         # Verifica se há lotes cadastrados
-        if lote_opcoes == []:
+        lote_opcoes = json.obter_dado('lote')
+        if lote_opcoes == {}:
             status = 'Nenhum lote de animais cadastrado'
             return render_template('animal.html', status=status)
 
