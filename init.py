@@ -316,6 +316,10 @@ def animal(modo):
 @app.route('/insumo/<modo>', methods=[GET, POST])
 def insumo(modo):
     status = None
+    modo = modo
+    insumo_opcoes = None
+    fornecedor_opcoes = None
+
     json_animais = ManagerJSON('animais.json')
     json_insumo = ManagerJSON('insumos.json')
     
@@ -422,7 +426,6 @@ def insumo(modo):
         if insumo_opcoes == []:
             status = 'Nenhum insumo cadastrado'
             return render_template('insumo.html', status=status)
-        fornecedor_opcoes = None
 
     return render_template(
         'insumo.html',
