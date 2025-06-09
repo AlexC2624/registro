@@ -64,6 +64,9 @@
                 <label for="valor_entrada">Valor na Entrada (R$):</label>
                 <input type="number" id="valor_entrada" name="valor_entrada" value="8" step="0.1" required>
 
+                <label for="qtd_animais">Quantidade de Animais:</label>
+                <input type="number" id="qtd_animais_entrada" name="qtd_animais_entrada" value="1" step="1" min="1" max="1000" required>
+
                 <div class="button-container">
                     <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">⬅️ Voltar</button>
                     <button type="submit">✅ Cadastrar</button>
@@ -88,7 +91,7 @@
                 <table border="1">
                     <thead>
                         <tr>
-                            <th>Selecione</th>
+                            <th><input type="checkbox" name="selecionar_todos" id="selecionar_todos"></th>
                             <th>ID</th>
                             <th>Raça</th>
                             <th>Fornecedor</th>
@@ -132,6 +135,7 @@
             // Seleção dos elementos do DOM, captura de elementos HTML pelo ID
             const loteEntrada = document.getElementById("lote_entrada");
             const tabelaAnimais = document.getElementById("tabelaAnimais");
+            const checkboxMestre = document.getElementById("selecionar_todos");
 
             loteEntrada.addEventListener('change', function () {
                 const selecionado = Number(this.value);
@@ -149,6 +153,7 @@
                             tb_input.name = "animaisSelecionados[]";
                             tb_input.value = linha[0];
                             tb_td.appendChild(tb_input);
+                            tb_input.classList.add("linha-checkbox");
 
                             // coluna 2 - ID
                             const tb_td2 = document.createElement("td");
@@ -189,6 +194,30 @@
                     });
                 };
             });
+
+            function marcarTodos() {
+            document.querySelectorAll(".linha-checkbox").forEach(cb => cb.checked = true);
+            checkboxMestre.checked = true;
+            }
+
+            function desmarcarTodos() {
+            document.querySelectorAll(".linha-checkbox").forEach(cb => cb.checked = false);
+            checkboxMestre.checked = false;
+            }
+
+            checkboxMestre.addEventListener("change", () => {
+            if (checkboxMestre.checked) {
+                marcarTodos();
+            } else {
+                desmarcarTodos();
+            }
+            });
+
+            function atualizarCheckboxMestre() {
+            const todos = document.querySelectorAll(".linha-checkbox");
+            const marcados = document.querySelectorAll(".linha-checkbox:checked");
+            checkboxMestre.checked = todos.length === marcados.length;
+            }
         </script>
         {% endif %}
     </main>
