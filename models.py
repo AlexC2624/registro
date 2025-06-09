@@ -32,8 +32,8 @@ class ManagerCSV:
     def _salvar(self, df):
         df.to_csv(self.arquivo, index=False)
 
-    def adicionar(self, dados):
-        """Adiciona um novo registro ao arquivo, gerando o ID automaticamente.
+    def adicionar(self, dados, proximo_id=False):
+        """Adiciona um novo registro ao arquivo CSV, gerando o ID automaticamente.
 
         Este método carrega os dados existentes, determina o próximo ID disponível
         com base no maior valor atual (ou inicia em 1 se estiver vazio), adiciona
@@ -41,10 +41,11 @@ class ManagerCSV:
 
         Args:
             dados (dict): Dicionário contendo os dados do novo registro, sem o campo 'id'.
+            proximo_id (int, opcional): ID a ser utilizado para o novo registro. Se não informado, será gerado automaticamente.
         """
         
         df = self._carregar()
-        novo_id = 1 if df.empty else df['id'].max() + 1
+        novo_id = proximo_id if proximo_id else 1 if df.empty else df['id'].max() + 1
         dados_com_id = {'id': novo_id, **dados}
 
         novo_df = pd.DataFrame([dados_com_id])
