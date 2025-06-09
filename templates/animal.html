@@ -12,7 +12,11 @@
     <main class="container">
         {% if status %}
         <script>
-            alert('{{ status }}');
+            const status = {{ status | tojson }}
+            if (status === 'voltar') {
+                window.history.back();
+            };
+            alert(status);
             window.history.back();
         </script>
         {% endif %}
@@ -65,7 +69,7 @@
                 <input type="number" id="valor_entrada" name="valor_entrada" value="8" step="0.1" required>
 
                 <label for="qtd_animais">Quantidade de Animais:</label>
-                <input type="number" id="qtd_animais_entrada" name="qtd_animais_entrada" value="1" step="1" min="1" max="1000" required>
+                <input type="number" id="qtd_animais_entrada" name="qtd_animais_entrada" value="1" step="1" min="1" max="50" required>
 
                 <div class="button-container">
                     <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">⬅️ Voltar</button>
@@ -78,7 +82,7 @@
         {% if modo == 'saida' %}
         <section>
             <h1>📤 Cadastro de Saída de Animal</h1>
-            <form action="{{ url_for('animal', modo=modo) }}" method="post">
+            <form action="{{ url_for('animal', modo=modo) }}" method="post" id="form-animais">
                 <label for="lote_entrada">Lote de entrada:</label>
                 <select id="lote_entrada" name="lote_entrada" required>
                     <option value="" disabled selected>Selecione um lote cadastrado</option>
@@ -114,6 +118,15 @@
 
                 <label for="data_saida">Data de Saída:</label>
                 <input type="date" id="data_saida" name="data_saida" required>
+                <script>
+                const hoje = new Date();
+                const ano = hoje.getFullYear();
+                const mes = String(hoje.getMonth() + 1).padStart(2, '0'); // meses de 0 a 11
+                const dia = String(hoje.getDate()).padStart(2, '0');
+
+                const dataFormatada = `${ano}-${mes}-${dia}`;
+                document.getElementById("data_saida").value = dataFormatada;
+                </script>
 
                 <label for="peso_saida">Peso de Saída (kg):</label>
                 <input type="number" id="peso_saida" name="peso_saida" value="450" step="1" required>
@@ -217,7 +230,16 @@
             const todos = document.querySelectorAll(".linha-checkbox");
             const marcados = document.querySelectorAll(".linha-checkbox:checked");
             checkboxMestre.checked = todos.length === marcados.length;
+            };
+
+            document.getElementById("form-animais").addEventListener("submit", function (event) {
+            const selecionados = document.querySelectorAll("input[name='animaisSelecionados[]']:checked");
+            
+            if (selecionados.length === 0) {
+                event.preventDefault();  // Impede o envio
+                alert("Selecione pelo menos um animal antes de enviar.");
             }
+            });
         </script>
         {% endif %}
     </main>
