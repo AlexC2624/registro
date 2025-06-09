@@ -172,12 +172,22 @@ def animal(modo):
             data_entrada = request.form['data_entrada']
             peso_entrada = request.form['peso_entrada']
             valor_entrada = request.form['valor_entrada']
-            qtd_animais_entrada = request.form['qtd_animais_entrada']
+            qtd_animais_entrada = int(request.form['qtd_animais_entrada'])
 
             # Caminho do arquivo CSV
             arquivo = 'animal_entrada.csv'
 
-            for _ in range(int(qtd_animais_entrada)):
+            banco = ManagerCSV(arquivo, [
+                'lote', 'raca', 'data_nascimento', 'fornecedor',
+                'data_entrada', 'peso_entrada', 'valor_entrada'
+            ])
+            proximo_id = False
+            if banco.linhas() == 0:
+                banco2 = ManagerCSV('animal_saida.csv')
+                if banco2.linhas() != 0:
+                    proximo_id = banco2.ler()['valores'][-1][1] + 1
+
+            for _ in range(qtd_animais_entrada):
                 # Criar dicionário com os dados recebidos
                 novo_registro = {
                     'lote': lote,
@@ -188,9 +198,8 @@ def animal(modo):
                     'peso_entrada': peso_entrada,
                     'valor_entrada': valor_entrada
                 }
-
-                banco = ManagerCSV(arquivo, list(novo_registro.keys()))
-                banco.adicionar(novo_registro)
+                if proximo_id: banco.adicionar(novo_registro, proximo_id)
+                else: banco.adicionar(novo_registro)
 
             status = 'Salvo com sucesso!'
 
