@@ -426,6 +426,8 @@ def insumo(modo):
 @app.route('/manejo/<modo>', methods=[GET, POST])
 def manejo(modo):
     status = None
+    insumo_opcoes = None
+    lote_opcoes = None
     json_animais = ManagerJSON('animais.json')
     json_insumo = ManagerJSON('insumos.json')
 
@@ -470,15 +472,53 @@ def manejo(modo):
             status = 'Nenhum lote cadastrado'
             return render_template('manejo.html', status=status)
 
+    elif modo == 'pesagem':
+        if request.method == POST:
+            lote = request.form['lote']
+            data = request.form['data']
+            peso = request.form['peso']
+            observacao = request.form['observacao']
+
+            novo_registro = {
+                'lote': lote,
+                'data': data,
+                'peso': peso,
+                'observacao': observacao
+            }
+
+            # Caminho do arquivo CSV para pesagem
+            arquivo = 'animal_pesagem.csv'
+
+            banco = ManagerCSV(arquivo, list(novo_registro.keys()))
+            banco.adicionar(novo_registro)
+
+            status = 'Pesagem registrada com sucesso!'
+
+        lote_opcoes = json_animais.obter_dado('lote')
+        if lote_opcoes == {}:
+            status = 'Nenhum lote cadastrado'
+            return render_template('manejo.html', status=status)
+        
+        insumo_opcoes = json_insumo.obter_dado('insumo')
+        if insumo_opcoes == {}:
+            status = 'Nenhum insumo cadastrado'
+            return render_template('manejo.html', status=status)
+        
+        animal_opcoes = json_animais.obter_dado('animal')
+        if animal_opcoes == {}:
+            status = 'Nenhum animal cadastrado'
+            return render_template('manejo.html', status=status)
+
     return render_template(
         'manejo.html',
         status = status,
         modo = modo,
         insumo_opcoes = insumo_opcoes,
         lote_opcoes = lote_opcoes,
+        animal_opcoes = animal_opcoes
     )
 
-@app.route('/relatorios', methods=['GET', 'POST'])
+@app.route('/relatorios', methods=[GET, POST])
 def relatorios():
     relatorio = None
     colunas, conteudo = "", ""
