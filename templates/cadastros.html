@@ -14,7 +14,7 @@
         <!-- Cadastro de Animais -->
         <section>
             <h2>🐮 Cadastro de Animais</h2>
-            <form method="post" action="{{ url_for('cadastros') }}" class="form-group">
+            <form method="post" action="{{ url_for('cadastros') }}">
                 <button type="submit" name="animal" value="entrada">➕ Entrada de Animais</button>
                 <button type="submit" name="animal" value="saida">➖ Saída de Animais</button>
             </form>
@@ -23,37 +23,40 @@
         <!-- Cadastro de Insumos -->
         <section>
             <h2>🌽 Cadastro de Insumos</h2>
-            <form method="post" action="{{ url_for('cadastros') }}" class="form-group">
+            <form method="post" action="{{ url_for('cadastros') }}">
                 <button type="submit" name="insumo" value="novo">➕ Novo Insumo</button>
                 <button type="submit" name="insumo" value="compra">➕ Compra de Insumos</button>
-                <button type="submit" name="insumo" value="consumo">➖ Consumo de Insumos</button>
             </form>
         </section>
+        
+        <!-- Manejo Animal  -->
+        <section>
+            <h2>🐄 Manejo Animal</h2>
+            <form method="post" action="{{ url_for('cadastros') }}">
+                <button type="submit" name="manejo" value="alimentacao">🍽️ Registrar Alimentação</button>
+                <button type="submit" name="manejo" value="pesagem">⚖️ Registrar Pesagem</button>
+                <!-- <button type="submit" name="manejo" value="movimentacao">➡️ Movimentar Animais</button> -->
+                <!-- Para registrar ocorrências fora de padrões como um LOG -->
+                <!-- <button type="submit" name="manejo" value="ocorrencias">📝 Registrar Ocorrência</button> -->
+            </form>
+        </section>
+
+        <!-- Saúde Animal: vacinas, visita de veterinária -->
 
         <!-- Cadastros Complementares -->
         <section>
             <h2>🧾 Cadastros Complementares</h2>
-            <div class="form-group">
-                <form method="post" action="{{ url_for('cadastros') }}">
-                    <button type="submit" name="json_categoria" value="lote">📦 Cadastro de Lote</button>
-                </form>
+            <form method="post" action="{{ url_for('cadastros') }}">
+                <button type="submit" name="json_categoria" value="lote">📦 Cadastro de Lote</button>
+                
+                <button type="submit" name="json_categoria" value="raca">🐂 Cadastro de Raça</button>
+                
+                <button type="submit" name="json_categoria" value="fornecedor">🚜 Cadastro de Fornecedor</button>
+                
+                <button type="submit" name="json_categoria" value="insumo">🧪 Cadastro de Insumo</button>
 
-                <form method="post" action="{{ url_for('cadastros') }}">
-                    <button type="submit" name="json_categoria" value="raca">🐂 Cadastro de Raça</button>
-                </form>
-
-                <form method="post" action="{{ url_for('cadastros') }}">
-                    <button type="submit" name="json_categoria" value="fornecedor">🚜 Cadastro de Fornecedor</button>
-                </form>
-
-                <!-- <form method="post" action="{{ url_for('cadastros') }}">
-                    <button type="submit" name="json_categoria" value="insumo">🧪 Cadastro de Insumo</button>
-                </form> -->
-
-                <form method="post" action="{{ url_for('cadastros') }}">
-                    <button type="submit" name="json_categoria" value="cliente">👤 Cadastro de Cliente</button>
-                </form>
-            </div>
+                <button type="submit" name="json_categoria" value="cliente">👤 Cadastro de Cliente</button>
+            </form>
         </section>
 
         <!-- Voltar -->
@@ -65,8 +68,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2025 - Sistema de Gestão de Gado de Corte | 
-        <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
+        <p>&copy; 2025 - Sistema de Gestão de Gado de Corte | <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
     </footer>
 </body>
 </html>
