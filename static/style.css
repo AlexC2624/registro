@@ -92,9 +92,9 @@ button:hover {
 
 .pagina-cadastros .form-group {
     display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: 1rem;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 1rem;
 }
 
 /* Página Animal / JSON Animal */
