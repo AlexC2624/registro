@@ -83,6 +83,9 @@ def cadastros():
         insumo = request.form.get('insumo')
         if insumo: return redirect(url_for('insumo', modo=insumo))
 
+        manejo = request.form.get('manejo')
+        if manejo: return redirect(url_for('manejo', modo=manejo))
+
     return render_template('cadastros.html')
 
 @app.route('/json_animal/<categoria>', methods= [GET, POST])
@@ -411,7 +414,22 @@ def insumo(modo):
             status = 'Nenhum insumo cadastrado'
             return render_template('insumo.html', status=status)
 
-    elif modo == 'consumo':
+    return render_template(
+        'insumo.html',
+        status = status,
+        modo = modo,
+        insumo_opcoes = insumo_opcoes,
+        lote_opcoes = lote_opcoes,
+        fornecedor_opcoes = fornecedor_opcoes,
+    )
+
+@app.route('/manejo/<modo>', methods=[GET, POST])
+def manejo(modo):
+    status = None
+    json_animais = ManagerJSON('animais.json')
+    json_insumo = ManagerJSON('insumos.json')
+
+    if modo == 'alimentacao':
         if request.method == POST:
             insumo = request.form['insumo']
             lote_opcoes = json_animais.obter_dado('lote')
@@ -445,20 +463,19 @@ def insumo(modo):
         insumo_opcoes = json_insumo.obter_dado('insumo')
         if insumo_opcoes == {}:
             status = 'Nenhum insumo cadastrado'
-            return render_template('insumo.html', status=status)
+            return render_template('manejo.html', status=status)
         
         lote_opcoes = json_animais.obter_dado('lote')
         if lote_opcoes == {}:
             status = 'Nenhum lote cadastrado'
-            return render_template('insumo.html', status=status)
+            return render_template('manejo.html', status=status)
 
     return render_template(
-        'insumo.html',
+        'manejo.html',
         status = status,
         modo = modo,
         insumo_opcoes = insumo_opcoes,
         lote_opcoes = lote_opcoes,
-        fornecedor_opcoes = fornecedor_opcoes,
     )
 
 @app.route('/relatorios', methods=['GET', 'POST'])
