@@ -72,14 +72,16 @@ def tos():
 @app.route('/cadastros', methods= [GET, POST])
 def cadastros():
     if request.method == POST:
-        animal = request.form.get('animal')
-        insumo = request.form.get('insumo')
         json_categoria = request.form.get('json_categoria')
+        if json_categoria:
+            return redirect(url_for('json_animal', categoria=json_categoria))
 
-        if json_categoria: return redirect(url_for('json_animal', categoria=json_categoria))
-        elif animal: return redirect(url_for('animal', modo=animal))
+        animal = request.form.get('animal')
+        if animal:
+            return redirect(url_for('animal', modo=animal))
 
-        elif insumo: return redirect(url_for('insumo', modo=insumo))
+        insumo = request.form.get('insumo')
+        if insumo: return redirect(url_for('insumo', modo=insumo))
 
     return render_template('cadastros.html')
 
@@ -329,6 +331,7 @@ def insumo(modo):
     status = None
     modo = modo
     insumo_opcoes = None
+    lote_opcoes = None
     fornecedor_opcoes = None
 
     json_animais = ManagerJSON('animais.json')
@@ -411,6 +414,7 @@ def insumo(modo):
     elif modo == 'consumo':
         if request.method == POST:
             insumo = request.form['insumo']
+            lote_opcoes = json_animais.obter_dado('lote')
             data_inicio = request.form['data_inicio']
             data_fim = request.form['data_fim']
             quantidade = request.form['quantidade']
@@ -418,6 +422,7 @@ def insumo(modo):
 
             novo_registro = {
                 'insumo': insumo,
+                'lote': lote_opcoes,
                 'data_inicio': data_inicio,
                 'data_fim': data_fim,
                 'quantidade': quantidade,
@@ -441,12 +446,18 @@ def insumo(modo):
         if insumo_opcoes == {}:
             status = 'Nenhum insumo cadastrado'
             return render_template('insumo.html', status=status)
+        
+        lote_opcoes = json_animais.obter_dado('lote')
+        if lote_opcoes == {}:
+            status = 'Nenhum lote cadastrado'
+            return render_template('insumo.html', status=status)
 
     return render_template(
         'insumo.html',
         status = status,
         modo = modo,
         insumo_opcoes = insumo_opcoes,
+        lote_opcoes = lote_opcoes,
         fornecedor_opcoes = fornecedor_opcoes,
     )
 
