@@ -92,6 +92,56 @@
             </form>
         </section>
         {% endif %}
+
+        {% if modo == 'pesagem' %}
+        <section>
+            <h1>Cadastro de Pesagem de Animal</h1>
+            <form action="{{ url_for('manejo', modo=modo) }}" method="post">
+                <div class="form-group">
+                    <label for="lote">Lote:</label>
+                    <select name="lote" id="lote" required>
+                        <option value="" disabled selected>Selecione o Lote</option>
+                        {% for k in lote_opcoes.keys() %}
+                        <option value="{{ k }}">{{ lote_opcoes[k]['nome'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="animal">Animal:</label>
+                    <select name="animal" id="animal" required>
+                        <option value="" disabled selected>Selecione o Animal</option>
+                        {% for k in animal_opcoes.keys() %}
+                        <option value="{{ k }}">{{ animal_opcoes[k]['nome'] }} - {{ animal_opcoes[k]['raca'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="data">Data da Pesagem:</label>
+                    <input type="date" id="data" name="data" required>
+                    <script>
+                        const hoje = new Date();
+                        const ano = hoje.getFullYear();
+                        const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+                        const dia = String(hoje.getDate()).padStart(2, '0');
+                        const dataFormatada = `${ano}-${mes}-${dia}`;
+                        document.getElementById("data").value = dataFormatada;
+                    </script>
+                </div>
+                <div class="form-group">
+                    <label for="peso">Peso do Animal (kg):</label>
+                    <input type="number" min="1" step="0.1" id="peso" name="peso" placeholder="Ex: 450.5" required>
+                </div>
+                <div class="form-group">
+                    <label for="observacao">Observação:</label>
+                    <input type="text" id="observacao" name="observacao" placeholder="Opcional">
+                </div>
+                <div class="button-container">
+                    <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
+                    <button type="submit">Cadastrar</button>
+                </div>
+            </form>
+        </section>
+        {% endif %}
     </div>
 
     <footer>
