@@ -1,6 +1,12 @@
 # Registro
 
-Um projeto para gerenciar e registrar informações importantes de forma simples e eficiente.
+Este projeto salva dados em relação ao manejo do gado de corte e tem IA integrada para responder as perguntas referentes aos dados cadastrados. Foi desenvolvido para poder verificar o lucro, gargalos, perdas e pontos de melhoria, para diminuir custos e aumentar o lucro.
+
+## Sumário
+- [Tecnologias usadas](#tecnologias)
+- [Como usar](#como-usar)
+- [Contribuição](#contribuição)
+- [Licença](#licença)
 
 ## Funcionalidades
 
@@ -60,19 +66,9 @@ Um projeto para gerenciar e registrar informações importantes de forma simples
     python main.py
     ```
 
-5. **Comandos extras**
-    #### Liste as branch atuais localmente, remotamente e a selecionada:
-    ```bash
-    git branch -a
-    ```
-    #### Altere de branch:
-    ```bash
-    git checkout nome-da-branch
-    ```
-    #### Atualizar as referências ao remoto
-    ```bash
-    git pull
-    ```
+5. **Abra no navegador:**
+    ```navegador
+    http://127.0.0.1:50002
         
 ## Contribuição
 
@@ -81,3 +77,5 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou enviar
 ## Licença
 
 Este projeto está licenciado sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+[Início](#registro)
