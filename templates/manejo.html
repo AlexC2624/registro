@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de {{ 'Compra' if modo == 'compra' else 'Consumo' if modo == 'consumo' else 'Novo' }} de Insumo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        {% if status %}
+        <script>
+            alert('{{ status }}');
+            window.history.back();
+        </script>
+        {% endif %}
+
+        {% if modo == 'alimentacao' %}
+        <section>
+            <h1>Cadastro de Consumo de Insumo</h1>
+            <form action="{{ url_for('manejo', modo=modo) }}" method="post">
+                <div class="form-group">
+                    <label for="insumo">Insumo:</label>
+                    <select name="insumo" id="insumo" required>
+                        <option value="" disabled selected>Selecione o Insumo</option>
+                        {% for k in insumo_opcoes.keys() %}
+                        <option value="{{ k }}">{{ insumo_opcoes[k]['nome'] }} - {{ insumo_opcoes[k]['fornecedor'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="lote">Lotes que consome:</label>
+                    <select name="lote" id="lote" required>
+                        <option value="" disabled selected>Selecione o Lote</option>
+                        {% for lote in lote_opcoes.keys() %}
+                        <option value="{{ lote }}">{{ lote_opcoes[lote]['nome'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="data">Período do Consumo:</label>
+                    <div style="display: flex; gap: 1rem;">
+                        <input type="date" id="data_inicio" name="data_inicio" required>
+                        <input type="date" id="data_fim" name="data_fim" required>
+                    </div>
+                    <script>
+                        const hoje = new Date();
+                        const ano = hoje.getFullYear();
+                        const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+                        const dia = String(hoje.getDate()).padStart(2, '0');
+                        const dataFormatada = `${ano}-${mes}-${dia}`;
+                        document.getElementById("data_inicio").value = dataFormatada;
+                        document.getElementById("data_fim").value = dataFormatada;
+                    </script>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantidade">Quantidade:</label>
+                    <input type="number" min="1" step="0.1" id="quantidade" name="quantidade" placeholder="Ex: 75.0" required>
+                    <script>
+                        let insumo = {{ insumo_opcoes | tojson }};
+                        let sel_insumo = document.getElementById("insumo");
+                        let label_quantidade = document.querySelector("label[for='quantidade']");
+                        let input_quantidade = document.getElementById("quantidade");
+                        sel_insumo.addEventListener("change", function () {
+                            let insumo_selecionado = sel_insumo.value;
+                            insumo_selecionado = Number(insumo_selecionado);
+                            if (insumo[insumo_selecionado]) {
+                                label_quantidade.textContent = `Quantidade (${insumo[insumo_selecionado]['unidade']}):`;
+                                input_quantidade.placeholder = `Em estoque: ${insumo[insumo_selecionado]['estoque']}`;
+                                input_quantidade.max = insumo[insumo_selecionado]['estoque'];
+                            } else {
+                                label_quantidade.textContent = "Quantidade:";
+                            }
+                        });
+                    </script>
+                </div>
+
+                <div class="form-group">
+                    <label for="observacao">Observação:</label>
+                    <input type="text" id="observacao" name="observacao" placeholder="Opcional">
+                </div>
+
+                <div class="button-container">
+                    <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
+                    <button type="submit">Cadastrar</button>
+                </div>
+            </form>
+        </section>
+        {% endif %}
+    </div>
+
+    <footer>
+        <p>&copy; 2025 - Sistema de Gestão de Gado de Corte | 
+        <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
+    </footer>
+</body>
+
+</html>
