@@ -1,8 +1,9 @@
 import os
 from models import ManagerCSV, ManagerJSON
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
 from flasgger import Swagger
 from funcoes_relatorios import *
+from ollama_chatbot import OllamaChatbot
 
 app = Flask(__name__)   # Inicia o app do flask
 Swagger(app)
@@ -10,6 +11,18 @@ Swagger(app)
 GET, POST = 'GET', 'POST'   # É para evitar erro de digitação
 
 os.makedirs('data', exist_ok=True)  # Cria a pasta se não existir para os dados
+
+# --- Instância Global do Chatbot Ollama para Manter o Histórico ---
+# ATENÇÃO: Para aplicações multiusuário em produção, você precisaria de
+# um gerenciamento de estado de conversa mais robusto por sessão/usuário
+# (ex: Flask-Session, Redis, banco de dados). Para este exemplo simples, uma global funciona.
+global_ollama_chatbot = OllamaChatbot(
+    model_name='gemma3:1b', # <-- Mude para o nome do modelo que você baixou (ex: 'mistral', 'gemma:2b')
+    system_message='Você é um assistente especialista em gado de corte e agronegócio. Responda de forma detalhada e técnica.',
+    max_history_size=10, # Manter até 10 pares de perguntas/respostas no histórico
+    temperature=0.6,     # Um pouco menos criativo, para respostas mais focadas
+    num_ctx=4096         # Aumentar a janela de contexto se o seu modelo Ollama suportar
+)
 
 @app.route('/', methods= [GET])   # Rota index
 def index():
@@ -521,3 +534,19 @@ def estoque():
 def financeiro():
     # return render_template('financeiro.html')
     return render_template('index.html')
+
+@app.route('/perguntar', methods=['POST'])
+def perguntar():
+    # Obtém a pergunta enviada pelo JavaScript via formulário POST
+    pergunta = request.form.get('pergunta')
+
+    # Verifica se a pergunta foi recebida
+    if not pergunta:
+        return jsonify({"error": "Pergunta não recebida"}), 400
+
+    # Usa a instância global do chatbot para processar a pergunta
+    # e manter o histórico da conversa.
+    resposta_ia = global_ollama_chatbot.ask(pergunta)
+
+    # Retorna a resposta da IA em formato JSON para o JavaScript
+    return jsonify({"resposta": resposta_ia})
