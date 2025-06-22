@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de {{ 'Compra' if modo == 'compra' else 'Consumo' if modo == 'consumo' else 'Novo' }} de Insumo</title>
+    <title>Manejo - {{ 'Alimentação' if modo == 'alimentacao' else 'Pesagem' }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
-    <div class="container">
+    <main class="container">
         {% if status %}
         <script>
             alert('{{ status }}');
@@ -19,10 +19,11 @@
 
         {% if modo == 'alimentacao' %}
         <section>
-            <h1>Cadastro de Consumo de Insumo</h1>
+            <h1>Registro de Alimentação de Lotes</h1>
+            <p>Monitore o consumo de insumos para otimizar a nutrição e o desempenho do rebanho.</p>
             <form action="{{ url_for('manejo', modo=modo) }}" method="post">
                 <div class="form-group">
-                    <label for="insumo">Insumo:</label>
+                    <label for="insumo">Insumo Utilizado:</label>
                     <select name="insumo" id="insumo" required>
                         <option value="" disabled selected>Selecione o Insumo</option>
                         {% for k in insumo_opcoes.keys() %}
@@ -32,7 +33,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="lote">Lotes que consome:</label>
+                    <label for="lote">Lote(s) Consumidor(es):</label>
                     <select name="lote" id="lote" required>
                         <option value="" disabled selected>Selecione o Lote</option>
                         {% for lote in lote_opcoes.keys() %}
@@ -42,52 +43,67 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="data">Período do Consumo:</label>
-                    <div style="display: flex; gap: 1rem;">
+                    <label for="data_inicio">Período de Consumo:</label>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;"> {# Added flex-wrap for responsiveness #}
                         <input type="date" id="data_inicio" name="data_inicio" required>
                         <input type="date" id="data_fim" name="data_fim" required>
                     </div>
                     <script>
-                        const hoje = new Date();
-                        const ano = hoje.getFullYear();
-                        const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-                        const dia = String(hoje.getDate()).padStart(2, '0');
-                        const dataFormatada = `${ano}-${mes}-${dia}`;
-                        document.getElementById("data_inicio").value = dataFormatada;
-                        document.getElementById("data_fim").value = dataFormatada;
+                        const hojeAlimentacao = new Date();
+                        const anoAlimentacao = hojeAlimentacao.getFullYear();
+                        const mesAlimentacao = String(hojeAlimentacao.getMonth() + 1).padStart(2, '0');
+                        const diaAlimentacao = String(hojeAlimentacao.getDate()).padStart(2, '0');
+                        const dataFormatadaAlimentacao = `${anoAlimentacao}-${mesAlimentacao}-${diaAlimentacao}`;
+                        document.getElementById("data_inicio").value = dataFormatadaAlimentacao;
+                        document.getElementById("data_fim").value = dataFormatadaAlimentacao;
                     </script>
                 </div>
 
                 <div class="form-group">
-                    <label for="quantidade">Quantidade:</label>
-                    <input type="number" min="1" step="0.1" id="quantidade" name="quantidade" placeholder="Ex: 75.0" required>
+                    <label for="quantidade">Quantidade Consumida:</label>
+                    <input type="number" min="0.1" step="0.1" id="quantidade" name="quantidade" placeholder="Ex: 75.0" required> {# Min value set to 0.1 #}
                     <script>
-                        let insumo = {{ insumo_opcoes | tojson }};
-                        let sel_insumo = document.getElementById("insumo");
-                        let label_quantidade = document.querySelector("label[for='quantidade']");
-                        let input_quantidade = document.getElementById("quantidade");
-                        sel_insumo.addEventListener("change", function () {
-                            let insumo_selecionado = sel_insumo.value;
-                            insumo_selecionado = Number(insumo_selecionado);
-                            if (insumo[insumo_selecionado]) {
-                                label_quantidade.textContent = `Quantidade (${insumo[insumo_selecionado]['unidade']}):`;
-                                input_quantidade.placeholder = `Em estoque: ${insumo[insumo_selecionado]['estoque']}`;
-                                input_quantidade.max = insumo[insumo_selecionado]['estoque'];
+                        let insumoDataAlimentacao = {{ insumo_opcoes | tojson }}; // Renamed for clarity
+                        let selInsumoAlimentacao = document.getElementById("insumo"); // Renamed for clarity
+                        let labelQuantidadeAlimentacao = document.querySelector("label[for='quantidade']"); // Renamed for clarity
+                        let inputQuantidadeAlimentacao = document.getElementById("quantidade"); // Renamed for clarity
+
+                        selInsumoAlimentacao.addEventListener("change", function () {
+                            let insumoSelecionadoId = Number(this.value);
+                            if (insumoDataAlimentacao[insumoSelecionadoId]) {
+                                labelQuantidadeAlimentacao.textContent = `Quantidade Consumida (${insumoDataAlimentacao[insumoSelecionadoId]['unidade']}):`;
+                                inputQuantidadeAlimentacao.placeholder = `Estoque disponível: ${insumoDataAlimentacao[insumoSelecionadoId]['estoque']} ${insumoDataAlimentacao[insumoSelecionadoId]['unidade']}`;
+                                inputQuantidadeAlimentacao.max = insumoDataAlimentacao[insumoSelecionadoId]['estoque']; // Set max to available stock
+                                
+                                // Adjust step based on unit for better UX (e.g., allow decimals for kg, liters)
+                                if (['g', 'kg', 'ton', 'ml', 'L', 'm³'].includes(insumoDataAlimentacao[insumoSelecionadoId]['unidade'])) {
+                                    inputQuantidadeAlimentacao.step = "0.01";
+                                } else {
+                                    inputQuantidade_Alimentacao.step = "1";
+                                }
                             } else {
-                                label_quantidade.textContent = "Quantidade:";
+                                labelQuantidadeAlimentacao.textContent = "Quantidade Consumida:";
+                                inputQuantidadeAlimentacao.placeholder = "Ex: 75.0";
+                                inputQuantidadeAlimentacao.max = ""; // Clear max if no insumo selected
+                                inputQuantidadeAlimentacao.step = "1"; // Default to integer step
                             }
                         });
+
+                        // Trigger change on load if an option is pre-selected
+                        if (selInsumoAlimentacao.value) {
+                            selInsumoAlimentacao.dispatchEvent(new Event('change'));
+                        }
                     </script>
                 </div>
 
                 <div class="form-group">
-                    <label for="observacao">Observação:</label>
-                    <input type="text" id="observacao" name="observacao" placeholder="Opcional">
+                    <label for="observacao">Observações (Opcional):</label>
+                    <textarea id="observacao" name="observacao" placeholder="Detalhes adicionais sobre a alimentação..."></textarea>
                 </div>
 
                 <div class="button-container">
-                    <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
-                    <button type="submit">Cadastrar</button>
+                    <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar aos Cadastros</button>
+                    <button type="submit">Registrar Alimentação</button>
                 </div>
             </form>
         </section>
@@ -95,10 +111,11 @@
 
         {% if modo == 'pesagem' %}
         <section>
-            <h1>Cadastro de Pesagem de Animal</h1>
+            <h1>Registro de Pesagem de Animal</h1>
+            <p>Insira dados de peso para monitoramento de crescimento e otimização do manejo.</p>
             <form action="{{ url_for('manejo', modo=modo) }}" method="post">
                 <div class="form-group">
-                    <label for="lote">Lote:</label>
+                    <label for="lote">Lote do Animal:</label>
                     <select name="lote" id="lote" required>
                         <option value="" disabled selected>Selecione o Lote</option>
                         {% for k in lote_opcoes.keys() %}
@@ -107,45 +124,48 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="animal">Animal:</label>
+                    <label for="animal">Animal a ser Pesado:</label>
                     <select name="animal" id="animal" required>
                         <option value="" disabled selected>Selecione o Animal</option>
+                        {# This will likely be dynamically populated by JS based on selected lot #}
+                        {#
                         {% for k in animal_opcoes.keys() %}
                         <option value="{{ k }}">{{ animal_opcoes[k]['nome'] }} - {{ animal_opcoes[k]['raca'] }}</option>
                         {% endfor %}
+                        #}
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="data">Data da Pesagem:</label>
                     <input type="date" id="data" name="data" required>
                     <script>
-                        const hoje = new Date();
-                        const ano = hoje.getFullYear();
-                        const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-                        const dia = String(hoje.getDate()).padStart(2, '0');
-                        const dataFormatada = `${ano}-${mes}-${dia}`;
-                        document.getElementById("data").value = dataFormatada;
+                        const hojePesagem = new Date();
+                        const anoPesagem = hojePesagem.getFullYear();
+                        const mesPesagem = String(hojePesagem.getMonth() + 1).padStart(2, '0');
+                        const diaPesagem = String(hojePesagem.getDate()).padStart(2, '0');
+                        const dataFormatadaPesagem = `${anoPesagem}-${mesPesagem}-${diaPesagem}`;
+                        document.getElementById("data").value = dataFormatadaPesagem;
                     </script>
                 </div>
                 <div class="form-group">
-                    <label for="peso">Peso do Animal (kg):</label>
+                    <label for="peso">Peso Registrado (kg):</label>
                     <input type="number" min="1" step="0.1" id="peso" name="peso" placeholder="Ex: 450.5" required>
                 </div>
                 <div class="form-group">
-                    <label for="observacao">Observação:</label>
-                    <input type="text" id="observacao" name="observacao" placeholder="Opcional">
+                    <label for="observacao">Observações (Opcional):</label>
+                    <textarea id="observacao" name="observacao" placeholder="Detalhes relevantes sobre a pesagem..."></textarea>
                 </div>
                 <div class="button-container">
-                    <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar</button>
-                    <button type="submit">Cadastrar</button>
+                    <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar aos Cadastros</button>
+                    <button type="submit">Registrar Pesagem</button>
                 </div>
             </form>
         </section>
         {% endif %}
-    </div>
+    </main>
 
     <footer>
-        <p>&copy; 2025 - Sistema de Gestão de Gado de Corte | 
+        <p>&copy; 2025 - AI-Registro | Sistema de Gestão Inteligente de Gado | 
         <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
     </footer>
 </body>

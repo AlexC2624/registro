@@ -11,15 +11,8 @@ GET, POST = 'GET', 'POST'   # É para evitar erro de digitação
 
 os.makedirs('data', exist_ok=True)  # Cria a pasta se não existir para os dados
 
-@app.route('/', methods= [GET, POST])   # Rota index
+@app.route('/', methods= [GET])   # Rota index
 def index():
-    if request.method == POST:
-        valor = request.form.get('page')
-        if valor == 'cadastros': return redirect(url_for('cadastros'))
-        if valor == 'relatorios': return redirect(url_for('relatorios'))
-        if valor == 'estoque': return redirect(url_for('estoque'))
-        if valor == 'financeiro': return redirect(url_for('financeiro'))
-
     return render_template('index.html')
 
 @app.route('/teste', methods=["GET", "POST"])
@@ -39,23 +32,8 @@ def favicon():
 def tos():
     return render_template('tos.html')
 
-@app.route('/cadastros', methods= [GET, POST])
+@app.route('/cadastros', methods= [GET])
 def cadastros():
-    if request.method == POST:
-        json_categoria = request.form.get('json_categoria')
-        if json_categoria:
-            return redirect(url_for('json_animal', categoria=json_categoria))
-
-        animal = request.form.get('animal')
-        if animal:
-            return redirect(url_for('animal', modo=animal))
-
-        insumo = request.form.get('insumo')
-        if insumo: return redirect(url_for('insumo', modo=insumo))
-
-        manejo = request.form.get('manejo')
-        if manejo: return redirect(url_for('manejo', modo=manejo))
-
     return render_template('cadastros.html')
 
 @app.route('/json_animal/<categoria>', methods= [GET, POST])

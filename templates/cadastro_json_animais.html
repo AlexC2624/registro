@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de {{ categoria|capitalize }} de Animais</title>
+    <title>Cadastro de {{ categoria|capitalize }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body class="pagina-json-cadastro">
-    <div class="container">
+    <main class="container"> {# Changed div to main for semantic correctness #}
 
         {% if status %}
         <script>
@@ -17,22 +17,24 @@
         </script>
         {% endif %}
 
-        <h1>📋 Cadastro de {{ categoria|capitalize }} de Animais</h1>
+        <h1>Registro de {{ categoria|capitalize }}</h1>
+        <p>Preencha os dados para integrar novas categorias ao sistema inteligente.</p>
 
         <form action="{{ url_for('json_animal', categoria=categoria) }}" method="post">
-
-            <label for="nome">Nome do {{ categoria }}:</label>
-            <input type="text" id="nome" name="nome" placeholder="Ex: Angus, Lote A, Cliente X" required>
+            <div class="form-group">
+                <label for="nome">Nome do {{ categoria }}:</label>
+                <input type="text" id="nome" name="nome" placeholder="Ex: Angus, Lote A, Cliente X" required>
+            </div>
 
             <div class="button-container">
-                <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">⬅️ Voltar</button>
-                <button type="submit">✅ Cadastrar</button>
+                <button type="button" onclick="window.location.href='{{ url_for('cadastros') }}'">Voltar aos Cadastros</button>
+                <button type="submit">Adicionar {{ categoria|capitalize }}</button>
             </div>
         </form>
-    </div>
+    </main>
 
     <footer>
-        <p>&copy; 2025 - Sistema de Gestão de Gado de Corte | 
+        <p>&copy; 2025 - AI-Registro | Sistema de Gestão Inteligente de Gado | 
         <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
     </footer>
 </body>

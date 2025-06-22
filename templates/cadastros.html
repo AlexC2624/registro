@@ -3,73 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastros - Sistema de Gestão de Gado de Corte</title>
+    <title>Cadastros - AI-Registro</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="pagina-cadastros">
     <header>
-        <h1>📋 Página de Cadastros</h1>
+        <h1>Painel de Gestão de entrada de Dados</h1>
     </header>
-
-    <main>
-        <!-- Cadastro de Animais -->
+    
+    <main class="container">
         <section>
-            <h2>🐮 Cadastro de Animais</h2>
-            <form method="post" action="{{ url_for('cadastros') }}">
-                <button type="submit" name="animal" value="entrada">➕ Entrada de Animais</button>
-                <button type="submit" name="animal" value="saida">➖ Saída de Animais</button>
-            </form>
-        </section>
-
-        <!-- Cadastro de Insumos -->
-        <section>
-            <h2>🌽 Cadastro de Insumos</h2>
-            <form method="post" action="{{ url_for('cadastros') }}">
-                <button type="submit" name="insumo" value="novo">➕ Novo Insumo</button>
-                <button type="submit" name="insumo" value="compra">➕ Compra de Insumos</button>
-            </form>
+            <h2>Cadastros Iniciais do Sistema</h2>
+            <a href="{{ url_for('json_animal', categoria='lote') }}" class="button">Lotes de Gado</a>
+            <a href="{{ url_for('json_animal', categoria='raca') }}" class="button">Raças de Gado</a>
+            <a href="{{ url_for('json_animal', categoria='fornecedor') }}" class="button">Fornecedores</a>
+            <a href="{{ url_for('json_animal', categoria='insumo_tipo') }}" class="button">Tipos de Insumo</a>
+            <a href="{{ url_for('json_animal', categoria='cliente') }}" class="button">Clientes</a>
         </section>
         
-        <!-- Manejo Animal  -->
         <section>
-            <h2>🐄 Manejo Animal</h2>
-            <form method="post" action="{{ url_for('cadastros') }}">
-                <button type="submit" name="manejo" value="alimentacao">🍽️ Registrar Alimentação</button>
-                <button type="submit" name="manejo" value="pesagem">⚖️ Registrar Pesagem</button>
-                <!-- <button type="submit" name="manejo" value="movimentacao">➡️ Movimentar Animais</button> -->
-                <!-- Para registrar ocorrências fora de padrões como um LOG -->
-                <!-- <button type="submit" name="manejo" value="ocorrencias">📝 Registrar Ocorrência</button> -->
-            </form>
+            <h2>Gerenciamento de Rebanho</h2>
+            <a href="{{ url_for('json_animal', categoria='animal') }}" class="button">Registrar Entrada</a>
+            <a href="{{ url_for('json_animal', categoria='saida') }}" class="button">Registrar Saída</a>
         </section>
 
-        <!-- Saúde Animal: vacinas, visita de veterinária -->
-
-        <!-- Cadastros Complementares -->
         <section>
-            <h2>🧾 Cadastros Complementares</h2>
-            <form method="post" action="{{ url_for('cadastros') }}">
-                <button type="submit" name="json_categoria" value="lote">📦 Cadastro de Lote</button>
-                
-                <button type="submit" name="json_categoria" value="raca">🐂 Cadastro de Raça</button>
-                
-                <button type="submit" name="json_categoria" value="fornecedor">🚜 Cadastro de Fornecedor</button>
-                
-                <button type="submit" name="json_categoria" value="insumo">🧪 Cadastro de Insumo</button>
-
-                <button type="submit" name="json_categoria" value="cliente">👤 Cadastro de Cliente</button>
-            </form>
+            <h2>Gestão de Insumos</h2>
+            <a href="{{ url_for('insumo', modo='novo') }}" class="button">Novo Insumo</a>
+            <a href="{{ url_for('insumo', modo='compra') }}" class="button">Registrar Compra</a>
+        </section>
+        
+        <section>
+            <h2>Registro de Manejo Otimizado</h2>
+            <a href="{{ url_for('manejo', modo='alimentacao') }}" class="button">Registrar Alimentação</a>
+            <a href="{{ url_for('manejo', modo='pesagem') }}" class="button">Registrar Pesagem</a>
         </section>
 
-        <!-- Voltar -->
         <section>
-            <form method="get" action="{{ url_for('index') }}">
-                <button type="submit">⬅️ Voltar</button>
+            <h2>Saúde Animal</h2>
+            <a href="{{ url_for('saude', modo='vacina') }}" class="button">Registro de Vacinas</a>
+            <a href="{{ url_for('saude', modo='veterinario') }}" class="button">Visita Veterinária</a>
+        </section>
+
+        <section>
+            <form method="get" action="{{ url_for('index') }}" class="button-container">
+                <button type="submit">Retornar ao Início</button>
             </form>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2025 - Sistema de Gestão de Gado de Corte | <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
+        <p>&copy; 2025 - AI-Registro | Sistema de Gestão Inteligente de Gado | <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
     </footer>
 </body>
 </html>
