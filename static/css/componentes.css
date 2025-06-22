@@ -1,0 +1,83 @@
+/* static/css/components.css */
+
+/* Cabeçalho e Rodapé */
+header, footer {
+    background-color: #2e7d32; /* Verde mais escuro */
+    color: white;
+    text-align: center;
+    padding: 1rem;
+}
+
+/* Títulos */
+h1, h2 {
+    text-align: center;
+    color: #333; /* Cor escura padrão, pode precisar ser ajustada para branco em certos contextos */
+    margin-top: 1.5rem; /* Espaçamento superior */
+    margin-bottom: 1rem; /* Espaçamento inferior */
+}
+
+/* Labels (Rótulos de campos) */
+label {
+    font-weight: bold;
+    display: block; /* Garante que a label fique em sua própria linha */
+    margin-bottom: 0.3rem; /* Espaçamento abaixo da label */
+}
+
+/* Campos de Input e Select */
+input, select, textarea { /* Adicionado textarea para consistência, se usar um */
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%; /* Faz com que ocupem a largura total do container pai */
+    box-sizing: border-box; /* Garante que padding e border não aumentem a largura total */
+    margin-bottom: 0.8rem; /* Espaço entre os campos */
+}
+
+input[type="number"] {
+    width: 170px; /* Largura específica para campos numéricos, se necessário */
+}
+
+/* Botões */
+button {
+    padding: 0.6rem 1.2rem;
+    background-color: #4caf50; /* Verde principal */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Transição suave ao passar o mouse */
+}
+
+button:hover {
+    background-color: #388e3c; /* Verde mais escuro no hover */
+}
+
+/* Contêiner de Botões (para alinhar múltiplos botões) */
+.button-container {
+    display: flex;
+    justify-content: space-between; /* Espaça os botões igualmente */
+    gap: 1rem; /* Espaçamento entre os botões */
+    margin-top: 1rem;
+}
+
+/* Estilo para botões de navegação (se usar tags <a> estilizadas como botões) */
+.nav-button {
+    display: inline-block; /* Para que se comportem como botões */
+    padding: 0.6rem 1.2rem;
+    background-color: #4caf50; /* Mesmo verde dos botões */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none; /* Remove sublinhado padrão dos links */
+    text-align: center;
+    white-space: nowrap; /* Evita que o texto quebre em várias linhas */
+}
+
+.nav-button:hover {
+    background-color: #388e3c;
+}

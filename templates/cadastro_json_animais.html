@@ -12,9 +12,7 @@
     <div class="container">
 
         {% if status %}
-        <script>
-            alert('{{ status }}');
-        </script>
+        <div id="status-message-general" style="display:none;">{{ status | tojson | safe }}</div>
         {% endif %}
 
         <h1>📋 Cadastro de {{ categoria|capitalize }} de Animais</h1>
@@ -35,6 +33,8 @@
         <p>&copy; 2025 - Sistema de Gestão de Gado de Corte | 
         <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
     </footer>
-</body>
+
+    <script src="{{ url_for('static', filename='js/animal_form.js') }}"></script>
+    </body>
 
 </html>

@@ -4,17 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de {{ 'Compra' if modo == 'compra' else 'Consumo' if modo == 'consumo' else 'Novo' }} de Insumo</title>
+    <title>Cadastro de Manejo Animal</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
     <div class="container">
         {% if status %}
-        <script>
-            alert('{{ status }}');
-            window.history.back();
-        </script>
+        <div id="status-message-manejo" style="display:none;">{{ status | tojson | safe }}</div>
         {% endif %}
 
         {% if modo == 'alimentacao' %}
@@ -47,38 +44,12 @@
                         <input type="date" id="data_inicio" name="data_inicio" required>
                         <input type="date" id="data_fim" name="data_fim" required>
                     </div>
-                    <script>
-                        const hoje = new Date();
-                        const ano = hoje.getFullYear();
-                        const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-                        const dia = String(hoje.getDate()).padStart(2, '0');
-                        const dataFormatada = `${ano}-${mes}-${dia}`;
-                        document.getElementById("data_inicio").value = dataFormatada;
-                        document.getElementById("data_fim").value = dataFormatada;
-                    </script>
-                </div>
+                    </div>
 
                 <div class="form-group">
                     <label for="quantidade">Quantidade:</label>
                     <input type="number" min="1" step="0.1" id="quantidade" name="quantidade" placeholder="Ex: 75.0" required>
-                    <script>
-                        let insumo = {{ insumo_opcoes | tojson }};
-                        let sel_insumo = document.getElementById("insumo");
-                        let label_quantidade = document.querySelector("label[for='quantidade']");
-                        let input_quantidade = document.getElementById("quantidade");
-                        sel_insumo.addEventListener("change", function () {
-                            let insumo_selecionado = sel_insumo.value;
-                            insumo_selecionado = Number(insumo_selecionado);
-                            if (insumo[insumo_selecionado]) {
-                                label_quantidade.textContent = `Quantidade (${insumo[insumo_selecionado]['unidade']}):`;
-                                input_quantidade.placeholder = `Em estoque: ${insumo[insumo_selecionado]['estoque']}`;
-                                input_quantidade.max = insumo[insumo_selecionado]['estoque'];
-                            } else {
-                                label_quantidade.textContent = "Quantidade:";
-                            }
-                        });
-                    </script>
-                </div>
+                    </div>
 
                 <div class="form-group">
                     <label for="observacao">Observação:</label>
@@ -118,15 +89,7 @@
                 <div class="form-group">
                     <label for="data">Data da Pesagem:</label>
                     <input type="date" id="data" name="data" required>
-                    <script>
-                        const hoje = new Date();
-                        const ano = hoje.getFullYear();
-                        const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-                        const dia = String(hoje.getDate()).padStart(2, '0');
-                        const dataFormatada = `${ano}-${mes}-${dia}`;
-                        document.getElementById("data").value = dataFormatada;
-                    </script>
-                </div>
+                    </div>
                 <div class="form-group">
                     <label for="peso">Peso do Animal (kg):</label>
                     <input type="number" min="1" step="0.1" id="peso" name="peso" placeholder="Ex: 450.5" required>
@@ -148,6 +111,24 @@
         <p>&copy; 2025 - Sistema de Gestão de Gado de Corte | 
         <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
     </footer>
+
+    {% if modo == 'alimentacao' %}
+    <div id="insumo-options-data-manejo" style="display:none;">{{ insumo_opcoes | tojson | safe }}</div>
+    {% endif %}
+
+    <script src="{{ url_for('static', filename='js/manejo_form.js') }}"></script>
+    <script>
+        // Transfere a variável do Jinja2 para o escopo global do JS
+        // Garante que 'insumo_opcoes_data' esteja disponível para manejo_form.js
+        {% if modo == 'alimentacao' %}
+        const insumo_opcoes_data = JSON.parse(document.getElementById('insumo-options-data-manejo').textContent);
+        {% endif %}
+
+        // Transfere a variável de status para o escopo global do JS
+        {% if status %}
+        const status = JSON.parse(document.getElementById('status-message-manejo').textContent);
+        {% endif %}
+    </script>
 </body>
 
 </html>

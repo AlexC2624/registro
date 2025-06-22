@@ -1,0 +1,16 @@
+/* static/css/pages/termos.css */
+
+.pagina-termos .terms-content {
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    max-width: 800px;
+    margin: 2rem auto; /* Centraliza e adiciona margem vertical */
+    color: #333; /* Garante que o texto dentro seja escuro */
+}
+
+.pagina-termos .terms-content h3 {
+    margin-top: 1.5rem;
+    color: #2e7d32; /* Verde do tema */
+}
