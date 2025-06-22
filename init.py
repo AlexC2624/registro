@@ -13,23 +13,6 @@ os.makedirs('data', exist_ok=True)  # Cria a pasta se não existir para os dados
 
 @app.route('/', methods= [GET, POST])   # Rota index
 def index():
-    """
-    Página inicial do sistema.
-    ---
-    methods:
-      - GET
-      - POST
-    parameters:
-      - name: acao
-        in: formData
-        type: string
-        required: false
-        enum: ['lote_animal', 'animal_entrada']
-        description: Ação a ser executada
-    responses:
-      200:
-        description: Página inicial carregada
-    """
     if request.method == POST:
         valor = request.form.get('page')
         if valor == 'cadastros': return redirect(url_for('cadastros'))
@@ -54,19 +37,6 @@ def favicon():
 
 @app.route('/tos')
 def tos():
-    """
-    Exibe os Termos de Serviço.
-    ---
-    responses:
-      200:
-        description: Retorna os termos de serviço.
-        schema:
-          type: object
-          properties:
-            termos:
-              type: string
-              example: "Aqui estão os termos de serviço."
-    """
     return render_template('tos.html')
 
 @app.route('/cadastros', methods= [GET, POST])
@@ -90,28 +60,6 @@ def cadastros():
 
 @app.route('/json_animal/<categoria>', methods= [GET, POST])
 def json_animal(categoria):
-    """
-    Cadastro de lotes.
-    ---
-    methods:
-      - GET
-      - POST
-    parameters:
-      - name: acao
-        in: formData
-        type: string
-        required: false
-        enum: ['voltar', 'cadastrar']
-        description: Ação executada no formulário ('voltar' retorna à página inicial, 'cadastrar' registra o novo lote)
-      - name: nome
-        in: formData
-        type: string
-        required: false
-        description: Nome do lote a ser cadastrado
-    responses:
-      200:
-        description: Página de cadastro de lote renderizada com ou sem mensagem de status
-    """
     status = None
     if request.method == POST:
         nome = request.form.get('nome')
@@ -125,45 +73,6 @@ def json_animal(categoria):
 
 @app.route('/animal/<modo>', methods= [GET, POST])
 def animal(modo):
-    """
-    Cadastro de entrada de animais.
-    ---
-    methods:
-      - GET
-      - POST
-    parameters:
-      - name: lote
-        in: formData
-        type: string
-        required: true
-      - name: raca
-        in: formData
-        type: string
-        required: true
-      - name: data_nascimento
-        in: formData
-        type: string
-        required: true
-      - name: fornecedor
-        in: formData
-        type: string
-        required: true
-      - name: data_entrada
-        in: formData
-        type: string
-        required: true
-      - name: peso_entrada
-        in: formData
-        type: string
-        required: true
-      - name: valor_entrada
-        in: formData
-        type: string
-        required: true
-    responses:
-      200:
-        description: Página de entrada de animais renderizada
-    """
 
     status = None
     json = ManagerJSON('animais.json')
