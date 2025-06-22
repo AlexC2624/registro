@@ -1,143 +1,328 @@
-/* Estilo geral */
+/* --- Plano de fundo com imagem e overlay escuro para contraste --- */
 body {
+    min-height: 100vh;
     margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    color: #333;
+    font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+    background: 
+        linear-gradient(rgba(20, 24, 28, 0.85), rgba(20, 24, 28, 0.85)),
+        url('../imagens/plano_de_fundo.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #e3eafc;
+    letter-spacing: 0.02em;
+    transition: background 0.5s;
 }
 
-header, footer {
-    background-color: #2e7d32;
-    color: white;
-    text-align: center;
-    padding: 1rem;
+/* --- Container centralizado com efeito de vidro (glassmorphism) --- */
+.container, main.container {
+    background: rgba(34, 40, 49, 0.85);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 2.5rem 2rem;
+    margin: 2.5rem auto;
+    max-width: 600px;
+    border: 1.5px solid rgba(255,255,255,0.08);
 }
 
-h1, h2 {
-    text-align: center;
-    color: #333;
+/* --- Títulos com efeito neon IA --- */
+h1, h2, h3 {
+    font-weight: 700;
+    color: #7ee787;
+    text-shadow: 0 0 8px #7ee78755, 0 0 2px #fff;
+    letter-spacing: 0.04em;
+    margin-bottom: 1.2rem;
 }
 
-label {
-    font-weight: bold;
+h1 {
+    font-size: 2.2rem;
 }
 
-input, select {
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-input[type="number"] {
-    padding: 5px;
-    width: 170px;
-    box-sizing: border-box; /* garante que padding não "quebra" o tamanho */
+h2 {
+    font-size: 1.5rem;
 }
 
-button {
-    padding: 0.6rem 1.2rem;
-    background-color: #4caf50;
-    color: white;
+h3 {
+    font-size: 1.2rem;
+}
+
+/* --- Botões modernos com animação IA --- */
+button, input[type="submit"] {
+    background: linear-gradient(90deg, #7ee787 0%, #2e7d32 100%);
+    color: #181c1f;
     border: none;
-    border-radius: 5px;
-    font-weight: bold;
+    border-radius: 2rem;
+    padding: 0.7rem 2.2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0.5rem 0.5rem 0.5rem 0;
     cursor: pointer;
-    transition: background-color 0.3s;
+    box-shadow: 0 2px 12px 0 #7ee78733;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    outline: none;
 }
 
-button:hover {
-    background-color: #388e3c;
+button:hover, input[type="submit"]:hover {
+    background: linear-gradient(90deg, #2e7d32 0%, #7ee787 100%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 4px 24px 0 #7ee78755;
 }
 
 .button-container {
     display: flex;
-    justify-content: space-between;
-    margin-top: 1rem;
-}
-
-/* Página Index */
-.pagina-index header {
-    background-color: #2e7d32;
-    color: white !important;
-    padding: 1rem;
-    text-align: center;
-}
-
-.pagina-index nav {
-    display: flex;
-    justify-content: center;
     gap: 1rem;
-    margin: 1rem 0;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
 }
 
-.pagina-index main {
-    padding: 2rem;
+/* --- Inputs e selects com visual IA --- */
+input, select, textarea {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    margin: 0.5rem 0 1.2rem 0;
+    border: 1.5px solid #7ee78755;
+    border-radius: 1.2rem;
+    background: rgba(30, 34, 40, 0.85);
+    color: #e3eafc;
+    font-size: 1rem;
+    transition: border 0.2s, box-shadow 0.2s;
+    outline: none;
+    box-shadow: 0 1px 4px 0 #7ee78711;
+}
+
+input:focus, select:focus, textarea:focus {
+    border: 2px solid #7ee787;
+    box-shadow: 0 0 8px #7ee78755;
+    background: rgba(30, 34, 40, 0.98);
+}
+
+/* --- Fieldset e legend estilizados --- */
+fieldset {
+    border: 1.5px solid #7ee78755;
+    border-radius: 1.2rem;
+    padding: 1.2rem 1.5rem 1.5rem 1.5rem;
+    margin-bottom: 2rem;
+    background: rgba(34, 40, 49, 0.7);
+}
+
+legend {
+    color: #7ee787;
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 0.03em;
+    padding: 0 0.7rem;
+    text-shadow: 0 0 4px #7ee78755;
+}
+
+/* --- Tabelas com visual IA --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: rgba(34, 40, 49, 0.92);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 2px 12px 0 #7ee78722;
+}
+
+th, td {
+    padding: 0.8rem 1rem;
+    text-align: left;
+}
+
+th {
+    background: linear-gradient(90deg, #23272e 60%, #2e7d32 100%);
+    color: #7ee787;
+    font-weight: 700;
+    border-bottom: 2px solid #7ee78755;
+    text-shadow: 0 0 4px #7ee78733;
+}
+
+td {
+    border-bottom: 1px solid #7ee78722;
+    color: #e3eafc;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover {
+    background: rgba(126, 231, 135, 0.08);
+    transition: background 0.2s;
+}
+
+/* --- Navegação e rodapé --- */
+nav, footer {
     text-align: center;
+    margin: 1.5rem 0 0 0;
 }
 
-/* Página Cadastros */
-.pagina-cadastros {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f9f9f9;
+footer {
+    color: #7ee787;
+    font-size: 1rem;
+    padding: 1.2rem 0 0.5rem 0;
+    background: transparent;
+    text-shadow: 0 0 4px #7ee78733;
 }
 
-.pagina-cadastros main {
-    padding: 2rem;
+footer a {
+    color: #7ee787;
+    text-decoration: underline;
+    transition: color 0.2s;
 }
 
-.pagina-cadastros section {
+footer a:hover {
+    color: #fff;
+}
+
+/* --- Responsividade --- */
+@media (max-width: 700px) {
+    .container, main.container {
+        padding: 1.2rem 0.5rem;
+        max-width: 98vw;
+    }
+    table, th, td {
+        font-size: 0.95rem;
+    }
+    h1 {
+        font-size: 1.4rem;
+    }
+}
+
+/* --- Efeitos IA para campos de formulário --- */
+label {
+    font-weight: 500;
+    color: #7ee787;
+    margin-bottom: 0.2rem;
+    display: block;
+    letter-spacing: 0.02em;
+    text-shadow: 0 0 2px #7ee78733;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+/* --- Seções e opções de relatório --- */
+.relatorio-options {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+}
+
+section.relatorio {
+    margin-top: 2rem;
+    background: rgba(34, 40, 49, 0.92);
+    border-radius: 1.2rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px 0 #7ee78722;
+}
+
+/* --- Checkbox customizado para tabelas --- */
+input[type="checkbox"] {
+    accent-color: #7ee787;
+    width: 1.2em;
+    height: 1.2em;
+    border-radius: 0.4em;
+    border: 1.5px solid #7ee78755;
+    background: #23272e;
+    cursor: pointer;
+}
+
+/* --- Links --- */
+a {
+    color: #7ee787;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: #fff;
+    text-shadow: 0 0 8px #7ee78755;
+}
+
+/* --- Scrollbar customizada --- */
+::-webkit-scrollbar {
+    width: 10px;
+    background: #23272e;
+}
+::-webkit-scrollbar-thumb {
+    background: #7ee78755;
+    border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #7ee787;
+}
+
+/* --- Efeito IA para página inicial --- */
+.pagina-index header {
+    background: linear-gradient(90deg, #23272e 60%, #2e7d32 100%);
+    color: #fff;
+    border-radius: 0 0 1.5rem 1.5rem;
+    box-shadow: 0 2px 12px 0 #7ee78722;
+    padding: 2rem 0 1rem 0;
     margin-bottom: 2rem;
 }
 
-.pagina-cadastros .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-    margin-bottom: 1rem;
+/* --- Efeito IA para página de cadastros --- */
+.pagina-cadastros section {
+    background: rgba(34, 40, 49, 0.7);
+    border-radius: 1.2rem;
+    margin-bottom: 1.5rem;
+    padding: 1.2rem 1rem;
+    box-shadow: 0 1px 8px 0 #7ee78711;
 }
 
-/* Página Animal / JSON Animal */
-.pagina-animal .container,
-.pagina-json-animal .container {
-    max-width: 600px;
-    margin: auto;
-    margin-block: 20px;
+/* --- Termos de serviço --- */
+.terms-content {
+    background: rgba(34, 40, 49, 0.92);
+    border-radius: 1.2rem;
     padding: 1.5rem;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 12px 0 #7ee78722;
 }
 
-.pagina-json-animal .container {
-    max-width: 500px;
-    background-color: #fefefe;
-    border-radius: 10px;
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+.terms-content h3 {
+    color: #7ee787;
+    margin-top: 1.2rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    text-shadow: 0 0 4px #7ee78733;
 }
 
-.pagina-animal form,
-.pagina-json-animal form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+.terms-content p {
+    color: #e3eafc;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
-.pagina-json-animal input[type="text"] {
-    padding: 0.6rem;
+/* --- Página JSON cadastro --- */
+.pagina-json-cadastro .container {
+    max-width: 420px;
+    padding: 2rem 1.2rem;
 }
 
-/* Página Termos */
-.pagina-termos .terms-content {
-    padding: 2rem;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    max-width: 800px;
-    margin: 2rem auto;
+/* --- Página animal --- */
+.pagina-animal .container, .pagina-animal main.container {
+    max-width: 700px;
 }
 
-.pagina-termos .terms-content h3 {
-    margin-top: 1.5rem;
-    color: #2e7d32;
+/* --- Animação sutil IA para entrada de container --- */
+.container, main.container, .terms-content {
+    animation: fadeInIA 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+
+@keyframes fadeInIA {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
