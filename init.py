@@ -428,6 +428,89 @@ def manejo(modo):
         animal_opcoes = animal_opcoes
     )
 
+@app.route('/saude/<modo>', methods=[GET, POST])
+def saude(modo):
+    status = None
+    animal_opcoes = None
+    lote_opcoes = None
+    json_animais = ManagerJSON('animais.json')
+
+    if modo == 'vacina':
+        if request.method == POST:
+            animal = request.form['animal']
+            lote_opcoes = json_animais.obter_dado('lote')
+            data_vacina = request.form['data_vacina']
+            vacina = request.form['vacina']
+            observacao = request.form['observacao']
+
+            novo_registro = {
+                'animal': animal,
+                'lote': lote_opcoes,
+                'data_vacina': data_vacina,
+                'vacina': vacina,
+                'observacao': observacao
+            }
+
+            # Caminho do arquivo CSV para vacinas
+            arquivo = 'animal_vacina.csv'
+
+            banco = ManagerCSV(arquivo, list(novo_registro.keys()))
+            banco.adicionar(novo_registro)
+
+            status = 'Vacinação registrada com sucesso!'
+
+        animal_opcoes = json_animais.obter_dado('animal')
+        if animal_opcoes == {}:
+            status = 'Nenhum animal cadastrado'
+            return render_template('saude.html', status=status)
+        
+        lote_opcoes = json_animais.obter_dado('lote')
+        if lote_opcoes == {}:
+            status = 'Nenhum lote cadastrado'
+            return render_template('saude.html', status=status)
+    
+    elif modo == 'tratamento':
+        if request.method == POST:
+            animal = request.form['animal']
+            lote_opcoes = json_animais.obter_dado('lote')
+            data_tratamento = request.form['data_tratamento']
+            tratamento = request.form['tratamento']
+            observacao = request.form['observacao']
+
+            novo_registro = {
+                'animal': animal,
+                'lote': lote_opcoes,
+                'data_tratamento': data_tratamento,
+                'tratamento': tratamento,
+                'observacao': observacao
+            }
+
+            # Caminho do arquivo CSV para tratamentos
+            arquivo = 'animal_tratamento.csv'
+
+            banco = ManagerCSV(arquivo, list(novo_registro.keys()))
+            banco.adicionar(novo_registro)
+
+            status = 'Tratamento registrado com sucesso!'
+
+        animal_opcoes = json_animais.obter_dado('animal')
+        if animal_opcoes == {}:
+            status = 'Nenhum animal cadastrado'
+            return render_template('saude.html', status=status)
+        
+        lote_opcoes = json_animais.obter_dado('lote')
+        if lote_opcoes == {}:
+            status = 'Nenhum lote cadastrado'
+            return render_template('saude.html', status=status)
+
+    return render_template(
+        'saude.html',
+        status=status,
+        modo=modo,
+        animal_opcoes=animal_opcoes,
+        lote_opcoes=lote_opcoes
+    )
+
 @app.route('/relatorios', methods=[GET, POST])
 def relatorios():
     relatorio = None
