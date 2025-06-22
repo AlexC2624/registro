@@ -312,12 +312,12 @@
     {# Coluna da Esquerda: Barra Lateral com Logo e Botões #}
     <div class="left-sidebar">
         <header class="header-logo">
-            <h1>AI-Agro</h1>
+            <h1>AI-Registro</h1>
             <p>Análise Preditiva para Gestão de Gado</p>
         </header>
 
         <nav class="nav-buttons"> {# Nova classe para os botões de navegação #}
-            <a href="{{ url_for('index') }}" class="button">Recaregar</a>
+            <!-- <a href="{{ url_for('index') }}" class="button">Recaregar</a> -->
             <a href="{{ url_for('cadastros') }}" class="button">Cadastros</a>
             <a href="{{ url_for('relatorios') }}" class="button">Relatórios</a>
         </nav>
@@ -327,7 +327,7 @@
     <div class="main-content-area">
         <main class="container"> {# O container existente para o efeito de vidro #}
             <section>
-                <h2>Bem-vindo à Plataforma AI-Registro!</h2>
+                <h2>Bem-vindo {{ dados['nome_usuario']['username'] }} à Plataforma AI-Registro!</h2>
                 <p>Navegue pelas funcionalidades avançadas e impulsione a eficiência da sua propriedade.</p>
             </section>
             
