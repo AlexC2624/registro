@@ -1,22 +1,24 @@
 import os
 from models import ManagerCSV, ManagerJSON
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
-from flasgger import Swagger
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify, session, g
+# from flasgger import Swagger
 from funcoes_relatorios import *
 from ollama_chatbot import OllamaChatbot
+from usuario import UserManager
 
 app = Flask(__name__)   # Inicia o app do flask
-Swagger(app)
+# Swagger(app)
+app.secret_key = 'sua_chave_secreta_aqui'  # Necessário para sessões e cookies
 
 GET, POST = 'GET', 'POST'   # É para evitar erro de digitação
 
 os.makedirs('data', exist_ok=True)  # Cria a pasta se não existir para os dados
 
 # --- Instância Global do Chatbot Ollama para Manter o Histórico ---
-# ATENÇÃO: Para aplicações multiusuário em produção, você precisaria de
-# um gerenciamento de estado de conversa mais robusto por sessão/usuário
-# (ex: Flask-Session, Redis, banco de dados). Para este exemplo simples, uma global funciona.
 global_ollama_chatbot = OllamaChatbot(
+    # ATENÇÃO: Para aplicações multiusuário em produção, você precisaria de
+    # um gerenciamento de estado de conversa mais robusto por sessão/usuário
+    # (ex: Flask-Session, Redis, banco de dados). Para este exemplo simples, uma global funciona.
     model_name='gemma3:1b', # <-- Mude para o nome do modelo que você baixou (ex: 'mistral', 'gemma:2b')
     system_message='Você é um assistente especialista em gado de corte e agronegócio. Responda de forma detalhada e técnica.',
     max_history_size=10, # Manter até 10 pares de perguntas/respostas no histórico
@@ -24,9 +26,53 @@ global_ollama_chatbot = OllamaChatbot(
     num_ctx=4096         # Aumentar a janela de contexto se o seu modelo Ollama suportar
 )
 
-@app.route('/', methods= [GET])   # Rota index
+global_user_manager = UserManager('data/users.db')  # Gerenciador de usuários
+
+# --- Configuração do Gerenciador de Usuários ---
+@app.before_request
+def load_logged_in_user():
+    g.user_id = session.get('user_id') # Pegamos o ID do usuário da sessão Flask
+
+@app.route('/', methods= [GET, POST])   # Rota de loguin
 def index():
-    return render_template('index.html')
+    error = None
+    if request.method == POST:
+        button = request.form.get('button')
+        if button == 'logar':
+            username = request.form.get('username')
+            password = request.form.get('password')
+
+            # Lógica de autenticação
+            booleano, mensagem = global_user_manager.login_user(username, password)
+            # print(booleano, mensagem)
+            if booleano:
+                # Aqui é definido um cookie para o usuário logado
+                session['user_id'] = mensagem
+
+                return redirect(url_for('home'))
+            else:
+                error=mensagem
+
+        elif button == 'registrar':
+            username = request.form.get('username')
+            password = request.form.get('password')
+
+            # Lógica de registro
+            booleano, mensagem = global_user_manager.register_user(username, password)
+            # print(booleano, mensagem)
+            if booleano:
+                session['user_id'] = mensagem  # Define o ID do usuário logado na sessão
+                return redirect(url_for('home'))
+            else:
+                error=mensagem
+    return render_template('index.html', error=error)
+
+@app.route('/home', methods= [GET]) # Rota para a página inicial
+def home():
+    # print(f"Usuário logado: {g.user_id}")  # Exibe o ID do usuário logado
+    return render_template('home.html', dados={
+        'nome_usuario': global_user_manager.get_user_by_id(g.user_id)
+    })
 
 @app.route('/teste', methods=["GET", "POST"])
 def teste():
@@ -38,16 +84,13 @@ def teste():
     return render_template('teste.html')
 
 @app.route('/favicon.ico')
-def favicon():
-    return send_from_directory('static', 'favicon.ico')
+def favicon(): return send_from_directory('static', 'favicon.ico')
 
 @app.route('/tos')
-def tos():
-    return render_template('tos.html')
+def tos(): return render_template('tos.html')
 
 @app.route('/cadastros', methods= [GET])
-def cadastros():
-    return render_template('cadastros.html')
+def cadastros(): return render_template('cadastros.html')
 
 @app.route('/json_animal/<categoria>', methods= [GET, POST])
 def json_animal(categoria):
