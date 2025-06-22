@@ -234,27 +234,66 @@ input[type="checkbox"] {
 
 /* --- Links --- */
 a {
-    color: #7ee787;
-    text-decoration: none;
-    transition: color 0.2s;
+    color: #7ee787; /* Cor neon IA para links */
+    text-decoration: none; /* Remove sublinhado padrão */
+    transition: color 0.2s, text-shadow 0.2s; /* Transição suave para hover */
 }
 
 a:hover {
-    color: #fff;
-    text-shadow: 0 0 8px #7ee78755;
+    color: #fff; /* Cor branca no hover para contraste */
+    text-shadow: 0 0 8px #7ee78755; /* Efeito de sombra neon no hover */
 }
 
-/* --- Scrollbar customizada --- */
-::-webkit-scrollbar {
-    width: 10px;
-    background: #23272e;
+/* --- Botões (já existentes no seu CSS) --- */
+/*
+Seus botões de navegação são estilizados com as classes 'button' (se você as adicionar)
+ou através do seletor 'button, input[type="submit"]'.
+Se você usou 'a' com a classe 'button' como sugerido no seu HTML,
+garanta que a estilização do '.button' seja mais específica que o 'a' genérico.
+*/
+.button {
+    background: linear-gradient(90deg, #7ee787 0%, #2e7d32 100%);
+    color: #181c1f;
+    border: none;
+    border-radius: 2rem;
+    padding: 0.7rem 2.2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0.5rem 0.5rem 0.5rem 0;
+    cursor: pointer;
+    box-shadow: 0 2px 12px 0 #7ee78733;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    outline: none;
+    display: inline-block; /* Para que padding e margin funcionem como esperado */
+    text-align: center; /* Centraliza o texto dentro do botão */
+    text-decoration: none; /* Garante que não haja sublinhado */
 }
-::-webkit-scrollbar-thumb {
-    background: #7ee78755;
-    border-radius: 8px;
+
+.button:hover {
+    background: linear-gradient(90deg, #2e7d32 0%, #7ee787 100%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 4px 24px 0 #7ee78755;
 }
-::-webkit-scrollbar-thumb:hover {
-    background: #7ee787;
+
+.button-container { /* Para organizar múltiplos botões */
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center; /* Centraliza os botões na navegação */
+}
+
+/* Estilo específico para o link dentro do footer, se quiser algo diferente do 'a' geral */
+footer a {
+    color: #7ee787; /* Cor específica para o link do footer */
+    text-decoration: underline; /* Mantém o sublinhado para clareza no footer */
+    transition: color 0.2s;
+}
+
+footer a:hover {
+    color: #fff;
+    text-shadow: none; /* Remove a sombra neon no hover se o footer for mais discreto */
 }
 
 /* --- Efeito IA para página inicial --- */
