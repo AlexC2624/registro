@@ -11,8 +11,32 @@ GET, POST = 'GET', 'POST'   # É para evitar erro de digitação
 
 os.makedirs('data', exist_ok=True)  # Cria a pasta se não existir para os dados
 
-@app.route('/', methods= [GET]) # Rota index
+@app.route('/', methods= [GET, POST])   # Rota index
 def index():
+    """
+    Página inicial do sistema.
+    ---
+    methods:
+      - GET
+      - POST
+    parameters:
+      - name: acao
+        in: formData
+        type: string
+        required: false
+        enum: ['lote_animal', 'animal_entrada']
+        description: Ação a ser executada
+    responses:
+      200:
+        description: Página inicial carregada
+    """
+    if request.method == POST:
+        valor = request.form.get('page')
+        if valor == 'cadastros': return redirect(url_for('cadastros'))
+        if valor == 'relatorios': return redirect(url_for('relatorios'))
+        if valor == 'estoque': return redirect(url_for('estoque'))
+        if valor == 'financeiro': return redirect(url_for('financeiro'))
+
     return render_template('index.html')
 
 @app.route('/teste', methods=["GET", "POST"])
@@ -30,6 +54,19 @@ def favicon():
 
 @app.route('/tos')
 def tos():
+    """
+    Exibe os Termos de Serviço.
+    ---
+    responses:
+      200:
+        description: Retorna os termos de serviço.
+        schema:
+          type: object
+          properties:
+            termos:
+              type: string
+              example: "Aqui estão os termos de serviço."
+    """
     return render_template('tos.html')
 
 @app.route('/cadastros', methods= [GET, POST])
@@ -391,7 +428,6 @@ def manejo(modo):
     status = None
     insumo_opcoes = None
     lote_opcoes = None
-    animal_opcoes = None
     json_animais = ManagerJSON('animais.json')
     json_insumo = ManagerJSON('insumos.json')
 
