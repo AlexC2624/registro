@@ -337,6 +337,7 @@ def manejo(modo):
     status = None
     insumo_opcoes = None
     lote_opcoes = None
+    animal_opcoes = None
     json_animais = ManagerJSON('animais.json')
     json_insumo = ManagerJSON('insumos.json')
 
