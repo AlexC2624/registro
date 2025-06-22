@@ -34,8 +34,8 @@ class OllamaChatbot:
         # Inicializa o histórico de conversa com a mensagem do sistema
         self.history = [{'role': 'system', 'content': system_message}]
 
-        print(f"Chatbot Ollama inicializado com o modelo: {self.model_name}")
-        print(f"Opções de inferência: {self.inference_options}")
+        # print(f"Chatbot Ollama inicializado com o modelo: {self.model_name}")
+        # print(f"Opções de inferência: {self.inference_options}")
 
     def ask(self, user_question: str) -> str:
         """
