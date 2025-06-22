@@ -57,7 +57,7 @@ class UserManager:
             cursor.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)",
                            (username, password_hash))
             conn.commit()
-            return True, f"Usuário '{username}' cadastrado com sucesso."
+            return True, cursor.lastrowid
         except sqlite3.IntegrityError:
             return False, f"Erro: Usuário '{username}' já existe."
         finally:
@@ -91,6 +91,22 @@ class UserManager:
                 return False, f"Erro de login para '{username}': Senha incorreta."
         else:
             return False, f"Erro de login: Usuário '{username}' não encontrado."
+
+    def get_user_by_id(self, user_id):
+        """
+        Retorna os dados do usuário pelo ID.
+        Se encontrado, retorna um dicionário com os dados do usuário.
+        Caso contrário, retorna None.
+        """
+        conn = self._get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, username FROM users WHERE id = ?", (user_id,))
+        user_data = cursor.fetchone()
+        conn.close()
+        if user_data:
+            return {"id": user_data["id"], "username": user_data["username"]}
+        else:
+            return None
 
 # --- Exemplo de Uso ---
 if __name__ == "__main__":
