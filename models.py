@@ -1,7 +1,8 @@
 import sqlite3  # Importa o módulo sqlite3 para manipulação de banco de dados SQLite
 import re   # Importa o módulo re para expressões regulares
 
-class sql:
+class SQL:
+
     # Colunas não permitidas para cada tabela
     _DISALLOWED_COLUMNS = {
         'clientes': {'id'},
@@ -9,10 +10,13 @@ class sql:
         'produtos': {'id', 'preco'},
     }
 
-    def __init__(self, nome_db='dados.db'):
+    def __init__(self, nome_db:str='dados.db', str_sql_creat:dict={}):
         self.conn = sqlite3.connect(nome_db)
         self.cursor = self.conn.cursor()
         self.conn.set_trace_callback(print)  # Ativa o modo de depuração para exibir consultas SQL
+        if str_sql_creat is not {}:
+            for key in str_sql_creat.keys():
+                self.criar_tabela(str_sql_creat[key])
     
     def criar_tabela(self, string_sql="""
         CREATE TABLE IF NOT EXISTS clientes (
