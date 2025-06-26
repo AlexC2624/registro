@@ -1,8 +1,8 @@
-from models import ManagerCSV, ManagerJSON
+from models import SQL
 
 def animais(arquivo):
     arquivo = f'{arquivo}.csv'
-    csv = ManagerCSV(arquivo)
+    csv = SQL(arquivo)
     csv_ler = csv.ler()
     return csv_ler['colunas'], csv_ler['valores']
 
