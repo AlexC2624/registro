@@ -1,10 +1,10 @@
 import os
-from models import ManagerCSV, ManagerJSON
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify, session, g
 # from flasgger import Swagger
 from funcoes_relatorios import *
-from ollama_chatbot import OllamaChatbot
-from usuario import UserManager
+from ollama_chatbot import OllamaChatbot    # Conexão com ollama local
+from usuario import UserManager # Verifica, e salva os acessos
+from models import SQL  # Para manipular os dados do sistema
 
 app = Flask(__name__)   # Inicia o app do flask
 # Swagger(app)
@@ -27,6 +27,57 @@ global_ollama_chatbot = OllamaChatbot(
 )
 
 global_user_manager = UserManager('data/users.db')  # Gerenciador de usuários
+
+# String SQL para criar tabelas
+STRING_SQL = {
+    'CREATE_TABLE_LOCALIZACAO': """CREATE TABLE IF NOT EXISTS localizacao (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL UNIQUE,
+        endereco TEXT NOT NULL,
+        coordenadas INTEGER
+    );""",
+
+    'CREATE_TABLE_LOTE': """CREATE TABLE IF NOT EXISTS lote (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL UNIQUE,
+        quantidade INTEGER NOT NULL,
+        localizacao INTEGER NOT NULL,
+        descricao TEXT,
+        FOREIGN KEY (localizacao) REFERENCES localizacao(id)
+    );""",
+
+    'CREATE_TABLE_RACA': """CREATE TABLE IF NOT EXISTS racas (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL UNIQUE,
+        descricao TEXT
+    );""",
+
+    'CREATE_TABLE_FORNECEDOR': """CREATE TABLE IF NOT EXISTS fornecedores (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL UNIQUE,
+        telefone TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE
+    );""",
+
+    'CREATE_TABLE_CLIENTE': """CREATE TABLE IF NOT EXISTS clientes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL UNIQUE,
+        email TEXT NOT NULL UNIQUE,
+        telefone TEXT
+    );""",
+
+    'CREATE_TABLE_INSUMO': """CREATE TABLE IF NOT EXISTS insumos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL UNIQUE,
+        quantidade INTEGER NOT NULL,
+        unidade TEXT NOT NULL,
+        fornecedor_id INTEGER,
+        FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id)
+    );"""
+}
+# --- Instância global da classe de genciamento do banco de dados principal ---
+# global_dados = SQL('data/dados.db', STRING_SQL)   # Apenas na primeira execuÇão é nescessário
+global_dados = SQL('data/dados.db')
 
 # --- Configuração do Gerenciador de Usuários ---
 @app.before_request
