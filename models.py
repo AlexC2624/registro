@@ -35,38 +35,39 @@ class SQL:
         self.cursor.execute(string_sql)
         self.conn.commit()
 
-    def inserir(self, colunas=['nome', 'email', 'telefone'], valores=('Ana', 'ana@mail.com', 123456789)):
+    def inserir(self, tabela='users', colunas=['nome', 'email', 'telefone'], valores=['Ana', 'ana@mail.com', 123456789]):
         """Insere um registro na tabela com base nas colunas e nos valores fornecidos.
         Args:
             colunas (list of str): Lista com os nomes cas colunas.
             valores (tuple): Valores a serem inseridos na tabela.
         """
-        string_sql = f"INSERT INTO clientes ({', '.join(colunas)}) VALUES ({', '.join(['?' for _ in colunas])});"
-        if not isinstance(valores, tuple):
-            raise ValueError("Os valores devem ser passados como uma tupla.")
-        self.cursor.execute(string_sql, valores)
+        string_sql = f"INSERT INTO {tabela} ({', '.join(colunas)}) VALUES ({', '.join(['?' for _ in colunas])});"
+        valores = tuple(valores)
+        try:
+            self.cursor.execute(string_sql, valores)
+            print('testeeee')
+        except sqlite3.OperationalError as e: return False, e
         self.conn.commit()
+        print(tabela, colunas, valores)
+        return True, f'Cadastro em {tabela} realizad com sucesso'
 
     def ler_tabela(self, nome_tabela='tabela', colunas=['*']):
         string_sql = f'SELECT {', '.join(colunas)} FROM {nome_tabela}'
         self.cursor.execute(string_sql)
 
-    def _get_table_columns(self, table_name: str) -> set:
+    def buscar_registro(self, tabela:str, coluna:str, valor:str) -> list:
+        """        Busca registros em uma tabela específica onde uma coluna tem um valor específico.
+        Args:
+            tabela (str): Nome da tabela onde a busca será realizada.
+            coluna (str): Nome da coluna onde o valor será buscado.
+            valor (str): Valor a ser buscado na coluna especificada.
+        Returns:
+            list: Lista de tuplas contendo os registros encontrados. Retorna uma lista vazia se
+                   nenhum registro for encontrado.
         """
-        Obtém os nomes das colunas de uma tabela específica.
-        Esta é uma função auxiliar para definir as colunas permitidas dinamicamente.
-        """
-        if not self.cursor:
-            return set()
-        try:
-            # Query PRAGMA table_info para obter informações da coluna
-            self.cursor.execute(f"PRAGMA table_info({table_name})")
-            columns_info = self.cursor.fetchall()
-            # O nome da coluna está no segundo elemento de cada tupla
-            return {col_info[1].lower() for col_info in columns_info}
-        except sqlite3.Error as e:
-            print(f"Erro ao obter informações da coluna para {table_name}: {e}")
-            return set()
+        string_sql = f"SELECT * FROM {tabela} WHERE {coluna} = ?"
+        self.cursor.execute(string_sql, (valor,))
+        return self.cursor.fetchall()
 
     def consulta_sql(self, sql_query: str, params: tuple = None) -> list | None:
         """
