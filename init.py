@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, send_from_
 # from flasgger import Swagger
 from funcoes_relatorios import *
 from ollama_chatbot import OllamaChatbot    # Conexão com ollama local
-from usuario import UserManager # Verifica, e salva os acessos
+from usuario import *
 from models import SQL  # Para manipular os dados do sistema
 
 app = Flask(__name__)   # Inicia o app do flask
@@ -14,70 +14,24 @@ GET, POST = 'GET', 'POST'   # É para evitar erro de digitação
 
 os.makedirs('data', exist_ok=True)  # Cria a pasta se não existir para os dados
 
-# --- Instância Global do Chatbot Ollama para Manter o Histórico ---
-global_ollama_chatbot = OllamaChatbot(
-    # ATENÇÃO: Para aplicações multiusuário em produção, você precisaria de
-    # um gerenciamento de estado de conversa mais robusto por sessão/usuário
-    # (ex: Flask-Session, Redis, banco de dados). Para este exemplo simples, uma global funciona.
-    model_name='gemma3:1b', # <-- Mude para o nome do modelo que você baixou (ex: 'mistral', 'gemma:2b')
-    system_message='Você é um assistente especialista em gado de corte e agronegócio. Responda de forma detalhada e técnica.',
-    max_history_size=10, # Manter até 10 pares de perguntas/respostas no histórico
-    temperature=0.6,     # Um pouco menos criativo, para respostas mais focadas
-    num_ctx=4096         # Aumentar a janela de contexto se o seu modelo Ollama suportar
-)
+# --- Configuração do Ollama para a requisição atual ---
+def _get_ollama():
+    if 'ollama' not in g:
+        g.ollama = OllamaChatbot(
+            model_name='gemma3:1b',
+            system_message='Você é um assistente especialista em gado de corte e agronegócio. Responda de forma detalhada e técnica.',
+            max_history_size=10,
+            temperature=0.6,
+            num_ctx=4096
+        )
+    return g.ollama
 
-global_user_manager = UserManager('data/users.db')  # Gerenciador de usuários
-
-# String SQL para criar tabelas
-STRING_SQL = {
-    'CREATE_TABLE_LOCALIZACAO': """CREATE TABLE IF NOT EXISTS localizacao (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL UNIQUE,
-        endereco TEXT NOT NULL,
-        coordenadas INTEGER
-    );""",
-
-    'CREATE_TABLE_LOTE': """CREATE TABLE IF NOT EXISTS lote (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL UNIQUE,
-        quantidade INTEGER NOT NULL,
-        localizacao INTEGER NOT NULL,
-        descricao TEXT,
-        FOREIGN KEY (localizacao) REFERENCES localizacao(id)
-    );""",
-
-    'CREATE_TABLE_RACA': """CREATE TABLE IF NOT EXISTS racas (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL UNIQUE,
-        descricao TEXT
-    );""",
-
-    'CREATE_TABLE_FORNECEDOR': """CREATE TABLE IF NOT EXISTS fornecedores (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL UNIQUE,
-        telefone TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE
-    );""",
-
-    'CREATE_TABLE_CLIENTE': """CREATE TABLE IF NOT EXISTS clientes (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL UNIQUE,
-        email TEXT NOT NULL UNIQUE,
-        telefone TEXT
-    );""",
-
-    'CREATE_TABLE_INSUMO': """CREATE TABLE IF NOT EXISTS insumos (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL UNIQUE,
-        quantidade INTEGER NOT NULL,
-        unidade TEXT NOT NULL,
-        fornecedor_id INTEGER,
-        FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id)
-    );"""
-}
-# --- Instância global da classe de genciamento do banco de dados principal ---
-# global_dados = SQL('data/dados.db', STRING_SQL)   # Apenas na primeira execuÇão é nescessário
-global_dados = SQL('data/dados.db')
+# --- Função para obter a conexão SQL para a requisição atual ---
+def sql():
+    if 'sql' not in g:
+        # g.sql = SQL('data/dados.db', STRING_SQL)  # Apenas na primeira execução é necessário
+        g.sql = SQL('data/dados.db')
+    return g.sql
 
 # --- Configuração do Gerenciador de Usuários ---
 @app.before_request
@@ -94,7 +48,7 @@ def index():
             password = request.form.get('password')
 
             # Lógica de autenticação
-            booleano, mensagem = global_user_manager.login_user(username, password)
+            booleano, mensagem = login_user(username, password, sql())
             # print(booleano, mensagem)
             if booleano:
                 # Aqui é definido um cookie para o usuário logado
@@ -109,7 +63,7 @@ def index():
             password = request.form.get('password')
 
             # Lógica de registro
-            booleano, mensagem = global_user_manager.register_user(username, password)
+            booleano, mensagem = register_user(username, password, sql())
             # print(booleano, mensagem)
             if booleano:
                 session['user_id'] = mensagem  # Define o ID do usuário logado na sessão
@@ -122,10 +76,10 @@ def index():
 def home():
     # print(f"Usuário logado: {g.user_id}")  # Exibe o ID do usuário logado
     return render_template('home.html', dados={
-        'nome_usuario': global_user_manager.get_user_by_id(g.user_id)
+        'username': sql().buscar_registro('users', 'id', g.user_id)[0][1]
     })
 
-@app.route('/teste', methods=["GET", "POST"])
+@app.route('/teste', methods=[GET, POST])
 def teste():
     if request.method == "POST":
         ids = request.form.getlist("animaisSelecionados[]")
@@ -149,8 +103,14 @@ def json_animal(categoria):
     if request.method == POST:
         nome = request.form.get('nome')
         if nome:
-            json = ManagerJSON('animais.json')
-            json.atualizar_dado(categoria, {'nome': nome if type(nome) is str else str(nome)})
+            if not sql().inserir('animais', ['nome'], [nome if type(nome) is str else str(nome)]):
+                from configurar_db import configurar_banco_dados
+                configurar_banco_dados()
+
+            resp_bool, resp_str = sql().inserir(categoria, ['nome'], [nome if type(nome) is str else str(nome)])
+            if not resp_bool:
+                return render_template('cadastro_json_animais.html', categoria=categoria, status=f'Erro: {resp_str}')
+
             status = f'{categoria} {nome} cadastrado!'
         return render_template('cadastro_json_animais.html', categoria=categoria, status=status)
 
@@ -629,7 +589,7 @@ def financeiro():
     # return render_template('financeiro.html')
     return render_template('index.html')
 
-@app.route('/perguntar', methods=['POST'])
+@app.route('/perguntar', methods=[POST])
 def perguntar():
     # Obtém a pergunta enviada pelo JavaScript via formulário POST
     pergunta = request.form.get('pergunta')
