@@ -1,12 +1,10 @@
 import hashlib
-import os
-from models import SQL
 
 def _hash_password(password):
     """Gero o hash da senha usando SHA256."""
     return hashlib.sha256(password.encode()).hexdigest()
 
-def register_user(username, password, sql:SQL):
+def register_user(sql, username, password):
     """
     Cadastra um novo usuário no banco de dados.
     Retorno True em caso de sucesso, False se o usuário já existir.
@@ -20,17 +18,24 @@ def register_user(username, password, sql:SQL):
     finally:
         sql.conn.close()
 
-def login_user(username, password, sql:SQL):
+def login_user(sql, username, password):
     """
     Verifica as credenciais do usuário.
     Se corretas, retorna True e o ID real do usuário (do banco de dados).
     Caso contrário, retorna False e uma mensagem de erro.
     """
     user_data = sql.buscar_registro('users', 'username', username)
+    if not user_data[0]:
+        from configurar_db import configurar_banco_dados
+        configurar_banco_dados(sql)  # Cria a tabela 'users' se não existir
+        user_data = sql.buscar_registro('users', 'username', username)
+        if not user_data[0]: raise ValueError(f"Erro: Tabela '{user_data[1]}' não pode ser criada. Verifique a configuração do banco de dados.")
     sql.conn.close()
 
+    user_data = user_data[1]
     if user_data:
         # user_data['id'] é o ID real do usuário do banco de dados
+        print(f"Dados do usuário encontrado: {user_data}")
         user_id = user_data['id'] 
         stored_password_hash = user_data['password_hash']
         input_password_hash = _hash_password(password) # Certifique-se de que _hash_password use o mesmo algoritmo de hash para verificação
@@ -46,7 +51,7 @@ def login_user(username, password, sql:SQL):
     else:
         return False, f"Erro de login: Usuário '{username}' não encontrado."
 
-def get_user_by_id(user_id, sql:SQL):
+def get_user_by_id(sql, user_id):
         """
         Retorna os dados do usuário pelo ID.
         Se encontrado, retorna um dicionário com os dados do usuário.
