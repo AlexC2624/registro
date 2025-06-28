@@ -1,71 +1,83 @@
 from models import SQL
-
-TODAS = False
-CREATE_TABLE_USER = 'CREATE_TABLE_USER'
-CREATE_TABLE_LOCALIZACAO = 'CREATE_TABLE_LOCALIZACAO'
-CREATE_TABLE_LOTE = 'CREATE_TABLE_LOTE'
-CREATE_TABLE_RACA = 'CREATE_TABLE_RACA'
-CREATE_TABLE_FORNECEDOR = 'CREATE_TABLE_FORNECEDOR'
-CREATE_TABLE_CLIENTE = 'CREATE_TABLE_CLIENTE'
-CREATE_TABLE_INSUMO = 'CREATE_TABLE_INSUMO'
-
-
-def configurar_banco_dados(id_user:str='1', tabelas:list=[TODAS]):
-    STRING_SQL = {
-        CREATE_TABLE_USER: f"""CREATE TABLE IF NOT EXISTS users (
+def configurar_banco_dados(sql:SQL, id_user:str=''):
+    SISTEM_TABLES = {
+        'CREATE_TABLE_USER': """CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
-            password_hash TEXT NOT NULL
-        );""",
-        CREATE_TABLE_LOCALIZACAO: f"""CREATE TABLE IF NOT EXISTS localizacao{id_user} (
+            username TEXT,
+            password_hash TEXT
+        );"""}
+
+    USER_TABLES = {
+        'CREATE_TABLE_LOCALIZACAO': f"""CREATE TABLE IF NOT EXISTS localizacao_{id_user} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT NOT NULL UNIQUE,
-            endereco TEXT NOT NULL,
+            nome TEXT,
+            endereco TEXT,
             coordenadas INTEGER
         );""",
 
-        CREATE_TABLE_LOTE: f"""CREATE TABLE IF NOT EXISTS lote{id_user} (
+        'CREATE_TABLE_LOTE': f"""CREATE TABLE IF NOT EXISTS lotes_{id_user} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT NOT NULL UNIQUE,
-            quantidade INTEGER NOT NULL,
-            localizacao INTEGER NOT NULL,
+            nome TEXT,
+            quantidade INTEGER,
+            localizacao INTEGER,
             descricao TEXT,
             FOREIGN KEY (localizacao) REFERENCES localizacao(id)
         );""",
 
-        CREATE_TABLE_RACA: f"""CREATE TABLE IF NOT EXISTS racas{id_user} (
+        'CREATE_TABLE_RACA': f"""CREATE TABLE IF NOT EXISTS racas_{id_user} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT NOT NULL UNIQUE,
+            nome TEXT,
             descricao TEXT
         );""",
 
-        CREATE_TABLE_FORNECEDOR: f"""CREATE TABLE IF NOT EXISTS fornecedores{id_user} (
+        'CREATE_TABLE_FORNECEDOR': f"""CREATE TABLE IF NOT EXISTS fornecedores_{id_user} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT NOT NULL UNIQUE,
-            telefone TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE
+            nome TEXT,
+            telefone TEXT,
+            email TEXT
         );""",
 
-        CREATE_TABLE_CLIENTE: f"""CREATE TABLE IF NOT EXISTS clientes{id_user} (
+        'CREATE_TABLE_CLIENTE': f"""CREATE TABLE IF NOT EXISTS clientes_{id_user} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT NOT NULL UNIQUE,
-            email TEXT NOT NULL UNIQUE,
+            nome TEXT,
+            email TEXT,
             telefone TEXT
         );""",
 
-        CREATE_TABLE_INSUMO: f"""CREATE TABLE IF NOT EXISTS insumos{id_user} (
+        'CREATE_TABLE_INSUMO': f"""CREATE TABLE IF NOT EXISTS insumos_{id_user} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT NOT NULL UNIQUE,
-            quantidade INTEGER NOT NULL,
-            unidade TEXT NOT NULL,
+            nome TEXT,
+            quantidade INTEGER,
+            unidade TEXT,
             fornecedor_id INTEGER,
             FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id)
+        );""",
+        'CREATE_TABLE_ANIMAIS_ENTRADA': f"""CREATE TABLE IF NOT EXISTS animais_entrada_{id_user} (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT,
+            idade INTEGER,
+            peso INTEGER,
+            raca_id INTEGER,
+            lote_id INTEGER,
+            FOREIGN KEY (raca_id) REFERENCES racas(id),
+            FOREIGN KEY (lote_id) REFERENCES lotes(id)
+        );""",
+        'CREATE_TABLE_ANIMAIS_SAIDA': f"""CREATE TABLE IF NOT EXISTS animais_saida_{id_user} (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT,
+            idade INTEGER,
+            peso INTEGER,
+            raca_id INTEGER,
+            lote_id INTEGER,
+            cliente_id INTEGER,
+            FOREIGN KEY (raca_id) REFERENCES racas(id),
+            FOREIGN KEY (lote_id) REFERENCES lotes(id),
+            FOREIGN KEY (cliente_id) REFERENCES clientes(id)
         );"""
     }
 
-    if tabelas == TODAS:
-        STRING_SQL = STRING_SQL.values()
-        SQL('data/dados.db', STRING_SQL).conn.close()
+    if id_user == '':
+        sql.criar_tabela(SISTEM_TABLES['CREATE_TABLE_USER'])
     else:
-        for tabela in tabelas:
-            if tabela in STRING_SQL: SQL('data/dados.db', STRING_SQL[tabela]).conn.close()
+        for chave in USER_TABLES.keys():
+            sql.criar_tabela(string_sql=USER_TABLES[chave])
