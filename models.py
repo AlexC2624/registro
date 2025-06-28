@@ -10,28 +10,28 @@ class SQL:
         'produtos': {'id', 'preco'},
     }
 
-    def __init__(self, nome_db:str='dados.db', sql_creat:dict={}):
+    def __init__(self, sql_creat:dict, nome_db:str='dados.db'):
+        """
+        Inicializa uma nova instância da classe, conectando ao banco de dados SQLite especificado e configurando o cursor.
+        Ativa o modo de depuração para exibir consultas SQL executadas.
+        Args:
+            sql_creat (dict): Dicionário contendo os comandos SQL para criação das tabelas. ATENÇÃO, a chave deve ser igual ao nome fixo da tabela.
+            nome_db (str, opcional): Nome do arquivo do banco de dados SQLite. Padrão é 'dados.db'.
+        """
+
         self.conn = sqlite3.connect(nome_db)
         self.cursor = self.conn.cursor()
         self.conn.set_trace_callback(print)  # Ativa o modo de depuração para exibir consultas SQL
-        if sql_creat:
-            for sql in sql_creat.keys():
-                self.criar_tabela(sql_creat[sql])
+        self.sql_creat = sql_creat
 
-    def criar_tabela(self, string_sql="""
-        CREATE TABLE IF NOT EXISTS clientes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE,
-            telefone TEXT
-        );
-    """):
+    def criar_tabela(self, string_sql):
         """
         Cria uma tabela no banco de dados com base na string SQL fornecida.
         
         Args:
-            string_sql (str): Comando SQL para criar a tabela.
+            string_sql (str): Comando SQL para criar a tabela ou a chave do dict informado na instância.
         """
+        if string_sql in self.sql_creat.keys(): string_sql = self.sql_creat[string_sql]
         self.cursor.execute(string_sql)
         self.conn.commit()
 
@@ -45,13 +45,31 @@ class SQL:
         valores = tuple(valores)
         try:
             self.cursor.execute(string_sql, valores)
-        except sqlite3.OperationalError as e: return False, e
+        except sqlite3.OperationalError as e:
+            self.criar_tabela(tabela)
+            self.cursor.execute(string_sql, valores)
+
         self.conn.commit()
         return True, f'Cadastro em {tabela} realizad com sucesso'
 
     def ler_tabela(self, nome_tabela='tabela', colunas=['*']):
+        """
+        Lê dados de uma tabela específica no banco de dados. Se não encontrar a tabela tenta criá-la somente uma vez.
+
+        Args:
+            nome_tabela (str): Nome da tabela a ser lida. Padrão é 'tabela'.
+            colunas (list of str): Lista com os nomes das colunas a serem selecionadas. Padrão é ['*'] (todas as colunas).
+
+        Returns:
+            list: Lista de tuplas contendo os registros encontrados na tabela.
+        """
         string_sql = f'SELECT {', '.join(colunas)} FROM {nome_tabela}'
-        self.cursor.execute(string_sql)
+        try:
+            self.cursor.execute(string_sql)
+        except sqlite3.OperationalError as e:
+            self.criar_tabela(nome_tabela)
+            self.cursor.execute(string_sql)
+        return self.cursor.fetchall()
 
     def buscar_registro(self, tabela:str, coluna:str, valor:str) -> list:
         """        Busca registros em uma tabela específica onde uma coluna tem um valor específico.
@@ -61,15 +79,14 @@ class SQL:
             valor (str): Valor a ser buscado na coluna especificada.
         Returns:
             list: Lista de tuplas contendo os registros encontrados. Retorna uma lista vazia se nenhum registro for encontrado.
-            ValueError: Se a tabela não existir, uma mensagem de erro será levantada.
         """
         string_sql = f"SELECT * FROM {tabela} WHERE {coluna} = ?"
         try: self.cursor.execute(string_sql, (valor,))
         except sqlite3.OperationalError as e:
-            e = str(e)
-            if 'no such table' in e: return False, tabela
-            else: raise e
-        return True, self.cursor.fetchall()
+            self.criar_tabela(tabela)
+            self.cursor.execute(string_sql, (valor,))
+
+        return self.cursor.fetchall()
 
     def consulta_sql(self, sql_query: str, params: tuple = None) -> list | None:
         """
