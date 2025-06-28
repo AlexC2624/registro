@@ -1,5 +1,6 @@
 import sqlite3  # Importa o módulo sqlite3 para manipulação de banco de dados SQLite
 import re   # Importa o módulo re para expressões regulares
+from configurar_db import tabelas
 
 class SQL:
     # Colunas não permitidas para cada tabela
@@ -9,7 +10,7 @@ class SQL:
         'produtos': {'id', 'preco'},
     }
 
-    def __init__(self, sql_creat:dict, nome_db:str='dados.db'):
+    def __init__(self, nome_db:str='dados.db'):
         """
         Inicializa uma nova instância da classe, conectando ao banco de dados SQLite especificado e configurando o cursor.
         Ativa o modo de depuração para exibir consultas SQL executadas.
@@ -21,18 +22,18 @@ class SQL:
         self.conn = sqlite3.connect(nome_db)
         self.cursor = self.conn.cursor()
         self.conn.set_trace_callback(print)  # Ativa o modo de depuração para exibir consultas SQL
-        self.sql_creat = sql_creat
 
-    def criar_tabela(self, string_sql):
+    def criar_tabela(self, string_sql, id_user):
         """
         Cria uma tabela no banco de dados com base na string SQL fornecida.
         
         Args:
             string_sql (str): Comando SQL para criar a tabela ou a chave do dict informado na instância.
         """
-        if string_sql in self.sql_creat.keys():
+        tabelas_db = tabelas(id_user)
+        if string_sql in tabelas_db.keys():
             if string_sql[-1].isdigit(): string_sql = string_sql.split('_')[0]   # Remove o id do user se tiver
-            string_sql = self.sql_creat[string_sql]
+            string_sql = tabelas_db[string_sql]
         self.cursor.execute(string_sql)
         self.conn.commit()
 
