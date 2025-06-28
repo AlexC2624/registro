@@ -2,7 +2,6 @@ import sqlite3  # Importa o módulo sqlite3 para manipulação de banco de dados
 import re   # Importa o módulo re para expressões regulares
 
 class SQL:
-
     # Colunas não permitidas para cada tabela
     _DISALLOWED_COLUMNS = {
         'clientes': {'id'},
@@ -31,7 +30,9 @@ class SQL:
         Args:
             string_sql (str): Comando SQL para criar a tabela ou a chave do dict informado na instância.
         """
-        if string_sql in self.sql_creat.keys(): string_sql = self.sql_creat[string_sql]
+        if string_sql in self.sql_creat.keys():
+            if string_sql[-1].isdigit(): string_sql = string_sql.split('_')[0]   # Remove o id do user se tiver
+            string_sql = self.sql_creat[string_sql]
         self.cursor.execute(string_sql)
         self.conn.commit()
 
