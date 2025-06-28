@@ -31,8 +31,8 @@
                     <label for="lote">Lote de Destino:</label>
                     <select name="lote" id="lote" required>
                         <option value="" disabled selected>Selecione o lote</option>
-                        {% for chave in lote_opcoes.keys() %}
-                        <option value="{{ chave }}">{{ lote_opcoes[chave]['nome'] }}</option>
+                        {% for lote in lote_opcoes %}
+                        <option value="{{ lote[0] }}">{{ lote[1] }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -41,8 +41,8 @@
                     <label for="raca">Raça do Animal:</label>
                     <select name="raca" id="raca" required>
                         <option value="" disabled selected>Selecione a raça</option>
-                        {% for item in raca_opcoes %}
-                        <option value="{{ item }}">{{ item }}</option>
+                        {% for raca in raca_opcoes %}
+                        <option value="{{ raca[0] }}">{{ raca[1] }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -56,8 +56,8 @@
                     <label for="fornecedor">Fornecedor:</label>
                     <select name="fornecedor" id="fornecedor" required>
                         <option value="" disabled selected>Selecione o fornecedor</option>
-                        {% for item in fornecedor_opcoes %}
-                        <option value="{{ item }}">{{ item }}</option>
+                        {% for fornecedor in fornecedor_opcoes %}
+                        <option value="{{ fornecedor[0] }}">{{ fornecedor[1] }}</option>
                         {% endfor %}
                     </select>
                 </div>
