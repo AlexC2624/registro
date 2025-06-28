@@ -10,13 +10,13 @@ class SQL:
         'produtos': {'id', 'preco'},
     }
 
-    def __init__(self, nome_db:str='dados.db', str_sql_creat:list={}):
+    def __init__(self, nome_db:str='dados.db', sql_creat:dict={}):
         self.conn = sqlite3.connect(nome_db)
         self.cursor = self.conn.cursor()
         self.conn.set_trace_callback(print)  # Ativa o modo de depuração para exibir consultas SQL
-        if str_sql_creat:
-            for sql in str_sql_creat:
-                self.criar_tabela(sql)
+        if sql_creat:
+            for sql in sql_creat.keys():
+                self.criar_tabela(sql_creat[sql])
 
     def criar_tabela(self, string_sql="""
         CREATE TABLE IF NOT EXISTS clientes (
@@ -60,15 +60,16 @@ class SQL:
             coluna (str): Nome da coluna onde o valor será buscado.
             valor (str): Valor a ser buscado na coluna especificada.
         Returns:
-            list: Lista de tuplas contendo os registros encontrados. Retorna uma lista vazia se
-                   nenhum registro for encontrado.
+            list: Lista de tuplas contendo os registros encontrados. Retorna uma lista vazia se nenhum registro for encontrado.
+            ValueError: Se a tabela não existir, uma mensagem de erro será levantada.
         """
         string_sql = f"SELECT * FROM {tabela} WHERE {coluna} = ?"
         try: self.cursor.execute(string_sql, (valor,))
         except sqlite3.OperationalError as e:
-            if 'no such table' in str(e): return 'Erro: Tabela não encontrada.', e[e.rfind("'")+1:-1]
+            e = str(e)
+            if 'no such table' in e: return False, tabela
             else: raise e
-        return self.cursor.fetchall()
+        return True, self.cursor.fetchall()
 
     def consulta_sql(self, sql_query: str, params: tuple = None) -> list | None:
         """
