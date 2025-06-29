@@ -57,15 +57,18 @@ def tabelas(id_user=1):
             );""",
         'animais_saida': f"""CREATE TABLE IF NOT EXISTS animais_saida_{id_user} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT,
-            idade INTEGER,
-            peso INTEGER,
-            raca_id INTEGER,
-            lote_id INTEGER,
-            cliente_id INTEGER,
-            FOREIGN KEY (raca_id) REFERENCES racas(id),
-            FOREIGN KEY (lote_id) REFERENCES lotes(id),
-            FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+            lote TEXT,
+            raca INTEGER,
+            data_nascimento INTEGER,
+            fornecedor INTEGER,
+            data_entrada INTEGER,
+            peso_entrada INTEGER,
+            valor_entrada INTEGER,
+
+            cliente TEXT,
+            data_saida TEXT,
+            peso_saida INTEGER,
+            valor_saida INTEGER
         );"""
     }
     return TABELAS
