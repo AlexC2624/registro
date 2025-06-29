@@ -31,8 +31,8 @@
                     <label for="fornecedor">Fornecedor:</label>
                     <select name="fornecedor" id="fornecedor" required>
                         <option value="" disabled selected>Selecione o Fornecedor</option>
-                        {% for item in fornecedor_opcoes %}
-                        <option value="{{ item }}">{{ item }}</option>
+                        {% for fornecedor in fornecedor_opcoes %}
+                        <option value="{{ fornecedor[0] }}">{{ fornecedor[1] }}</option>
                         {% endfor %}
                     </select>
                 </div>
