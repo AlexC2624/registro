@@ -98,8 +98,8 @@
                     <label for="insumo">Insumo Comprado:</label>
                     <select name="insumo" id="insumo" required>
                         <option value="" disabled selected>Selecione o Insumo</option>
-                        {% for k in insumo_opcoes.keys() %}
-                        <option value="{{ k }}">{{insumo_opcoes[k]['nome']}} - {{insumo_opcoes[k]['fornecedor']}}</option>
+                        {% for insumo in insumo_opcoes %}
+                        <option value="{{ insumo[0] }}">{{ insumo[1] }} - {{ insumo[3] }}</option>
                         {% endfor %}
                     </select>
                 </div>
