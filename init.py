@@ -145,7 +145,7 @@ def animal(modo):
                     'peso_entrada': peso_entrada,
                     'valor_entrada': valor_entrada
                 }
-                sql().inserir(f'animais_entrada_{id_user}', novo_registro.keys(), novo_registro.values())
+                sql().inserir(f'animais_saldo_{id_user}', novo_registro.keys(), novo_registro.values())
 
             status = 'Salvo com sucesso!'
 
@@ -185,27 +185,11 @@ def animal(modo):
             valor_saida = request.form['valor_saida']
             # print(idx_entrada, cliente, data_saida, peso_saida, valor_saida, sep='\n')
 
-            # Caminho do arquivo CSV
-            arquivo = 'animal_entrada.csv'
-            banco_entrada = ManagerCSV(arquivo)
-            # Verifica se há entradas de animais
-            if banco_entrada.linhas() == 0:
-                status = 'Nenhum animal cadastrado para saída'
-                return render_template('animal.html', status=status)
-            
-            # Lê os dados de entrada
-            dados_entrada = banco_entrada.ler()['valores']
-
-            # Caminho do arquivo CSV
-            arquivo = 'animal_saida.csv'
-            colunas = ['idx_entrada','lote','raca', 'data_nascimento', 'fornecedor',
-                       'data_entrada', 'peso_entrada', 'valor_entrada', 'cliente',
-                       'data_saida', 'peso_saida', 'valor_saida']
-            banco_saida = ManagerCSV(arquivo, colunas)
+            animal_entrada = sql().ler_tabela(f'animais_saldo_{id_user}')
 
             for idx in idx_entrada:
                 idx = int(idx)  # Converte o ID para inteiro
-                for linha in dados_entrada:
+                for linha in animal_entrada:
                     if linha[0] == idx:  # Busca a linha correspondente ao ID
                         # Criar dicionário com os dados recebidos
                         novo_registro = {
@@ -225,9 +209,9 @@ def animal(modo):
                             'valor_saida': valor_saida
                         }
 
-                        banco_saida.adicionar(novo_registro)
+                        sql().inserir(f'animais_saida_{id_user}', novo_registro.keys(), novo_registro.values())
 
-                banco_entrada.excluir(idx)  # Remove a entrada do animal após registro do mesmo na saída
+                        sql().excluir_registro(f'animais_saldo_{id_user}', 'id', idx)  # Remove a entrada do animal após registro do mesmo na saída
 
             status = 'Salvo com sucesso!'
         
@@ -238,18 +222,21 @@ def animal(modo):
             return render_template('animal.html', status=status)
         
         # Verifica se há entrada de animal
-        animal_entrada = sql().ler_tabela(f'animais_entrada_{id_user}')
+        animal_entrada = sql().ler_tabela(f'animais_saldo_{id_user}')
+        print('animal_entrada', animal_entrada)
         if not animal_entrada:
             status = 'Nenhum animal cadastrado' if not status else status
             return render_template('animal.html', status=status)
-        animal_entrada = animal_entrada.ler()
-        animal_entrada = animal_entrada['valores']
         
-        # Verifica se há saída de animal
+        # Verifica se há saldo de animal
         animal_saida = sql().ler_tabela(f'animais_saida_{id_user}')
-        if animal_saida:
-            saida_ids = [saida[1] for saida in animal_saida]
-            animal_entrada = [entrada for entrada in animal_entrada if entrada[0] not in saida_ids]
+        print('animal_saida', animal_saida)
+        saida_ids = [saida[1] for saida in animal_saida]
+        animais_saldo = [entrada    for entrada in animal_entrada if entrada[0] not in saida_ids]
+        print('animais_saldo', animais_saldo)
+        if not animais_saldo:
+            status = 'Nenhum animal em saldo' if not status else status
+            return render_template('animal.html', status=status)
 
         # Verifica se há clientes cadastrados
         cliente_opcoes = sql().ler_tabela(f'clientes_{id_user}')
@@ -262,7 +249,7 @@ def animal(modo):
             status = status,
             modo = modo,
             lote_opcoes = lote,
-            animal_entrada_opcoes = animal_entrada if animal_entrada else None,
+            animais_saldo = animais_saldo,
             cliente_opcoes = cliente_opcoes
         )
 
