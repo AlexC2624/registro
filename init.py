@@ -77,7 +77,7 @@ def home():
     # print(f"Usuário logado: {g.user_id}")  # Exibe o ID do usuário logado
     print(sql().buscar_registro('users', 'id', g.user_id))
     return render_template('home.html', dados={
-        'username': sql().buscar_registro('users', 'id', g.user_id)[1][0][1]    # Nome de usuário
+        'username': sql().buscar_registro('users', 'id', g.user_id)[0][1]   # Nome de usuário
     })
 
 @app.route('/teste', methods=[GET, POST])
