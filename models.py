@@ -100,6 +100,32 @@ class SQL:
 
         self.conn.commit()
         return True, f'Cadastro em {tabela} realizado com sucesso'
+    
+    def editar_registro(self, tabela, registro):
+        """
+        Edita um registro existente na tabela especificada.
+        Args:
+            tabela (str): Nome da tabela.
+            registro (dict): Dicionário com os dados a serem atualizados. Deve conter a chave 'id'.
+        Returns:
+            tuple: (bool, str) indicando sucesso e mensagem.
+        """
+        if 'id' not in registro:
+            return False, "O dicionário 'registro' deve conter a chave 'id' para identificar o registro."
+        id_valor = registro['id']
+        colunas = [k for k in registro.keys() if k != 'id']
+        if not colunas:
+            return False, "Nenhuma coluna para atualizar."
+        set_clause = ', '.join([f"{col} = ?" for col in colunas])
+        valores = [registro[col] for col in colunas]
+        valores.append(id_valor)
+        string_sql = f"UPDATE {tabela} SET {set_clause} WHERE id = ?"
+        try:
+            self.cursor.execute(string_sql, valores)
+            self.conn.commit()
+            return True, f"Registro com id={id_valor} atualizado em {tabela}."
+        except Exception as e:
+            return False, f"Erro ao atualizar registro: {e}"
 
     def excluir_registro(self, tabela: str, coluna: str, valor):
         """
