@@ -1,6 +1,7 @@
 import sqlite3  # Importa o módulo sqlite3 para manipulação de banco de dados SQLite
 import re   # Importa o módulo re para expressões regulares
 from configurar_db import tabelas
+import logging
 
 class SQL:
     # Colunas não permitidas para cada tabela
@@ -21,7 +22,32 @@ class SQL:
 
         self.conn = sqlite3.connect(nome_db)
         self.cursor = self.conn.cursor()
-        self.conn.set_trace_callback(print)  # Ativa o modo de depuração para exibir consultas SQL
+
+        # 1. Configurar o logger no __init__
+        self.logger = logging.getLogger(__name__)
+        # Define o nível mínimo de log para este logger
+        self.logger.setLevel(logging.DEBUG)
+
+        # Cria um FileHandler para escrever no arquivo de log
+        log_file_path = 'data/log_db.log'
+        file_handler = logging.FileHandler(log_file_path)
+        file_handler.setLevel(logging.DEBUG) # Nível mínimo para o arquivo de log
+
+        # Cria um Formatter para definir o formato das mensagens
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        file_handler.setFormatter(formatter)
+
+        # Adiciona o handler ao logger, se ele ainda não foi adicionado
+        # Isso previne a adição de múltiplos handlers em chamadas subsequentes do __init__
+        if not self.logger.handlers:
+            self.logger.addHandler(file_handler)
+        
+        self.conn.set_trace_callback(self._sql_trace_callback)
+
+    # Este é o método que será chamado pelo set_trace_callback
+    def _sql_trace_callback(self, comando_sql):
+        # Usa o logger já configurado para registrar a consulta SQL como DEBUG
+        self.logger.debug(f"SQL Executado: {comando_sql}")
 
     def criar_tabela(self, string_sql:str):
         """
