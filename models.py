@@ -71,6 +71,7 @@ class SQL:
 
         self.conn.commit()
         return True, f'Cadastro em {tabela} realizado com sucesso'
+
     def excluir_registro(self, tabela: str, coluna: str, valor):
         """
         Exclui registros de uma tabela onde uma coluna tem um valor específico.
@@ -84,12 +85,9 @@ class SQL:
             tuple: (bool, str) indicando sucesso e mensagem.
         """
         string_sql = f"DELETE FROM {tabela} WHERE {coluna} = ?"
-        try:
-            self.cursor.execute(string_sql, (valor,))
-            self.conn.commit()
-            return True, f"Registro(s) excluído(s) de {tabela} onde {coluna} = {valor}."
-        except sqlite3.OperationalError as e:
-            return False, f"Erro ao excluir registro: {e}"
+        self.cursor.execute(string_sql, (valor,))
+        self.conn.commit()
+        return True, f"Registro(s) excluído(s) de {tabela} onde {coluna} = {valor}."
 
     def ler_tabela(self, nome_tabela='tabela', colunas=['*']):
         """
