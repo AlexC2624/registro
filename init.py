@@ -255,14 +255,12 @@ def animal(modo):
 
 @app.route('/insumo/<modo>', methods=[GET, POST])
 def insumo(modo):
+    id_user = g.user_id
     status = None
     modo = modo
     insumo_opcoes = None
     lote_opcoes = None
     fornecedor_opcoes = None
-
-    json_animais = ManagerJSON('animais.json')
-    json_insumo = ManagerJSON('insumos.json')
     
     if modo == 'novo':
         if request.method == POST:
@@ -270,13 +268,6 @@ def insumo(modo):
             fornecedor = request.form['fornecedor']
             tipo = request.form['tipo']
             unidade = request.form['unidade']
-
-            if not nome or not fornecedor or not tipo or not unidade:
-                status = 'Preencha todos os campos!'
-                return render_template('insumo.html', status=status)
-
-            if nome in [json_insumo.obter_dado('insumo')[i]['nome'] for i in json_insumo.obter_dado('insumo').keys()]:
-                status = 'O nome do insumo já existe, tente outro!'
 
             # Criar dicionário com os dados recebidos
             novo_registro = {
@@ -287,14 +278,13 @@ def insumo(modo):
                 'unidade': unidade
             }
             
-            if locals().get('status') is None:
-                json_insumo.atualizar_dado('insumo', novo_registro)
-                status = 'Insumo cadastrado com sucesso!'
+            sql().inserir(f'insumo_novo_{id_user}', novo_registro.keys(), novo_registro.values())
+            status = 'Insumo cadastrado com sucesso!'
 
-        fornecedor_opcoes = json_animais.obter_dado('fornecedor')
-        fornecedor_opcoes = [fornecedor_opcoes[i]['nome'] for i in fornecedor_opcoes.keys()]
+        # Verifica se há fornecedores cadastrados
+        fornecedor_opcoes = sql().ler_tabela(f'fornecedores_{id_user}')
         if fornecedor_opcoes == []:
-            status = 'Nenhum fornecedor cadastrado'
+            status = 'Nenhum fornecedor de animais cadastrado'
             return render_template('insumo.html', status=status)
         
         return render_template(
@@ -319,15 +309,11 @@ def insumo(modo):
                 'quantidade': quantidade,
                 'valor_unitario': valor_unitario
             }
-
-            # Caminho do arquivo CSV correto
-            arquivo = 'insumo_comprado.csv'
-
-            banco = ManagerCSV(arquivo, list(novo_registro.keys()))
-            banco.adicionar(novo_registro)
+            
+            sql().inserir(f'insumo_compra_{id_user}', novo_registro.keys(), novo_registro.keys())
 
             # Atualiza o estoque do insumo
-            insumo_dados = json_insumo.obter_dado('insumo', insumo)
+            insumo_dados = sql().buscar_registro(f'insumo_compra_{id_user}', )
             insumo_dados['estoque'] += int(quantidade)
             json_insumo.editar_dado('insumo', insumo, insumo_dados)
 
