@@ -75,8 +75,9 @@ def tabelas(id_user=1):
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome TEXT,
             fornecedor TEXT,
-            tipo_insumo TEXT,
-            unidade_medida TEXT
+            tipo TEXT,
+            estoque TEXT,
+            unidade TEXT
         );"""
     }
     return TABELAS
