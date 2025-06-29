@@ -70,6 +70,13 @@ def tabelas(id_user=1):
             data_saida TEXT,
             peso_saida INTEGER,
             valor_saida INTEGER
+        );""",
+        'insumo_novo': f""" CREATE TABLE IF NOT EXISTS insumo_novo_{id_user} (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT,
+            fornecedor TEXT,
+            tipo_insumo TEXT,
+            unidade_medida TEXT
         );"""
     }
     return TABELAS
