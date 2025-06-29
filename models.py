@@ -2,6 +2,7 @@ import sqlite3  # Importa o módulo sqlite3 para manipulação de banco de dados
 import re   # Importa o módulo re para expressões regulares
 from configurar_db import tabelas
 import logging
+import os
 
 class SQL:
     # Colunas não permitidas para cada tabela
@@ -24,7 +25,7 @@ class SQL:
         self.cursor = self.conn.cursor()
 
         # 1. Configurar o logger no __init__
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger(os.path.basename(__file__))
         # Define o nível mínimo de log para este logger
         self.logger.setLevel(logging.DEBUG)
 

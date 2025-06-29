@@ -17,7 +17,7 @@ def execute_sql_script(db_path, sql_script_path):
         cursor = conn.cursor()
 
         # 1. Configurar o logger no __init__
-        logger = logging.getLogger(__name__)
+        logger = logging.getLogger(os.path.basename(__file__))
         # Define o nível mínimo de log para este logger
         logger.setLevel(logging.DEBUG)
 
