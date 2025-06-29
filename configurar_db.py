@@ -78,6 +78,13 @@ def tabelas(id_user=1):
             tipo TEXT,
             estoque TEXT,
             unidade TEXT
+        );""",
+        'insumo_compra': f""" CREATE TABLE IF NOT EXISTS insumo_compra_{id_user} (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            insumo TEXT,
+            data TEXT,
+            quantidade TEXT,
+            valor_unitario TEXT
         );"""
     }
     return TABELAS
