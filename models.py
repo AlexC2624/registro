@@ -23,17 +23,20 @@ class SQL:
         self.cursor = self.conn.cursor()
         self.conn.set_trace_callback(print)  # Ativa o modo de depuração para exibir consultas SQL
 
-    def criar_tabela(self, string_sql, id_user):
+    def criar_tabela(self, string_sql:str):
         """
         Cria uma tabela no banco de dados com base na string SQL fornecida.
         
         Args:
             string_sql (str): Comando SQL para criar a tabela ou a chave do dict informado na instância.
         """
-        tabelas_db = tabelas(id_user)
-        if string_sql in tabelas_db.keys():
-            if string_sql[-1].isdigit(): string_sql = string_sql.split('_')[0]   # Remove o id do user se tiver
-            string_sql = tabelas_db[string_sql]
+        if string_sql[-1].isdigit():
+            nome_tabela = string_sql.split('_')
+            nome_tabela = '_'.join(nome_tabela[:-1])
+            id_user = string_sql.split('_')[-1]
+            tabelas_db = tabelas(id_user)
+            string_sql = tabelas_db[nome_tabela]
+        
         self.cursor.execute(string_sql)
         self.conn.commit()
 
@@ -48,11 +51,12 @@ class SQL:
         try:
             self.cursor.execute(string_sql, valores)
         except sqlite3.OperationalError as e:
+            print('tabela', tabela)
             self.criar_tabela(tabela)
             self.cursor.execute(string_sql, valores)
 
         self.conn.commit()
-        return True, f'Cadastro em {tabela} realizad com sucesso'
+        return True, f'Cadastro em {tabela} realizado com sucesso'
 
     def ler_tabela(self, nome_tabela='tabela', colunas=['*']):
         """
