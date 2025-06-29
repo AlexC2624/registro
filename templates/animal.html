@@ -106,8 +106,8 @@
                     <label for="lote_entrada">Lote de Origem:</label>
                     <select id="lote_entrada" name="lote_entrada" required>
                         <option value="" disabled selected>Selecione um lote cadastrado</option>
-                        {% for chave in lote_opcoes.keys() %}
-                        <option value="{{ chave }}">{{ lote_opcoes[chave]['nome'] }}</option>
+                        {% for lote in lote_opcoes %}
+                        <option value="{{ lote[0] }}">{{ lote[1] }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -136,7 +136,7 @@
                     <select name="cliente" id="cliente" required>
                         <option value="" disabled selected>Selecione o cliente</option>
                         {% for cliente in cliente_opcoes %}
-                        <option value="{{ cliente }}">{{ cliente }}</option>
+                        <option value="{{ cliente[0] }}">{{ cliente[1] }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -171,7 +171,8 @@
         </section>
 
         <script>
-            const animal_entrada_opcoes = {{ animal_entrada_opcoes | tojson }};
+            const animais_saldo = {{ animais_saldo | tojson }};
+            console.log(animais_saldo)
             const loteEntrada = document.getElementById("lote_entrada");
             const tabelaAnimais = document.getElementById("tabelaAnimais");
             const checkboxMestre = document.getElementById("selecionar_todos");
@@ -180,8 +181,8 @@
                 const selecionado = Number(this.value);
                 tabelaAnimais.innerHTML = "";
                 if (selecionado) {
-                    animal_entrada_opcoes.forEach(function (linha) {
-                        if (linha[1] === selecionado) {
+                    animais_saldo.forEach(function (linha) {
+                        if (linha[1] == selecionado) {
                             const tb_tr = document.createElement("tr");
 
                             const tb_td = document.createElement("td");
