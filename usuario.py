@@ -30,9 +30,10 @@ def login_user(sql: SQL, username: str, password: str):
 
     if user_data:
         # user_data['id'] é o ID real do usuário do banco de dados
-        print(f"Dados do usuário encontrado: {user_data}")
-        user_id = user_data['id'] 
-        stored_password_hash = user_data['password_hash']
+        # print(f"Dados do usuário encontrado: {user_data}")
+        user_data = user_data[0]
+        user_id = user_data[0]
+        stored_password_hash = user_data[2]
         input_password_hash = _hash_password(password) # Certifique-se de que _hash_password use o mesmo algoritmo de hash para verificação
 
         # Em um cenário de produção REAL, você usaria uma biblioteca como bcrypt:
