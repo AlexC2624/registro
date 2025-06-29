@@ -40,6 +40,20 @@ class SQL:
         self.cursor.execute(string_sql)
         self.conn.commit()
 
+    def excluir_tabela(self, nome_tabela: str):
+        """
+        Exclui (drop) uma tabela do banco de dados.
+
+        Args:
+            nome_tabela (str): Nome da tabela a ser excluída.
+        """
+        try:
+            self.cursor.execute(f"DROP TABLE IF EXISTS {nome_tabela}")
+            self.conn.commit()
+            return True, f"Tabela '{nome_tabela}' excluída com sucesso."
+        except sqlite3.OperationalError as e:
+            return False, f"Erro ao excluir tabela '{nome_tabela}': {e}"
+
     def inserir(self, tabela='users', colunas=['nome', 'email', 'telefone'], valores=['Ana', 'ana@mail.com', 123456789]):
         """Insere um registro na tabela com base nas colunas e nos valores fornecidos.
         Args:
@@ -57,6 +71,25 @@ class SQL:
 
         self.conn.commit()
         return True, f'Cadastro em {tabela} realizado com sucesso'
+    def excluir_registro(self, tabela: str, coluna: str, valor):
+        """
+        Exclui registros de uma tabela onde uma coluna tem um valor específico.
+
+        Args:
+            tabela (str): Nome da tabela.
+            coluna (str): Nome da coluna para a condição.
+            valor: Valor a ser comparado na condição.
+
+        Returns:
+            tuple: (bool, str) indicando sucesso e mensagem.
+        """
+        string_sql = f"DELETE FROM {tabela} WHERE {coluna} = ?"
+        try:
+            self.cursor.execute(string_sql, (valor,))
+            self.conn.commit()
+            return True, f"Registro(s) excluído(s) de {tabela} onde {coluna} = {valor}."
+        except sqlite3.OperationalError as e:
+            return False, f"Erro ao excluir registro: {e}"
 
     def ler_tabela(self, nome_tabela='tabela', colunas=['*']):
         """
@@ -67,7 +100,7 @@ class SQL:
             colunas (list of str): Lista com os nomes das colunas a serem selecionadas. Padrão é ['*'] (todas as colunas).
 
         Returns:
-            list: Lista de tuplas contendo os registros encontrados na tabela.
+            list_of_tuple: Lista de tuplas contendo os registros encontrados na tabela.
         """
         string_sql = f'SELECT {', '.join(colunas)} FROM {nome_tabela}'
         try:
