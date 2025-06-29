@@ -37,6 +37,8 @@ class SQL:
             tabelas_db = tabelas(id_user)
             string_sql = tabelas_db[nome_tabela]
         
+        elif string_sql == 'users': string_sql = tabelas()['users']
+        
         self.cursor.execute(string_sql)
         self.conn.commit()
 
