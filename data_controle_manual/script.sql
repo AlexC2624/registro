@@ -90,14 +90,14 @@
 
 -- 9. Comando: Listar todas as tabelas no banco de dados
 -- Consulta a tabela mestra 'sqlite_master' que armazena informações sobre o schema.
-SELECT name FROM sqlite_master WHERE type='table';
+-- SELECT name FROM sqlite_master WHERE type='table';
 
 -- 10. Comando: Listar colunas de uma tabela específica (Ex: 'clientes')
 -- O comando PRAGMA table_info(nome_da_tabela) retorna detalhes das colunas.
-PRAGMA table_info(clientes);
+-- PRAGMA table_info(clientes);
 
 -- 11. Comando: Listar colunas de outra tabela específica (Ex: 'pedidos')
-PRAGMA table_info(pedidos);
+-- PRAGMA table_info(pedidos);
 
 -- 12. Comando: Listar colunas da tabela 'clientes_vip' (se ela foi criada)
-PRAGMA table_info(clientes_vip);
+-- PRAGMA table_info(clientes_vip);
