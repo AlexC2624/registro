@@ -1,10 +1,11 @@
 import hashlib
+from models import SQL
 
 def _hash_password(password):
     """Gero o hash da senha usando SHA256."""
     return hashlib.sha256(password.encode()).hexdigest()
 
-def register_user(sql, username, password):
+def register_user(sql: SQL, username: str, password: str):
     """
     Cadastra um novo usuário no banco de dados.
     Retorno True em caso de sucesso, False se o usuário já existir.
@@ -18,21 +19,15 @@ def register_user(sql, username, password):
     finally:
         sql.conn.close()
 
-def login_user(sql, username, password):
+def login_user(sql: SQL, username: str, password: str):
     """
     Verifica as credenciais do usuário.
     Se corretas, retorna True e o ID real do usuário (do banco de dados).
     Caso contrário, retorna False e uma mensagem de erro.
     """
     user_data = sql.buscar_registro('users', 'username', username)
-    if not user_data[0]:
-        from configurar_db import configurar_banco_dados
-        configurar_banco_dados(sql)  # Cria a tabela 'users' se não existir
-        user_data = sql.buscar_registro('users', 'username', username)
-        if not user_data[0]: raise ValueError(f"Erro: Tabela '{user_data[1]}' não pode ser criada. Verifique a configuração do banco de dados.")
     sql.conn.close()
 
-    user_data = user_data[1]
     if user_data:
         # user_data['id'] é o ID real do usuário do banco de dados
         print(f"Dados do usuário encontrado: {user_data}")
