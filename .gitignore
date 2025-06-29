@@ -2,4 +2,3 @@ __pycache__/
 .venv/
 1/
 data/*
-data_controle_manual/script.sql
