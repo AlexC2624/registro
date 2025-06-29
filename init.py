@@ -75,7 +75,6 @@ def index():
 @app.route('/home', methods= [GET]) # Rota para a página inicial
 def home():
     # print(f"Usuário logado: {g.user_id}")  # Exibe o ID do usuário logado
-    print(sql().buscar_registro('users', 'id', g.user_id))
     return render_template('home.html', dados={
         'username': sql().buscar_registro('users', 'id', g.user_id)[0][1]   # Nome de usuário
     })
@@ -223,17 +222,17 @@ def animal(modo):
         
         # Verifica se há entrada de animal
         animal_entrada = sql().ler_tabela(f'animais_saldo_{id_user}')
-        print('animal_entrada', animal_entrada)
+        # print('animal_entrada', animal_entrada)
         if not animal_entrada:
             status = 'Nenhum animal cadastrado' if not status else status
             return render_template('animal.html', status=status)
         
         # Verifica se há saldo de animal
         animal_saida = sql().ler_tabela(f'animais_saida_{id_user}')
-        print('animal_saida', animal_saida)
+        # print('animal_saida', animal_saida)
         saida_ids = [saida[1] for saida in animal_saida]
         animais_saldo = [entrada    for entrada in animal_entrada if entrada[0] not in saida_ids]
-        print('animais_saldo', animais_saldo)
+        # print('animais_saldo', animais_saldo)
         if not animais_saldo:
             status = 'Nenhum animal em saldo' if not status else status
             return render_template('animal.html', status=status)
