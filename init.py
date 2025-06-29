@@ -48,7 +48,7 @@ def index():
             password = request.form.get('password')
 
             # Lógica de autenticação
-            booleano, mensagem = login_user(username, password, sql())
+            booleano, mensagem = login_user(sql(), username, password)
             # print(booleano, mensagem)
             if booleano:
                 # Aqui é definido um cookie para o usuário logado
@@ -63,7 +63,7 @@ def index():
             password = request.form.get('password')
 
             # Lógica de registro
-            booleano, mensagem = register_user(username, password, sql())
+            booleano, mensagem = register_user(sql(), username, password)
             # print(booleano, mensagem)
             if booleano:
                 session['user_id'] = mensagem  # Define o ID do usuário logado na sessão
@@ -75,8 +75,9 @@ def index():
 @app.route('/home', methods= [GET]) # Rota para a página inicial
 def home():
     # print(f"Usuário logado: {g.user_id}")  # Exibe o ID do usuário logado
+    print(sql().buscar_registro('users', 'id', g.user_id))
     return render_template('home.html', dados={
-        'username': sql().buscar_registro('users', 'id', g.user_id)[0][1]
+        'username': sql().buscar_registro('users', 'id', g.user_id)[1][0][1]    # Nome de usuário
     })
 
 @app.route('/teste', methods=[GET, POST])
@@ -103,11 +104,12 @@ def json_animal(categoria):
     if request.method == POST:
         nome = request.form.get('nome')
         if nome:
-            if not sql().inserir('animais', ['nome'], [nome if type(nome) is str else str(nome)]):
+            resp_bool, resp_str = sql().inserir(f'{categoria}_{g.user_id}', ['nome'], [nome if type(nome) is str else str(nome)])
+            if not resp_bool:
                 from configurar_db import configurar_banco_dados
-                configurar_banco_dados()
+                configurar_banco_dados(sql(), g.user_id)  # Configura o banco de dados se não existir
+                resp_bool, resp_str = sql().inserir(f'{categoria}_{g.user_id}', ['nome'], [nome if type(nome) is str else str(nome)])
 
-            resp_bool, resp_str = sql().inserir(categoria, ['nome'], [nome if type(nome) is str else str(nome)])
             if not resp_bool:
                 return render_template('cadastro_json_animais.html', categoria=categoria, status=f'Erro: {resp_str}')
 
@@ -118,9 +120,8 @@ def json_animal(categoria):
 
 @app.route('/animal/<modo>', methods= [GET, POST])
 def animal(modo):
-
+    id_user = g.user_id
     status = None
-    json = ManagerJSON('animais.json')
 
     if modo == 'entrada':
         if request.method == POST:
@@ -133,19 +134,6 @@ def animal(modo):
             valor_entrada = request.form['valor_entrada']
             qtd_animais_entrada = int(request.form['qtd_animais_entrada'])
 
-            # Caminho do arquivo CSV
-            arquivo = 'animal_entrada.csv'
-
-            banco = ManagerCSV(arquivo, [
-                'lote', 'raca', 'data_nascimento', 'fornecedor',
-                'data_entrada', 'peso_entrada', 'valor_entrada'
-            ])
-            proximo_id = False
-            if banco.linhas() == 0:
-                banco2 = ManagerCSV('animal_saida.csv')
-                if banco2.linhas() != 0:
-                    proximo_id = banco2.ler()['valores'][-1][1] + 1
-
             for _ in range(qtd_animais_entrada):
                 # Criar dicionário com os dados recebidos
                 novo_registro = {
@@ -157,27 +145,24 @@ def animal(modo):
                     'peso_entrada': peso_entrada,
                     'valor_entrada': valor_entrada
                 }
-                if proximo_id: banco.adicionar(novo_registro, proximo_id)
-                else: banco.adicionar(novo_registro)
+                sql().inserir(f'animais_entrada_{id_user}', novo_registro.keys(), novo_registro.values())
 
             status = 'Salvo com sucesso!'
 
         # Verifica se há lotes cadastrados
-        lote_opcoes = json.obter_dado('lote')
-        if lote_opcoes == {}:
+        lote_opcoes = sql().ler_tabela(f'lotes_{id_user}')
+        if not lote_opcoes:
             status = 'Nenhum lote de animais cadastrado'
             return render_template('animal.html', status=status)
 
         # Verifica se há raças cadastradas
-        raca_opcoes = json.obter_dado('raca')
-        raca_opcoes = [raca_opcoes[i]['nome'] for i in raca_opcoes.keys()]
+        raca_opcoes = sql().ler_tabela(f'racas_{id_user}')
         if raca_opcoes == []:
             status = 'Nenhuma raca de animais cadastrado'
             return render_template('animal.html', status=status)
 
         # Verifica se há fornecedores cadastrados
-        fornecedor_opcoes = json.obter_dado('fornecedor')
-        fornecedor_opcoes = [fornecedor_opcoes[i]['nome'] for i in fornecedor_opcoes.keys()]
+        fornecedor_opcoes = sql().ler_tabela(f'fornecedores_{id_user}')
         if fornecedor_opcoes == []:
             status = 'Nenhum fornecedor de animais cadastrado'
             return render_template('animal.html', status=status)
@@ -247,30 +232,28 @@ def animal(modo):
             status = 'Salvo com sucesso!'
         
         # Verifica se há lote cadastrado
-        lote = json.obter_dado('lote')
+        lote = sql().ler_tabela(f'lotes_{id_user}')
         if lote == []:
             status = 'Nenhum lote de animais cadastrado'
             return render_template('animal.html', status=status)
         
         # Verifica se há entrada de animal
-        animal_entrada = ManagerCSV('animal_entrada.csv')
-        if animal_entrada.linhas() == 0:
+        animal_entrada = sql().ler_tabela(f'animais_entrada_{id_user}')
+        if not animal_entrada:
             status = 'Nenhum animal cadastrado' if not status else status
             return render_template('animal.html', status=status)
         animal_entrada = animal_entrada.ler()
         animal_entrada = animal_entrada['valores']
         
         # Verifica se há saída de animal
-        animal_saida = ManagerCSV('animal_saida.csv')
-        if animal_saida.linhas() > 0:
-            animal_saida = animal_saida.ler()['valores']
+        animal_saida = sql().ler_tabela(f'animais_saida_{id_user}')
+        if animal_saida:
             saida_ids = [saida[1] for saida in animal_saida]
             animal_entrada = [entrada for entrada in animal_entrada if entrada[0] not in saida_ids]
 
         # Verifica se há clientes cadastrados
-        cliente_opcoes = json.obter_dado('cliente')
-        cliente_opcoes = [cliente_opcoes[i]['nome'] for i in cliente_opcoes.keys()]
-        if cliente_opcoes == []:
+        cliente_opcoes = sql().ler_tabela(f'clientes_{id_user}')
+        if not cliente_opcoes:
             status = 'Nenhum cliente de animal cadastrado'
             return render_template('animal.html', status=status)
 
