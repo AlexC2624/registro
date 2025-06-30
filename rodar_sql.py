@@ -1,7 +1,7 @@
 import sqlite3
 import time
 import os
-from ..log import create_log
+from log import create_log
 
 # --- Configurações ---
 DB_FILE = 'data/dados.db'  # Nome do arquivo do seu banco de dados SQLite
