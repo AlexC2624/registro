@@ -306,10 +306,22 @@ def insumo(modo):
             # Atualiza o estoque do insumo
             insumo_dados = sql().buscar_registro(f'insumo_novo_{id_user}', 'id', insumo)
             insumo_dados = list(insumo_dados[0])
+            print(insumo_dados)
             insumo_dados[4] = int(insumo_dados[4]) + int(quantidade)
-            sql().editar_registro(f'insumo_novo_{id_user}', [ins for ins in insumo_dados ])
+            print(insumo_dados)
 
-            status = 'Compra registrada com sucesso!'
+            atualizar_registro = {
+                'id': insumo_dados[0],
+                'nome': insumo_dados[1],
+                'fornecedor': insumo_dados[2],
+                'tipo': insumo_dados[3],
+                'estoque': insumo_dados[4],
+                'unidade': insumo_dados[5]
+            }
+            resp_bool, resp_str = sql().editar_registro(f'insumo_novo_{id_user}', atualizar_registro)
+
+            if resp_bool: status = 'Compra registrada com sucesso!'
+            else: status = resp_str
 
         insumo_opcoes = sql().ler_tabela(f'insumo_novo_{id_user}')
         if not insumo_opcoes:
@@ -327,12 +339,12 @@ def insumo(modo):
 
 @app.route('/manejo/<modo>', methods=[GET, POST])
 def manejo(modo):
+    id_user = g.user_id
     status = None
+    insumo_dados = None
     insumo_opcoes = None
     lote_opcoes = None
     animal_opcoes = None
-    json_animais = ManagerJSON('animais.json')
-    json_insumo = ManagerJSON('insumos.json')
 
     if modo == 'alimentacao':
         if request.method == POST:
@@ -365,13 +377,20 @@ def manejo(modo):
 
             status = 'Consumo registrado com sucesso!'
 
-        insumo_opcoes = json_insumo.obter_dado('insumo')
-        if insumo_opcoes == {}:
-            status = 'Nenhum insumo cadastrado'
+        insumo_opcoes = sql().ler_tabela(f'insumo_compra_{id_user}')
+        if not insumo_opcoes:
+            status = 'Nenhum insumo cadastrado em estoque'
             return render_template('manejo.html', status=status)
+        insumo_dados = sql().ler_tabela(f'insumo_novo_{id_user}')
+        insumo_dict = {}
+        for insumo in insumo_dados:
+            insumo_dict[insumo[0]] = insumo
+        for i in range(len(insumo_opcoes)):
+            insumo_opcoes[i] = list(insumo_opcoes[i])
+            insumo_opcoes[i][1] = int(insumo_opcoes[i][1])
         
-        lote_opcoes = json_animais.obter_dado('lote')
-        if lote_opcoes == {}:
+        lote_opcoes = sql().ler_tabela(f'lotes_{id_user}')
+        if not lote_opcoes:
             status = 'Nenhum lote cadastrado'
             return render_template('manejo.html', status=status)
 
@@ -417,6 +436,7 @@ def manejo(modo):
         status = status,
         modo = modo,
         insumo_opcoes = insumo_opcoes,
+        insumo_dict = insumo_dict,
         lote_opcoes = lote_opcoes,
         animal_opcoes = animal_opcoes
     )
