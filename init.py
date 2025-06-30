@@ -312,8 +312,8 @@ def insumo(modo):
             sql().inserir(f'insumo_compra_{id_user}', novo_registro.keys(), novo_registro.values())
 
             # Atualiza o estoque do insumo
-            insumo_dados = sql().buscar_registro(f'insumo_novo_{id_user}', 'nome', insumo)
-            print('insumo_dados', insumo_dados)
+            insumo_dados = sql().buscar_registro(f'insumo_novo_{id_user}', 'id', insumo)
+            insumo_dados = list(insumo_dados[0])
             insumo_dados[4] = int(insumo_dados[4]) + int(quantidade)
             sql().editar_registro(f'insumo_novo_{id_user}', [ins for ins in insumo_dados ])
 
