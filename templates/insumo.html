@@ -126,8 +126,6 @@
 
                         sel_insumo_compra.addEventListener("change", function () {
                             let insumo_selecionado_id = Number(this.value) - 1;
-                            console.log(insumo_selecionado_id);
-                            console.log(insumo_data);
                             if (insumo_data[insumo_selecionado_id]) {
                                 label_quantidade_compra.textContent = `Quantidade (${insumo_data[insumo_selecionado_id][5]}):`;
                                 // Adjust step based on unit for better UX (e.g., allow decimals for kg, liters)
