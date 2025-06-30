@@ -309,19 +309,21 @@ def insumo(modo):
                 'valor_unitario': valor_unitario
             }
             
-            sql().inserir(f'insumo_compra_{id_user}', novo_registro.keys(), novo_registro.keys())
+            sql().inserir(f'insumo_compra_{id_user}', novo_registro.keys(), novo_registro.values())
 
             # Atualiza o estoque do insumo
-            insumo_dados = sql().buscar_registro(f'insumo_compra_{id_user}', )
-            insumo_dados['estoque'] += int(quantidade)
-            json_insumo.editar_dado('insumo', insumo, insumo_dados)
+            insumo_dados = sql().buscar_registro(f'insumo_novo_{id_user}', 'nome', insumo)
+            print('insumo_dados', insumo_dados)
+            insumo_dados[4] = int(insumo_dados[4]) + int(quantidade)
+            sql().editar_registro(f'insumo_novo_{id_user}', [ins for ins in insumo_dados ])
 
             status = 'Compra registrada com sucesso!'
 
-        insumo_opcoes = json_insumo.obter_dado('insumo')
-        if insumo_opcoes == {}:
+        insumo_opcoes = sql().ler_tabela(f'insumo_novo_{id_user}')
+        if not insumo_opcoes:
             status = 'Nenhum insumo cadastrado'
             return render_template('insumo.html', status=status)
+        print('insumo', insumo_opcoes)
 
     return render_template(
         'insumo.html',
