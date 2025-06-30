@@ -26,8 +26,8 @@
                     <label for="insumo">Insumo Utilizado:</label>
                     <select name="insumo" id="insumo" required>
                         <option value="" disabled selected>Selecione o Insumo</option>
-                        {% for k in insumo_opcoes.keys() %}
-                        <option value="{{ k }}">{{ insumo_opcoes[k]['nome'] }} - {{ insumo_opcoes[k]['fornecedor'] }}</option>
+                        {% for insumo in insumo_opcoes %}
+                        <option value="{{ insumo[0] }}">{{ insumo_dict[insumo[1]][1] }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -36,8 +36,8 @@
                     <label for="lote">Lote(s) Consumidor(es):</label>
                     <select name="lote" id="lote" required>
                         <option value="" disabled selected>Selecione o Lote</option>
-                        {% for lote in lote_opcoes.keys() %}
-                        <option value="{{ lote }}">{{ lote_opcoes[lote]['nome'] }}</option>
+                        {% for lote in lote_opcoes %}
+                        <option value="{{ lote[0] }}">{{ lote[1] }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -63,33 +63,62 @@
                     <label for="quantidade">Quantidade Consumida:</label>
                     <input type="number" min="0.1" step="0.1" id="quantidade" name="quantidade" placeholder="Ex: 75.0" required> {# Min value set to 0.1 #}
                     <script>
-                        let insumoDataAlimentacao = {{ insumo_opcoes | tojson }}; // Renamed for clarity
-                        let selInsumoAlimentacao = document.getElementById("insumo"); // Renamed for clarity
-                        let labelQuantidadeAlimentacao = document.querySelector("label[for='quantidade']"); // Renamed for clarity
-                        let inputQuantidadeAlimentacao = document.getElementById("quantidade"); // Renamed for clarity
+                        let insumoDataAlimentacao = JSON.parse('{{ insumo_opcoes | tojson }}');
+                        let insumoDados = JSON.parse('{{ insumo_dict | tojson }}');
+                        let selInsumoAlimentacao = document.getElementById("insumo");
+                        let labelQuantidadeAlimentacao = document.querySelector("label[for='quantidade']");
+                        let inputQuantidadeAlimentacao = document.getElementById("quantidade");
 
                         selInsumoAlimentacao.addEventListener("change", function () {
-                            let insumoSelecionadoId = Number(this.value);
-                            if (insumoDataAlimentacao[insumoSelecionadoId]) {
-                                labelQuantidadeAlimentacao.textContent = `Quantidade Consumida (${insumoDataAlimentacao[insumoSelecionadoId]['unidade']}):`;
-                                inputQuantidadeAlimentacao.placeholder = `Estoque disponível: ${insumoDataAlimentacao[insumoSelecionadoId]['estoque']} ${insumoDataAlimentacao[insumoSelecionadoId]['unidade']}`;
-                                inputQuantidadeAlimentacao.max = insumoDataAlimentacao[insumoSelecionadoId]['estoque']; // Set max to available stock
+                            // O ID do insumo é o próprio valor da opção selecionada.
+                            // Não precisamos subtrair 1.
+                            // Convertemos para String para garantir que a chave corresponda
+                            // às chaves do objeto insumoDados (que são strings de IDs).
+                            let insumoSelecionadoId = String(this.value); 
+                            
+                            console.log("ID Selecionado (String):", insumoSelecionadoId);
+                            console.log("Objeto insumoDados:", insumoDados);
+                            
+                            // Verifique se o ID existe como chave em insumoDados
+                            if (insumoDados[insumoSelecionadoId]) {
+                                // insumoDados[insumoSelecionadoId] agora retorna o array/lista completa do insumo,
+                                // ex: [ID, 'Nome', 'UnidadeMedida', 'Estoque', 'Valor5', 'NomeUnidadeEstoque']
+                                
+                                // Ajuste os índices conforme a estrutura real do seu array de dados
+                                // Baseado no erro anterior, insumo[0] era o ID.
+                                // Se insumoDados[insumoSelecionadoId] é o array completo,
+                                // então você precisa saber a posição de cada dado.
+
+                                // Assumindo a estrutura: [ID, Nome, Codigo, UnidadeConsumida, EstoqueDisponivel, NomeUnidadeEstoque]
+                                // Verifique as posições corretas do seu array 'insumo' para pegar a UnidadeConsumida, EstoqueDisponivel e NomeUnidadeEstoque
+                                // Se o seu array de insumo_dict é [ID, Nome, Codigo, UnidadeConsumida, EstoqueDisponivel, NomeUnidadeEstoque]
+                                // então:
+                                let unidadeConsumida = insumoDados[insumoSelecionadoId][3]; // Posição 3: Unidade Consumida (ex: 'g', 'kg')
+                                let estoqueDisponivel = insumoDados[insumoSelecionadoId][4]; // Posição 4: Estoque Disponível
+                                let nomeUnidadeEstoque = insumoDados[insumoSelecionadoId][5]; // Posição 5: Nome da Unidade de Estoque (ex: 'g', 'kg')
+
+
+                                labelQuantidadeAlimentacao.textContent = `Quantidade Consumida (${unidadeConsumida}):`;
+                                inputQuantidadeAlimentacao.placeholder = `Estoque disponível: ${estoqueDisponivel} ${nomeUnidadeEstoque}`;
+                                inputQuantidadeAlimentacao.max = estoqueDisponivel; 
                                 
                                 // Adjust step based on unit for better UX (e.g., allow decimals for kg, liters)
-                                if (['g', 'kg', 'ton', 'ml', 'L', 'm³'].includes(insumoDataAlimentacao[insumoSelecionadoId]['unidade'])) {
+                                if (['g', 'kg', 'ton', 'ml', 'L', 'm³'].includes(nomeUnidadeEstoque)) { // Use nomeUnidadeEstoque
                                     inputQuantidadeAlimentacao.step = "0.01";
                                 } else {
-                                    inputQuantidade_Alimentacao.step = "1";
+                                    inputQuantidadeAlimentacao.step = "1";
                                 }
                             } else {
+                                // Caso o insumo selecionado não seja encontrado (por exemplo, opção "Selecione o Insumo")
                                 labelQuantidadeAlimentacao.textContent = "Quantidade Consumida:";
                                 inputQuantidadeAlimentacao.placeholder = "Ex: 75.0";
-                                inputQuantidadeAlimentacao.max = ""; // Clear max if no insumo selected
-                                inputQuantidadeAlimentacao.step = "1"; // Default to integer step
+                                inputQuantidadeAlimentacao.max = "";
+                                inputQuantidadeAlimentacao.step = "1"; 
                             }
                         });
 
                         // Trigger change on load if an option is pre-selected
+                        // Isso é útil se você tem um valor inicial no select vindo do backend.
                         if (selInsumoAlimentacao.value) {
                             selInsumoAlimentacao.dispatchEvent(new Event('change'));
                         }
