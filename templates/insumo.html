@@ -118,18 +118,20 @@
 
                 <div class="form-group">
                     <label for="quantidade">Quantidade:</label>
-                    <input type="number" step="any" id="quantidade" name="quantidade" placeholder="Ex: 150.5" required>
+                    <input type="number" step="any" id="quantidade" name="quantidade" placeholder="Ex: 150" required>
                     <script>
                         let insumo_data = {{ insumo_opcoes | tojson }}; // Renamed to avoid conflict
                         let sel_insumo_compra = document.getElementById("insumo"); // Renamed to avoid conflict
                         let label_quantidade_compra = document.querySelector("label[for='quantidade']"); // Renamed to avoid conflict
 
                         sel_insumo_compra.addEventListener("change", function () {
-                            let insumo_selecionado_id = Number(this.value);
+                            let insumo_selecionado_id = Number(this.value) - 1;
+                            console.log(insumo_selecionado_id);
+                            console.log(insumo_data);
                             if (insumo_data[insumo_selecionado_id]) {
-                                label_quantidade_compra.textContent = `Quantidade (${insumo_data[insumo_selecionado_id]['unidade']}):`;
+                                label_quantidade_compra.textContent = `Quantidade (${insumo_data[insumo_selecionado_id][5]}):`;
                                 // Adjust step based on unit for better UX (e.g., allow decimals for kg, liters)
-                                if (['g', 'kg', 'ton', 'ml', 'L', 'm³'].includes(insumo_data[insumo_selecionado_id]['unidade'])) {
+                                if (['g', 'kg', 'ton', 'ml', 'L', 'm³'].includes(insumo_data[insumo_selecionado_id][5])) {
                                     document.getElementById("quantidade").step = "0.01";
                                 } else {
                                     document.getElementById("quantidade").step = "1";
