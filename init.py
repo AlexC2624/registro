@@ -49,7 +49,6 @@ def index():
 
             # Lógica de autenticação
             booleano, mensagem = login_user(sql(), username, password)
-            # print(booleano, mensagem)
             if booleano:
                 # Aqui é definido um cookie para o usuário logado
                 session['user_id'] = mensagem
@@ -64,7 +63,6 @@ def index():
 
             # Lógica de registro
             booleano, mensagem = register_user(sql(), username, password)
-            # print(booleano, mensagem)
             if booleano:
                 session['user_id'] = mensagem  # Define o ID do usuário logado na sessão
                 return redirect(url_for('home'))
@@ -74,7 +72,6 @@ def index():
 
 @app.route('/home', methods= [GET]) # Rota para a página inicial
 def home():
-    # print(f"Usuário logado: {g.user_id}")  # Exibe o ID do usuário logado
     return render_template('home.html', dados={
         'username': sql().buscar_registro('users', 'id', g.user_id)[0][1]   # Nome de usuário
     })
@@ -83,7 +80,6 @@ def home():
 def teste():
     if request.method == "POST":
         ids = request.form.getlist("animaisSelecionados[]")
-        print(ids)  # Ex: ['1', '2']
         # Aqui você pode converter para int, consultar banco etc.
         return "IDs recebidos: " + ", ".join(ids)
     return render_template('teste.html')
@@ -182,7 +178,6 @@ def animal(modo):
             data_saida = request.form['data_saida']
             peso_saida = request.form['peso_saida']
             valor_saida = request.form['valor_saida']
-            # print(idx_entrada, cliente, data_saida, peso_saida, valor_saida, sep='\n')
 
             animal_entrada = sql().ler_tabela(f'animais_saldo_{id_user}')
 
@@ -222,17 +217,14 @@ def animal(modo):
         
         # Verifica se há entrada de animal
         animal_entrada = sql().ler_tabela(f'animais_saldo_{id_user}')
-        # print('animal_entrada', animal_entrada)
         if not animal_entrada:
             status = 'Nenhum animal cadastrado' if not status else status
             return render_template('animal.html', status=status)
         
         # Verifica se há saldo de animal
         animal_saida = sql().ler_tabela(f'animais_saida_{id_user}')
-        # print('animal_saida', animal_saida)
         saida_ids = [saida[1] for saida in animal_saida]
         animais_saldo = [entrada    for entrada in animal_entrada if entrada[0] not in saida_ids]
-        # print('animais_saldo', animais_saldo)
         if not animais_saldo:
             status = 'Nenhum animal em saldo' if not status else status
             return render_template('animal.html', status=status)
@@ -323,7 +315,6 @@ def insumo(modo):
         if not insumo_opcoes:
             status = 'Nenhum insumo cadastrado'
             return render_template('insumo.html', status=status)
-        print('insumo', insumo_opcoes)
 
     return render_template(
         'insumo.html',
@@ -523,7 +514,7 @@ def relatorios():
         relatorio = request.form.get('relatorio')
         if form_animais: 
             colunas, conteudo = animais(form_animais)
-            print(colunas, conteudo, form_animais, sep='\n')
+            # print(colunas, conteudo, form_animais, sep='\n')
             relatorio = form_animais
         # elif relatorio == 'compras_insumos':
         #     colunas, conteudo = gerar_relatorio_compras_insumos()
