@@ -76,29 +76,52 @@ class SQL:
 
         self.conn.commit()
         return True, f'Cadastro em {tabela} realizado com sucesso'
-    
-    def editar_registro(self, tabela:str, registro:list):
+
+    def editar_registro(self, tabela: str, registro: dict):
         """
         Edita um registro existente na tabela especificada.
         Args:
             tabela (str): Nome da tabela.
-            registro (list): Lista com os dados a serem atualizados. [0] deve conter o id referente ao registro.
+            registro (dict): Dicionário com os dados a serem atualizados.
+                             A chave 'id' deve conter o id do registro.
+                             As outras chaves são os nomes das colunas e seus valores.
+                             Ex: {'id': 5, 'nome': 'Novo Nome', 'quantidade': 150}
         Returns:
             tuple: (bool, str) indicando sucesso e mensagem.
         """
-        id_valor = registro[0]
-        colunas = registro[1:]
-        if not colunas:
-            return False, "Nenhuma coluna para atualizar."
-        set_clause = ', '.join([f"{col} = ?" for col in colunas])
-        valores = colunas
-        valores.append(id_valor)
+        if 'id' not in registro:
+            return False, "O dicionário de registro deve conter a chave 'id'."
+
+        id_valor = registro['id']
+        
+        # Filtra as chaves (nomes das colunas) e os valores, excluindo 'id'
+        col_nomes = [key for key in registro.keys() if key != 'id']
+        
+        # Se não houver colunas para atualizar além do ID
+        if not col_nomes:
+            return False, "Nenhuma coluna para atualizar além do ID."
+        
+        # Constrói a cláusula SET: "coluna1 = ?, coluna2 = ?"
+        set_clause = ', '.join([f"{col_nome} = ?" for col_nome in col_nomes])
+        
+        # Prepara a lista de valores na ordem correta dos '?'
+        # Percorre as colunas_nomes na mesma ordem em que foram adicionadas à set_clause
+        valores_para_sql = [registro[col_nome] for col_nome in col_nomes]
+        
+        # Adiciona o ID ao final da lista de valores para a cláusula WHERE
+        valores_para_sql.append(id_valor)
+
         string_sql = f"UPDATE {tabela} SET {set_clause} WHERE id = ?"
+        print(f"SQL gerado: {string_sql}")
+        print(f"Valores para execução: {valores_para_sql}")
+
         try:
-            self.cursor.execute(string_sql, valores)
+            self.cursor.execute(string_sql, valores_para_sql)
             self.conn.commit()
             return True, f"Registro com id={id_valor} atualizado em {tabela}."
         except Exception as e:
+            # É bom logar o erro completo para depuração, se tiver um logger
+            # self.logger.error(f"Erro ao atualizar registro: {e}", exc_info=True)
             return False, f"Erro ao atualizar registro: {e}"
 
     def excluir_registro(self, tabela: str, coluna: str, valor):
