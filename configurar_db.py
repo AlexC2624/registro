@@ -85,6 +85,15 @@ def tabelas(id_user=1):
             data TEXT,
             quantidade TEXT,
             valor_unitario TEXT
+        );""",
+        'insumo_consumo': f""" CREATE TABLE IF NOT EXISTS insumo_consumo_{id_user} (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            insumo TEXT,
+            lote TEXT,
+            data_inicio TEXT,
+            data_fim TEXT,
+            quantidade TEXT,
+            observacao TEXT
         );"""
     }
     return TABELAS
