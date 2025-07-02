@@ -224,7 +224,7 @@ def animal(modo):
         # Verifica se há saldo de animal
         animal_saida = sql().ler_tabela(f'animais_saida_{id_user}')
         saida_ids = [saida[1] for saida in animal_saida]
-        animais_saldo = [entrada    for entrada in animal_entrada if entrada[0] not in saida_ids]
+        animais_saldo = [entrada for entrada in animal_entrada if entrada[0] not in saida_ids]
         if not animais_saldo:
             status = 'Nenhum animal em saldo' if not status else status
             return render_template('animal.html', status=status)
@@ -306,9 +306,7 @@ def insumo(modo):
             # Atualiza o estoque do insumo
             insumo_dados = sql().buscar_registro(f'insumo_novo_{id_user}', 'id', insumo)
             insumo_dados = list(insumo_dados[0])
-            print(insumo_dados)
             insumo_dados[4] = int(insumo_dados[4]) + int(quantidade)
-            print(insumo_dados)
 
             atualizar_registro = {
                 'id': insumo_dados[0],
@@ -345,11 +343,12 @@ def manejo(modo):
     insumo_opcoes = None
     lote_opcoes = None
     animal_opcoes = None
+    insumo_dict = None
 
     if modo == 'alimentacao':
         if request.method == POST:
             insumo = request.form['insumo']
-            lote_opcoes = json_animais.obter_dado('lote')
+            lote = request.form['lote']
             data_inicio = request.form['data_inicio']
             data_fim = request.form['data_fim']
             quantidade = request.form['quantidade']
@@ -357,25 +356,32 @@ def manejo(modo):
 
             novo_registro = {
                 'insumo': insumo,
-                'lote': lote_opcoes,
+                'lote': lote,
                 'data_inicio': data_inicio,
                 'data_fim': data_fim,
                 'quantidade': quantidade,
                 'observacao': observacao
             }
-
-            # Caminho do arquivo CSV para consumo
-            arquivo = 'insumo_consumo.csv'
-
-            banco = ManagerCSV(arquivo, list(novo_registro.keys()))
-            banco.adicionar(novo_registro)
+            
+            sql().inserir(f'insumo_consumo_{id_user}', novo_registro.keys(), novo_registro.values())
 
             # Atualiza o estoque do insumo
-            insumo_dados = json_insumo.obter_dado('insumo', insumo)
-            insumo_dados['estoque'] -= int(quantidade)
-            json_insumo.editar_dado('insumo', insumo, insumo_dados)
+            insumo_dados = sql().buscar_registro(f'insumo_novo_{id_user}', 'id', insumo)
+            insumo_dados = list(insumo_dados[0])
+            insumo_dados[4] = int(insumo_dados[4]) - int(quantidade)
 
-            status = 'Consumo registrado com sucesso!'
+            atualizar_registro = {
+                'id': insumo_dados[0],
+                'nome': insumo_dados[1],
+                'fornecedor': insumo_dados[2],
+                'tipo': insumo_dados[3],
+                'estoque': insumo_dados[4],
+                'unidade': insumo_dados[5]
+            }
+            resp_bool, resp_str = sql().editar_registro(f'insumo_novo_{id_user}', atualizar_registro)
+
+            if resp_bool: status = 'Consumo registrado com sucesso!'
+            else: status = resp_str
 
         insumo_opcoes = sql().ler_tabela(f'insumo_compra_{id_user}')
         if not insumo_opcoes:
@@ -395,47 +401,72 @@ def manejo(modo):
             return render_template('manejo.html', status=status)
 
     elif modo == 'pesagem':
+        # if request.method == POST:
+        #     lote = request.form['lote']
+        #     data = request.form['data']
+        #     peso = request.form['peso']
+        #     observacao = request.form['observacao']
+
+        #     novo_registro = {
+        #         'lote': lote,
+        #         'data': data,
+        #         'peso': peso,
+        #         'observacao': observacao
+        #     }
+
         if request.method == POST:
             lote = request.form['lote']
+            idx_entrada = request.form.getlist('animaisSelecionados[]')  # Agora é uma lista
             data = request.form['data']
             peso = request.form['peso']
             observacao = request.form['observacao']
 
-            novo_registro = {
-                'lote': lote,
-                'data': data,
-                'peso': peso,
-                'observacao': observacao
-            }
+            for idx in idx_entrada:
+                # Criar dicionário com os dados recebidos
+                novo_registro = {
+                    'lote': lote,
+                    'idx_entrada': int(idx),
+                    'data': data,
+                    'peso': peso,
+                    'observacao': observacao
+                }
 
-            # Caminho do arquivo CSV para pesagem
-            arquivo = 'animal_pesagem.csv'
-
-            banco = ManagerCSV(arquivo, list(novo_registro.keys()))
-            banco.adicionar(novo_registro)
+                sql().inserir(f'pesagem_{id_user}', novo_registro.keys(), novo_registro.values())
 
             status = 'Pesagem registrada com sucesso!'
 
-        lote_opcoes = json_animais.obter_dado('lote')
-        if lote_opcoes == {}:
+        lote_opcoes = sql().ler_tabela(f'lotes_{id_user}')
+        print(lote_opcoes, id_user)
+        if not lote_opcoes:
             status = 'Nenhum lote cadastrado'
             return render_template('manejo.html', status=status)
         
-        insumo_opcoes = json_insumo.obter_dado('insumo')
-        if insumo_opcoes == {}:
+        insumo_opcoes = sql().ler_tabela(f'insumo_novo_{id_user}')
+        if not insumo_opcoes:
             status = 'Nenhum insumo cadastrado'
             return render_template('manejo.html', status=status)
         
-        animal_opcoes = json_animais.obter_dado('animal')
-        if animal_opcoes == {}:
+        animal_opcoes = sql().ler_tabela(f'animais_saldo_{id_user}')
+        print(animal_opcoes)
+        if not animal_opcoes:
             status = 'Nenhum animal cadastrado'
             return render_template('manejo.html', status=status)
+
+        animal_opcoes_dict = {}
+        for linha in animal_opcoes:
+            if linha[1] in animal_opcoes_dict.keys():
+                animal_opcoes_dict[linha[1]] += linha
+            else:
+                animal_opcoes_dict[linha[1]] = linha
+        animal_opcoes = animal_opcoes_dict
+        print(animal_opcoes)
 
     return render_template(
         'manejo.html',
         status = status,
         modo = modo,
         insumo_opcoes = insumo_opcoes,
+        insumo_dados = insumo_dados,
         insumo_dict = insumo_dict,
         lote_opcoes = lote_opcoes,
         animal_opcoes = animal_opcoes
