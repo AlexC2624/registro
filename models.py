@@ -1,7 +1,7 @@
 import sqlite3  # Importa o módulo sqlite3 para manipulação de banco de dados SQLite
 import re   # Importa o módulo re para expressões regulares
 from configurar_db import tabelas
-from log import create_log
+from log import LOG
 import os
 
 class SQL:
@@ -23,8 +23,8 @@ class SQL:
 
         self.conn = sqlite3.connect(nome_db)
         self.cursor = self.conn.cursor()
-        
-        self.conn.set_trace_callback(lambda comando_sql: create_log().debug(f"SQL Executado: {comando_sql}"))
+        class_log = LOG()
+        self.conn.set_trace_callback(class_log.create_log)
 
     def criar_tabela(self, string_sql:str):
         """
@@ -112,8 +112,6 @@ class SQL:
         valores_para_sql.append(id_valor)
 
         string_sql = f"UPDATE {tabela} SET {set_clause} WHERE id = ?"
-        print(f"SQL gerado: {string_sql}")
-        print(f"Valores para execução: {valores_para_sql}")
 
         try:
             self.cursor.execute(string_sql, valores_para_sql)
