@@ -26,8 +26,8 @@
                     <label for="insumo">Insumo Utilizado:</label>
                     <select name="insumo" id="insumo" required>
                         <option value="" disabled selected>Selecione o Insumo</option>
-                        {% for insumo in insumo_opcoes %}
-                        <option value="{{ insumo[0] }}">{{ insumo_dict[insumo[1]][1] }}</option>
+                        {% for insumo in insumo_dados %}
+                        <option value="{{ insumo[0] }}">{{ insumo[1] }} - {{ insumo[3] }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -63,7 +63,7 @@
                     <label for="quantidade">Quantidade Consumida:</label>
                     <input type="number" min="0.1" step="0.1" id="quantidade" name="quantidade" placeholder="Ex: 75.0" required> {# Min value set to 0.1 #}
                     <script>
-                        let insumoDataAlimentacao = JSON.parse('{{ insumo_opcoes | tojson }}');
+                        let insumoDataAlimentacao = JSON.parse('{{ animal_opcoes | tojson }}');
                         let insumoDados = JSON.parse('{{ insumo_dict | tojson }}');
                         let selInsumoAlimentacao = document.getElementById("insumo");
                         let labelQuantidadeAlimentacao = document.querySelector("label[for='quantidade']");
@@ -142,28 +142,35 @@
         <section>
             <h1>Registro de Pesagem de Animal</h1>
             <p>Insira dados de peso para monitoramento de crescimento e otimização do manejo.</p>
-            <form action="{{ url_for('manejo', modo=modo) }}" method="post">
+            <form action="{{ url_for('manejo', modo=modo) }}" method="post" id="form-manejo">
                 <div class="form-group">
                     <label for="lote">Lote do Animal:</label>
                     <select name="lote" id="lote" required>
                         <option value="" disabled selected>Selecione o Lote</option>
-                        {% for k in lote_opcoes.keys() %}
-                        <option value="{{ k }}">{{ lote_opcoes[k]['nome'] }}</option>
+                        {% for lote in lote_opcoes %}
+                        <option value="{{ lote[0] }}">{{ lote[1] }}</option>
                         {% endfor %}
                     </select>
                 </div>
+
                 <div class="form-group">
-                    <label for="animal">Animal a ser Pesado:</label>
-                    <select name="animal" id="animal" required>
-                        <option value="" disabled selected>Selecione o Animal</option>
-                        {# This will likely be dynamically populated by JS based on selected lot #}
-                        {#
-                        {% for k in animal_opcoes.keys() %}
-                        <option value="{{ k }}">{{ animal_opcoes[k]['nome'] }} - {{ animal_opcoes[k]['raca'] }}</option>
-                        {% endfor %}
-                        #}
-                    </select>
+                    <label for="animais_entrada">Animais Disponíveis no Lote:</label>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" name="selecionar_todos" id="selecionar_todos"></th>
+                                <th>Raça</th>
+                                <th>Data Nascimento</th>
+                                <th>Fornecedor</th>
+                                <th>Peso (kg)</th>
+                                <th>Data de Entrada</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaAnimais">
+                            </tbody>
+                    </table>
                 </div>
+
                 <div class="form-group">
                     <label for="data">Data da Pesagem:</label>
                     <input type="date" id="data" name="data" required>
@@ -190,6 +197,102 @@
                 </div>
             </form>
         </section>
+
+        <script>
+            const animal_opcoes = {{ animal_opcoes | tojson }};
+            console.log(animal_opcoes)
+            const lote = document.getElementById("lote");
+            const tabelaAnimais = document.getElementById("tabelaAnimais");
+            const checkboxMestre = document.getElementById("selecionar_todos");
+
+            lote.addEventListener('change', function () {
+                const selecionado = Number(this.value);
+                console.log(selecionado);
+                console.log(animal_opcoes);
+                tabelaAnimais.innerHTML = "";
+                if (selecionado) {
+                    const linha = animal_opcoes[selecionado];
+                    console.log(linha);
+                    const tb_tr = document.createElement("tr");
+
+                    const tb_td = document.createElement("td");
+                    const tb_input = document.createElement("input");
+                    tb_input.type = "checkbox";
+                    tb_input.name = "animaisSelecionados[]";
+                    tb_input.value = linha[0];
+                    tb_td.appendChild(tb_input);
+                    tb_input.classList.add("linha-checkbox");
+
+                    const tb_td2 = document.createElement("td");
+                    tb_td2.textContent = linha[0];
+
+                    const tb_td3 = document.createElement("td");
+                    tb_td3.textContent = linha[2];
+
+                    const tb_td4 = document.createElement("td");
+                    tb_td4.textContent = linha[4];
+
+                    const tb_td5 = document.createElement("td");
+                    tb_td5.textContent = linha[6] + ' kg';
+
+                    const tb_td6 = document.createElement("td");
+                    tb_td6.textContent = 'R$ ' + linha[7];
+
+                    const tb_td7 = document.createElement("td");
+                    tb_td7.textContent = linha[5];
+
+                    tb_tr.appendChild(tb_td);
+                    tb_tr.appendChild(tb_td2);
+                    tb_tr.appendChild(tb_td3);
+                    tb_tr.appendChild(tb_td4);
+                    tb_tr.appendChild(tb_td5);
+                    tb_tr.appendChild(tb_td6);
+                    tb_tr.appendChild(tb_td7);
+
+                    tabelaAnimais.appendChild(tb_tr);
+                };
+                atualizarCheckboxMestre(); // Atualiza o checkbox mestre ao carregar novos animais
+            });
+
+            function marcarTodos() {
+                document.querySelectorAll(".linha-checkbox").forEach(cb => cb.checked = true);
+                checkboxMestre.checked = true;
+            }
+
+            function desmarcarTodos() {
+                document.querySelectorAll(".linha-checkbox").forEach(cb => cb.checked = false);
+                checkboxMestre.checked = false;
+            }
+
+            checkboxMestre.addEventListener("change", () => {
+                if (checkboxMestre.checked) {
+                    marcarTodos();
+                } else {
+                    desmarcarTodos();
+                }
+            });
+
+            function atualizarCheckboxMestre() {
+                const todos = document.querySelectorAll(".linha-checkbox");
+                const marcados = document.querySelectorAll(".linha-checkbox:checked");
+                checkboxMestre.checked = (todos.length > 0 && todos.length === marcados.length); // Garante que só marca se houver animais
+            }
+
+            // Ouve as mudanças nos checkboxes individuais para atualizar o mestre
+            tabelaAnimais.addEventListener('change', function(event) {
+                if (event.target.classList.contains('linha-checkbox')) {
+                    atualizarCheckboxMestre();
+                }
+            });
+
+            document.getElementById("form-manejo").addEventListener("submit", function (event) {
+                const selecionados = document.querySelectorAll("input[name='animaisSelecionados[]']:checked");
+                if (selecionados.length === 0) {
+                    event.preventDefault();
+                    alert("Selecione pelo menos um animal antes de enviar.");
+                }
+            });
+        </script>
         {% endif %}
     </main>
 
