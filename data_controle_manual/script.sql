@@ -84,7 +84,7 @@
 
 -- 8. Comando: DROP TABLE (Cuidado! Isso remove a tabela e todos os seus dados)
 -- Usado geralmente para limpar o ambiente de teste.
--- DROP TABLE IF EXISTS clientes;
+-- DROP TABLE IF EXISTS insumo_compra_1;
 -- DROP TABLE IF EXISTS pedidos;
 -- DROP TABLE IF EXISTS clientes_vip;
 
