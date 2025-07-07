@@ -138,7 +138,8 @@ def animal(modo):
                     'fornecedor': fornecedor,
                     'data_entrada': data_entrada,
                     'peso_entrada': peso_entrada,
-                    'valor_entrada': valor_entrada
+                    'valor_entrada': valor_entrada,
+                    'consumo': 0
                 }
                 sql().inserir(f'animais_saldo_{id_user}', novo_registro.keys(), novo_registro.values())
 
