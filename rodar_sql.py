@@ -1,7 +1,7 @@
 import sqlite3
 import time
 import os
-from log import create_log
+from log import LOG
 
 # --- Configurações ---
 DB_FILE = 'data/dados.db'  # Nome do arquivo do seu banco de dados SQLite
@@ -16,7 +16,7 @@ def execute_sql_script(db_path, sql_script_path):
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         
-        conn.set_trace_callback(lambda comando_sql: create_log().debug(f'SQL Executado: {comando_sql}'))
+        conn.set_trace_callback(lambda comando_sql: LOG.create_log(f'SQL Executado: {comando_sql}'))
 
         print(f"Executando comandos do script '{sql_script_path}'...") # Mensagem adicionada para depuração
 
