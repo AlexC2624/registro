@@ -53,7 +53,8 @@ def tabelas(id_user=1):
             fornecedor INTEGER,
             data_entrada INTEGER,
             peso_entrada INTEGER,
-            valor_entrada INTEGER
+            valor_entrada INTEGER,
+            consumo INTEGER
             );""",
         'animais_saida': f"""CREATE TABLE IF NOT EXISTS animais_saida_{id_user} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -65,6 +66,7 @@ def tabelas(id_user=1):
             data_entrada INTEGER,
             peso_entrada INTEGER,
             valor_entrada INTEGER,
+            consumo INTEGER
 
             cliente TEXT,
             data_saida TEXT,
