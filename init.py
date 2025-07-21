@@ -61,6 +61,11 @@ def index():
             username = request.form.get('username')
             password = request.form.get('password')
 
+            # Verifica se o usuário já existe
+            if sql().buscar_registro('users', 'username', username):
+                error = 'Usuário já existe. Tente outro nome de usuário.'
+                return render_template('index.html', error=error)
+
             # Lógica de registro
             booleano, mensagem = register_user(sql(), username, password)
             if booleano:
