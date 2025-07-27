@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestão IA de Gado</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="user-menu-container">
+        <button class="user-menu-button" onclick="toggleDropdown()">Bem-vindo, {{ user.username }}</button>
+        <div class="user-dropdown-content" id="userDropdown">
+            <a href="{{ url_for('perfil_usuario') }}">Perfil</a>
+            <a href="{{ url_for('logout') }}">Sair</a>
+        </div>
+    </div>
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Fecha o dropdown se clicar fora dele
+        window.onclick = function(event) {
+            if (!event.target.matches('.user-menu-button')) {
+                const dropdowns = document.getElementsByClassName("user-dropdown-content");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.style.display === 'block') {
+                        openDropdown.style.display = 'none';
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
