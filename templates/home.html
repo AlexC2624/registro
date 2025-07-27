@@ -14,25 +14,32 @@
             <p>Análise Preditiva para Gestão de Gado</p>
         </header>
 
-        <nav class="nav-buttons"> {# Nova classe para os botões de navegação #}
-            <!-- <a href="{{ url_for('index') }}" class="button">Recaregar</a> -->
+        <nav class="nav-buttons">
             <a href="{{ url_for('cadastros') }}" class="button">Cadastros</a>
             <a href="{{ url_for('relatorios') }}" class="button">Relatórios</a>
-            <a href="{{ url_for('logout') }}" class="button">Sair</a>
+            <a href="{{ url_for('logout') }}" class="button">Sair</a> 
         </nav>
     </div>
 
     {# Coluna da Direita: Conteúdo Principal (Boas-Vindas e Chat) #}
     <div class="main-content-area">
-        <main class="container"> {# O container existente para o efeito de vidro #}
-            <section>
+        <main class="container">
+            <section style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
                 <h2>Bem-vindo {{ dados['username'] }} à Plataforma AI-Registro!</h2>
-                <p>Navegue pelas funcionalidades avançadas e impulsione a eficiência da sua propriedade.</p>
+                
+                <div class="user-menu-container" id="userMenu">
+                    <button class="user-menu-button">
+                        {{ dados['username'] }} ▼ </button>
+                    <div class="user-dropdown-content">
+                        <a href="{{ url_for('perfil_usuario') }}">Meu Perfil</a>
+                        <a href="{{ url_for('configuracoes_conta') }}">Configurações da Conta</a>
+                        </div>
+                </div>
             </section>
             
-            <section id="ia-chat-container-section"> {# Nova ID para o container da seção de chat #}
+            <section id="ia-chat-container-section">
                 <h3>🤖 Chat IA - Tire suas dúvidas!</h3>
-                <div id="ia-chat-box"> {# ID original para a caixa de mensagens roláveis #}
+                <div id="ia-chat-box">
                     <div id="ia-chat-messages" style="font-size:1rem; color:#e3eafc;"></div>
                 </div>
                 <form id="ia-chat-form" class="button-container">
@@ -49,102 +56,26 @@
     </footer>
     
     <script>
-const chatForm = document.getElementById('ia-chat-form');
-const chatInput = document.getElementById('ia-chat-input');
-const chatMessages = document.getElementById('ia-chat-messages');
-const iaChatBox = document.getElementById('ia-chat-box'); 
-const iaChatContainerSection = document.getElementById('ia-chat-container-section');
-const chatSendButton = chatForm.querySelector('button[type="submit"]'); // Seleciona o botão Enviar
+        // ... (Seu script JavaScript existente aqui) ...
 
-function addMessage(sender, message, isUser = false, isLoading = false) {
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('chat-message');
-    messageDiv.classList.add(isUser ? 'user' : 'ai');
-    if (isLoading) {
-        messageDiv.id = 'loading-message';
-        messageDiv.innerHTML = `<span class="sender-label">${sender}:</span> ${message} <span class="loading-dots"></span>`;
-    } else {
-        messageDiv.innerHTML = `<span class="sender-label">${sender}:</span> ${message}`;
-    }
-    chatMessages.appendChild(messageDiv);
-    // Sempre rola para o final ao adicionar nova mensagem
-    iaChatBox.scrollTop = iaChatBox.scrollHeight;
-}
+        // JavaScript para o menu do usuário
+        const userMenu = document.getElementById('userMenu');
+        const userMenuButton = userMenu.querySelector('.user-menu-button');
+        const userDropdownContent = userMenu.querySelector('.user-dropdown-content');
 
-// Função para expandir o chat
-function expandChat() {
-    iaChatContainerSection.classList.add('expanded');
-    iaChatBox.scrollTop = iaChatBox.scrollHeight;
-}
-
-// Função para contrair o chat
-function contractChat() {
-    iaChatContainerSection.classList.remove('expanded');
-}
-
-// Event Listeners para expansão/contração
-chatInput.addEventListener('focus', expandChat);
-
-iaChatContainerSection.addEventListener('focusout', function(e) {
-    setTimeout(() => {
-        if (!this.contains(document.activeElement)) {
-            contractChat();
-        }
-    }, 50); 
-});
-
-chatForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const userMsg = chatInput.value.trim();
-    if (!userMsg) return;
-
-    addMessage('Você', userMsg, true);
-    chatInput.value = '';
-
-    expandChat(); // Garante que o chat esteja expandido ao enviar mensagem
-
-    addMessage('IA', 'Pensando', false, true);
-
-    // Bloqueia o botão de enviar e o input
-    chatSendButton.disabled = true;
-    chatInput.disabled = true;
-
-    try {
-        const formData = new FormData();
-        formData.append('pergunta', userMsg);
-
-        const response = await fetch('/perguntar', {
-            method: 'POST',
-            body: formData
+        userMenuButton.addEventListener('click', function() {
+            // Alterna a visibilidade do dropdown
+            userMenu.classList.toggle('show');
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        
-        const loadingMessage = document.getElementById('loading-message');
-        if (loadingMessage) {
-            loadingMessage.remove();
-        }
-
-        addMessage('IA', data.resposta, false);
-
-    } catch (error) {
-        console.error('Erro ao comunicar com o servidor:', error);
-        const loadingMessage = document.getElementById('loading-message');
-        if (loadingMessage) {
-            loadingMessage.remove();
-        }
-        addMessage('IA', 'Desculpe, não consegui me comunicar com o servidor. Tente novamente mais tarde.', false);
-    } finally {
-        // Libera o botão de enviar e o input
-        chatSendButton.disabled = false;
-        chatInput.disabled = false;
-        chatInput.focus();
-    }
-});
-</script>
+        // Fechar o dropdown se o usuário clicar fora dele
+        window.addEventListener('click', function(event) {
+            if (!userMenu.contains(event.target)) {
+                if (userMenu.classList.contains('show')) {
+                    userMenu.classList.remove('show');
+                }
+            }
+        });
+    </script>
 </body>
 </html>
