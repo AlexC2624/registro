@@ -633,9 +633,60 @@ def perguntar():
     # Retorna a resposta da IA em formato JSON para o JavaScript
     return jsonify({"resposta": resposta_ia})
 
+@app.route('/perfil_usuario', methods=[GET])
+def perfil_usuario():
+    """
+    Rota para exibir o perfil do usuário.
+    Aqui você pode adicionar lógica para exibir e editar informações do usuário.
+    """
+    user_data = get_user_by_id(sql(), g.user_id)
+    if user_data:
+        return render_template('perfil_usuario.html', user=user_data)
+    else:
+        return redirect(url_for('index'))
+
+@app.route('/configuracoes_conta', methods=[GET, POST])
+def configuracoes_conta():
+    """
+    Rota para gerenciar as configurações da conta do usuário.
+    Aqui você pode adicionar lógica para atualizar informações do usuário.
+    """
+    if request.method == POST:
+        # Aqui você pode adicionar lógica para atualizar as configurações da conta
+        # Exemplo: atualizar o nome de usuário, senha, etc.
+        pass
+
+    user_data = get_user_by_id(sql(), g.user_id)
+    if user_data:
+        return render_template('configuracoes_conta.html', user=user_data)
+    else:
+        return redirect(url_for('index'))
+
 @app.route('/logout', methods=[GET])
 def logout():
     # Limpa a sessão do usuário
     session.clear()
     # Redireciona para a página inicial
     return redirect(url_for('index'))
+
+@app.route('/.well-known/appspecific/com.chrome.devtools.json', methods=['GET'])
+def chrome_devtools_json():
+    # Você pode personalizar o conteúdo retornado conforme necessário
+    return jsonify({"status": "ok", "message": "Endpoint para Chrome DevTools"}), 200
+
+@app.teardown_appcontext
+def close_connection(exception):
+    """
+    Fecha a conexão com o banco de dados ao final da requisição.
+    Isso é importante para evitar vazamentos de memória e conexões abertas.
+    """
+    sql_instance = getattr(g, 'sql', None)
+    if sql_instance:
+        sql_instance.conn.close()
+
+@app.context_processor
+def inject_user():
+    user = None
+    if hasattr(g, 'user_id') and g.user_id:
+        user = get_user_by_id(sql(), int(g.user_id))
+    return dict(user=user)
