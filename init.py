@@ -177,19 +177,19 @@ def animal(modo):
         lote_opcoes = sql().ler_tabela(f'lotes_{id_user}')
         if not lote_opcoes:
             status = 'Nenhum lote de animais cadastrado'
-            return render_template('animal.html', status=status)
+            return render_template('cadastros.html', status=status)
 
         # Verifica se há raças cadastradas
         raca_opcoes = sql().ler_tabela(f'racas_{id_user}')
         if raca_opcoes == []:
             status = 'Nenhuma raca de animais cadastrado'
-            return render_template('animal.html', status=status)
+            return render_template('cadastros.html', status=status)
 
         # Verifica se há fornecedores cadastrados
         fornecedor_opcoes = sql().ler_tabela(f'fornecedores_{id_user}')
         if fornecedor_opcoes == []:
             status = 'Nenhum fornecedor de animais cadastrado'
-            return render_template('animal.html', status=status)
+            return render_template('cadastros.html', status=status)
         
         return render_template(
             'animal.html',
@@ -242,13 +242,13 @@ def animal(modo):
         lote = sql().ler_tabela(f'lotes_{id_user}')
         if lote == []:
             status = 'Nenhum lote de animais cadastrado'
-            return render_template('animal.html', status=status)
+            return render_template('cadastros.html', status=status)
         
         # Verifica se há entrada de animal
         animal_entrada = sql().ler_tabela(f'animais_saldo_{id_user}')
         if not animal_entrada:
             status = 'Nenhum animal cadastrado' if not status else status
-            return render_template('animal.html', status=status)
+            return render_template('cadastros.html', status=status)
         
         # Verifica se há saldo de animal
         animal_saida = sql().ler_tabela(f'animais_saida_{id_user}')
@@ -256,13 +256,13 @@ def animal(modo):
         animais_saldo = [entrada for entrada in animal_entrada if entrada[0] not in saida_ids]
         if not animais_saldo:
             status = 'Nenhum animal em saldo' if not status else status
-            return render_template('animal.html', status=status)
+            return render_template('cadastros.html', status=status)
 
         # Verifica se há clientes cadastrados
         cliente_opcoes = sql().ler_tabela(f'clientes_{id_user}')
         if not cliente_opcoes:
             status = 'Nenhum cliente de animal cadastrado'
-            return render_template('animal.html', status=status)
+            return render_template('cadastros.html', status=status)
 
         return render_template(
             'animal.html',
