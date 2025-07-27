@@ -22,7 +22,14 @@ def _get_ollama():
             system_message='Você é um assistente especialista em gado de corte e agronegócio. Responda de forma detalhada e técnica.',
             max_history_size=10,
             temperature=0.6,
-            num_ctx=4096
+            num_ctx=4096,
+            
+            # top_k=50,             # Considerar os 50 tokens mais prováveis
+            # top_p=0.1,            # Para um bom equilíbrio entre foco e variedade
+            # num_predict=70,      # Aumenta o comprimento máximo da resposta para detalhamento
+            # repeat_penalty=1.15,  # Leve aumento para evitar repetições em respostas longas
+            # stop=["\n###", "Usuário:", "Fim da Resposta."], # Exemplo de marcadores para parar a geração
+            # num_gpu=-1            # Usar GPU ao máximo, se disponível
         )
     return g.ollama
 
@@ -77,6 +84,8 @@ def index():
 
 @app.route('/home', methods= [GET]) # Rota para a página inicial
 def home():
+    if not g.user_id:  # Verifica se o usuário está logado
+        return redirect(url_for('index'))
     return render_template('home.html', dados={
         'username': sql().buscar_registro('users', 'id', g.user_id)[0][1]   # Nome de usuário
     })
@@ -605,7 +614,7 @@ def perguntar():
 
     # Usa a instância global do chatbot para processar a pergunta
     # e manter o histórico da conversa.
-    resposta_ia = global_ollama_chatbot.ask(pergunta)
+    resposta_ia = _get_ollama().ask(pergunta)
 
     # Retorna a resposta da IA em formato JSON para o JavaScript
     return jsonify({"resposta": resposta_ia})
