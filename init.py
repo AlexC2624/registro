@@ -58,7 +58,7 @@ def load_logged_in_user():
         'perguntar'
     ]
     if request.path.split('/')[1] in rotas:  # Verifica se a rota é uma das que requerem login
-        if not g.user_id:  # Verifica se o usuário não está logado
+        if not get_user_by_id(sql(), int(g.user_id)):  # Verifica se o usuário não está logado
             return redirect(url_for('index'))   # Redireciona para a página de login se não estiver logado
 
 @app.route('/', methods= [GET, POST])   # Rota de loguin
