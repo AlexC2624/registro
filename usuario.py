@@ -17,7 +17,8 @@ def register_user(sql: SQL, username: str, password: str):
     # except ValueError as e:
     #     return False, f"Erro: Usuário '{username}' já existe."
     finally:
-        sql.conn.close()
+        # sql.conn.close()
+        pass
 
 def login_user(sql: SQL, username: str, password: str):
     """
@@ -26,7 +27,7 @@ def login_user(sql: SQL, username: str, password: str):
     Caso contrário, retorna False e uma mensagem de erro.
     """
     user_data = sql.buscar_registro('users', 'username', username)
-    sql.conn.close()
+    # sql.conn.close()
 
     if user_data:
         # user_data['id'] é o ID real do usuário do banco de dados
@@ -47,16 +48,16 @@ def login_user(sql: SQL, username: str, password: str):
     else:
         return False, f"Erro de login: Usuário '{username}' não encontrado."
 
-def get_user_by_id(sql, user_id):
+def get_user_by_id(sql:SQL, user_id):
         """
         Retorna os dados do usuário pelo ID.
         Se encontrado, retorna um dicionário com os dados do usuário.
         Caso contrário, retorna None.
         """
         user_data = sql.buscar_registro('users', 'id', user_id)
-        sql.conn.close()
+        # sql.conn.close()
         if user_data:
-            return {"id": user_data["id"], "username": user_data["username"]}
+            return {"id": user_data[0][0], "username": user_data[0][1]}
         else:
             return None
 
