@@ -26,15 +26,6 @@
         <main class="container">
             <section style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
                 <h2>Bem-vindo {{ dados['username'] }} à Plataforma AI-Registro!</h2>
-                
-                <div class="user-menu-container" id="userMenu">
-                    <button class="user-menu-button">
-                        {{ dados['username'] }} ▼ </button>
-                    <div class="user-dropdown-content">
-                        <a href="{{ url_for('perfil_usuario') }}">Meu Perfil</a>
-                        <a href="{{ url_for('configuracoes_conta') }}">Configurações da Conta</a>
-                        </div>
-                </div>
             </section>
             
             <section id="ia-chat-container-section">
@@ -54,28 +45,5 @@
         <p>&copy; 2025 - AI-Registro | Sistema de Gestão Inteligente de Gado | 
         <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
     </footer>
-    
-    <script>
-        // ... (Seu script JavaScript existente aqui) ...
-
-        // JavaScript para o menu do usuário
-        const userMenu = document.getElementById('userMenu');
-        const userMenuButton = userMenu.querySelector('.user-menu-button');
-        const userDropdownContent = userMenu.querySelector('.user-dropdown-content');
-
-        userMenuButton.addEventListener('click', function() {
-            // Alterna a visibilidade do dropdown
-            userMenu.classList.toggle('show');
-        });
-
-        // Fechar o dropdown se o usuário clicar fora dele
-        window.addEventListener('click', function(event) {
-            if (!userMenu.contains(event.target)) {
-                if (userMenu.classList.contains('show')) {
-                    userMenu.classList.remove('show');
-                }
-            }
-        });
-    </script>
 </body>
 </html>
