@@ -12,6 +12,16 @@
     </header>
     
     <main class="container">
+        {% if status %}
+        <script>
+            const status = {{ status | tojson }};
+            alert(status); // Exibe o alerta
+            // Ajuste para garantir que o histórico de navegação não seja afetado negativamente se o status for apenas um aviso
+            if (status === 'voltar') {
+                window.history.back(); // Volta na história do navegador se o status for 'voltar'
+            }
+        </script>
+        {% endif %}
         <section>
             <h2>Cadastros Iniciais do Sistema</h2>
             <a href="{{ url_for('json_animal', categoria='lotes') }}" class="button">Lotes de Gado</a>
