@@ -44,6 +44,22 @@ def sql():
 @app.before_request
 def load_logged_in_user():
     g.user_id = session.get('user_id') # Pegamos o ID do usuário da sessão Flask
+    rotas = [
+        'home',
+        'cadastros',
+        'json_animal',
+        'animal',
+        'insumo',
+        'manejo',
+        'saude',
+        'relatorios',
+        'estoque',
+        'financeiro',
+        'perguntar'
+    ]
+    if request.path.split('/')[1] in rotas:  # Verifica se a rota é uma das que requerem login
+        if not g.user_id:  # Verifica se o usuário não está logado
+            return redirect(url_for('index'))   # Redireciona para a página de login se não estiver logado
 
 @app.route('/', methods= [GET, POST])   # Rota de loguin
 def index():
@@ -57,7 +73,7 @@ def index():
             # Lógica de autenticação
             booleano, mensagem = login_user(sql(), username, password)
             if booleano:
-                # Aqui é definido um cookie para o usuário logado
+                # Aqui é definido um cookie para o usuário logado com o seu id
                 session['user_id'] = mensagem
 
                 return redirect(url_for('home'))
@@ -84,8 +100,6 @@ def index():
 
 @app.route('/home', methods= [GET]) # Rota para a página inicial
 def home():
-    if not g.user_id:  # Verifica se o usuário está logado
-        return redirect(url_for('index'))
     return render_template('home.html', dados={
         'username': sql().buscar_registro('users', 'id', g.user_id)[0][1]   # Nome de usuário
     })
