@@ -632,3 +632,10 @@ def perguntar():
 
     # Retorna a resposta da IA em formato JSON para o JavaScript
     return jsonify({"resposta": resposta_ia})
+
+@app.route('/logout', methods=[GET])
+def logout():
+    # Limpa a sessão do usuário
+    session.clear()
+    # Redireciona para a página inicial
+    return redirect(url_for('index'))
