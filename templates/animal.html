@@ -32,7 +32,7 @@
                     <select name="lote" id="lote" required>
                         <option value="" disabled selected>Selecione o lote</option>
                         {% for lote in lote_opcoes %}
-                        <option value="{{ lote[0] }}">{{ lote[1] }}</option>
+                        <option value="{{ lote[1] }}">{{ lote[1] }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -42,7 +42,7 @@
                     <select name="raca" id="raca" required>
                         <option value="" disabled selected>Selecione a raça</option>
                         {% for raca in raca_opcoes %}
-                        <option value="{{ raca[0] }}">{{ raca[1] }}</option>
+                        <option value="{{ raca[1] }}">{{ raca[1] }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -57,7 +57,7 @@
                     <select name="fornecedor" id="fornecedor" required>
                         <option value="" disabled selected>Selecione o fornecedor</option>
                         {% for fornecedor in fornecedor_opcoes %}
-                        <option value="{{ fornecedor[0] }}">{{ fornecedor[1] }}</option>
+                        <option id="{{ fornecedor[0] }}" value="{{ fornecedor[1] }}">{{ fornecedor[0] }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -107,7 +107,7 @@
                     <select id="lote_entrada" name="lote_entrada" required>
                         <option value="" disabled selected>Selecione um lote cadastrado</option>
                         {% for lote in lote_opcoes %}
-                        <option value="{{ lote[0] }}">{{ lote[1] }}</option>
+                        <option value="{{ lote[1] }}">{{ lote }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -136,7 +136,7 @@
                     <select name="cliente" id="cliente" required>
                         <option value="" disabled selected>Selecione o cliente</option>
                         {% for cliente in cliente_opcoes %}
-                        <option value="{{ cliente[0] }}">{{ cliente[1] }}</option>
+                        <option value="{{ cliente[1] }}">{{ cliente[1] }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -172,16 +172,20 @@
 
         <script>
             const animais_saldo = {{ animais_saldo | tojson }};
+            const lote_opcoes = {{ lote_opcoes | tojson }};
             console.log(animais_saldo)
             const loteEntrada = document.getElementById("lote_entrada");
             const tabelaAnimais = document.getElementById("tabelaAnimais");
             const checkboxMestre = document.getElementById("selecionar_todos");
 
             loteEntrada.addEventListener('change', function () {
-                const selecionado = Number(this.value);
+                // Corrigido para pegar o value do option selecionado
+                const selecionado = this.value;
                 tabelaAnimais.innerHTML = "";
+                console.log("Lote selecionado:", selecionado);
                 if (selecionado) {
                     animais_saldo.forEach(function (linha) {
+                        console.log(linha);
                         if (linha[1] == selecionado) {
                             const tb_tr = document.createElement("tr");
 
