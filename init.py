@@ -169,7 +169,7 @@ def animal(modo):
                     'valor_entrada': valor_entrada,
                     'consumo': 0
                 }
-                sql().inserir(f'animais_saldo_{id_user}', novo_registro.keys(), novo_registro.values())
+                sql().inserir(f'animais_ativos_{id_user}', novo_registro.keys(), novo_registro.values())
 
             status = 'Salvo com sucesso!'
 
@@ -208,7 +208,7 @@ def animal(modo):
             peso_saida = request.form['peso_saida']
             valor_saida = request.form['valor_saida']
 
-            animal_entrada = sql().ler_tabela(f'animais_saldo_{id_user}')
+            animal_entrada = sql().ler_tabela(f'animais_ativos_{id_user}')
 
             for idx in idx_entrada:
                 idx = int(idx)  # Converte o ID para inteiro
@@ -234,7 +234,7 @@ def animal(modo):
 
                         sql().inserir(f'animais_saida_{id_user}', novo_registro.keys(), novo_registro.values())
 
-                        sql().excluir_registro(f'animais_saldo_{id_user}', 'id', idx)  # Remove a entrada do animal após registro do mesmo na saída
+                        sql().excluir_registro(f'animais_ativos_{id_user}', 'id', idx)  # Remove a entrada do animal após registro do mesmo na saída
 
             status = 'Salvo com sucesso!'
         
@@ -245,7 +245,7 @@ def animal(modo):
             return render_template('cadastros.html', status=status)
         
         # Verifica se há entrada de animal
-        animal_entrada = sql().ler_tabela(f'animais_saldo_{id_user}')
+        animal_entrada = sql().ler_tabela(f'animais_ativos_{id_user}')
         if not animal_entrada:
             status = 'Nenhum animal cadastrado' if not status else status
             return render_template('cadastros.html', status=status)
@@ -475,7 +475,7 @@ def manejo(modo):
             status = 'Nenhum insumo cadastrado'
             return render_template('manejo.html', status=status)
         
-        animal_opcoes = sql().ler_tabela(f'animais_saldo_{id_user}')
+        animal_opcoes = sql().ler_tabela(f'animais_ativos_{id_user}')
         print(animal_opcoes)
         if not animal_opcoes:
             status = 'Nenhum animal cadastrado'
@@ -503,10 +503,10 @@ def manejo(modo):
 
 @app.route('/saude/<modo>', methods=[GET, POST])
 def saude(modo):
+    id_user = g.user_id
     status = None
     animal_opcoes = None
     lote_opcoes = None
-    json_animais = ManagerJSON('animais.json')
 
     if modo == 'vacina':
         if request.method == POST:
@@ -532,13 +532,13 @@ def saude(modo):
 
             status = 'Vacinação registrada com sucesso!'
 
-        animal_opcoes = json_animais.obter_dado('animal')
-        if animal_opcoes == {}:
+        animal_opcoes = sql().ler_tabela(f'animais_ativos_{id_user}')
+        if not animal_opcoes:
             status = 'Nenhum animal cadastrado'
             return render_template('saude.html', status=status)
         
-        lote_opcoes = json_animais.obter_dado('lote')
-        if lote_opcoes == {}:
+        lote_opcoes = sql().ler_tabela(f'lotes_{id_user}')
+        if not lote_opcoes:
             status = 'Nenhum lote cadastrado'
             return render_template('saude.html', status=status)
     
@@ -566,13 +566,13 @@ def saude(modo):
 
             status = 'Tratamento registrado com sucesso!'
 
-        animal_opcoes = json_animais.obter_dado('animal')
-        if animal_opcoes == {}:
+        animal_opcoes = sql().ler_tabela(f'animais_ativos_{id_user}')
+        if not animal_opcoes:
             status = 'Nenhum animal cadastrado'
             return render_template('saude.html', status=status)
         
-        lote_opcoes = json_animais.obter_dado('lote')
-        if lote_opcoes == {}:
+        lote_opcoes = sql().ler_tabela(f'lotes_{id_user}')
+        if not lote_opcoes:
             status = 'Nenhum lote cadastrado'
             return render_template('saude.html', status=status)
 
