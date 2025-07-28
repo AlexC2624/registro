@@ -70,7 +70,7 @@ class SQL:
         try:
             self.cursor.execute(string_sql, valores)
         except sqlite3.OperationalError as e:
-            print('tabela', tabela)
+            # print('tabela', tabela)
             self.criar_tabela(tabela)
             self.cursor.execute(string_sql, valores)
 
