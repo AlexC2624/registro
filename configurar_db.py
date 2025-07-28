@@ -45,7 +45,7 @@ def tabelas(id_user=1):
             fornecedor_id INTEGER,
             FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id)
             );""",
-        'animais_saldo': f"""CREATE TABLE IF NOT EXISTS animais_saldo_{id_user} (
+        'animais_ativos': f"""CREATE TABLE IF NOT EXISTS animais_ativos_{id_user} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             lote TEXT,
             raca INTEGER,
@@ -66,7 +66,7 @@ def tabelas(id_user=1):
             data_entrada INTEGER,
             peso_entrada INTEGER,
             valor_entrada INTEGER,
-            consumo INTEGER
+            consumo INTEGER,
 
             cliente TEXT,
             data_saida TEXT,
