@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saúde Animal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Saúde Animal - {{ 'Vacinação' if modo == 'vacina' else 'Tratamento' }}</h1>
+
+    {% if status %}
+        <p style="color: green;">{{ status }}</p>
+    {% endif %}
+
+    {% if not animal_opcoes %}
+        <p>Nenhum animal cadastrado.</p>
+    {% elif not lote_opcoes %}
+        <p>Nenhum lote cadastrado.</p>
+    {% else %}
+        {% if modo == 'vacina' %}
+        <form method="post">
+            <label for="animal">Animal:</label>
+            <select name="animal" id="animal" required>
+                {% for animal in animal_opcoes %}
+                    <option value="{{ animal[0] }}">{{ animal[1] }}</option>
+                {% endfor %}
+            </select><br>
+
+            <label for="lote">Lote:</label>
+            <select name="lote" id="lote" required>
+                {% for lote in lote_opcoes %}
+                    <option value="{{ lote[0] }}">{{ lote[1] }}</option>
+                {% endfor %}
+            </select><br>
+
+            <label for="data_vacina">Data da Vacina:</label>
+            <input type="date" name="data_vacina" id="data_vacina" required><br>
+
+            <label for="vacina">Vacina:</label>
+            <input type="text" name="vacina" id="vacina" required><br>
+
+            <label for="observacao">Observação:</label>
+            <input type="text" name="observacao" id="observacao"><br>
+
+            <button type="submit">Registrar Vacinação</button>
+        </form>
+        {% elif modo == 'tratamento' %}
+        <form method="post">
+            <label for="animal">Animal:</label>
+            <select name="animal" id="animal" required>
+                {% for animal in animal_opcoes %}
+                    <option value="{{ animal[0] }}">{{ animal[1] }}</option>
+                {% endfor %}
+            </select><br>
+
+            <label for="lote">Lote:</label>
+            <select name="lote" id="lote" required>
+                {% for lote in lote_opcoes %}
+                    <option value="{{ lote[0] }}">{{ lote[1] }}</option>
+                {% endfor %}
+            </select><br>
+
+            <label for="data_tratamento">Data do Tratamento:</label>
+            <input type="date" name="data_tratamento" id="data_tratamento" required><br>
+
+            <label for="tratamento">Tratamento:</label>
+            <input type="text" name="tratamento" id="tratamento" required><br>
+
+            <label for="observacao">Observação:</label>
+            <input type="text" name="observacao" id="observacao"><br>
+
+            <button type="submit">Registrar Tratamento</button>
+        </form>
+        {% endif %}
+    {% endif %}
+
+    <a href="{{ url_for('home') }}">Voltar para Home</a>
+</body>
+</html>
