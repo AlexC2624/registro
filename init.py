@@ -225,6 +225,7 @@ def animal(modo):
                             'data_entrada': linha[5],
                             'peso_entrada': linha[6],
                             'valor_entrada': linha[7],
+                            'consumo': linha[8],
                             # Valores de saída
                             'cliente': cliente,
                             'data_saida': data_saida,
