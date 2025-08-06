@@ -1,0 +1,94 @@
+<mxfile host="65bd71144e" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36" version="24.6.4">
+    <diagram name="Página-1" id="A5HjK7b_L2f_tP9hSj_Q">
+        <mxGraphModel dx="1074" dy="795" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#FFFFFF,#21275D)" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="H_yT_B_1-1" value="**Lógica do Módulo de Gerenciamento (Detalhes do Lote)**" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=18;fontColor=default;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="259" y="30" width="300" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="H_yT_B_1-2" value="**Entrada (Usuário seleciona um lote)**" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="90" width="220" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="H_yT_B_1-3" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="H_yT_B_1-2" target="H_yT_B_1-4" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="150" as="sourcePoint"/>
+                        <mxPoint x="400" y="210" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="H_yT_B_1-4" value="**Carregar todos os dados do lote**&lt;br&gt;&lt;i&gt;(Informações básicas, pesagens, sanidade, custos)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="210" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="H_yT_B_1-5" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="H_yT_B_1-4" target="H_yT_B_1-6" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="280" as="sourcePoint"/>
+                        <mxPoint x="400" y="340" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="H_yT_B_1-6" value="**Calcular e Exibir Indicadores Chave**&lt;br&gt;&lt;i&gt;(GMD, Custo/Arroba, Taxa de Mortalidade)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="340" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="H_yT_B_1-7" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="H_yT_B_1-6" target="H_yT_B_1-8" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="410" as="sourcePoint"/>
+                        <mxPoint x="400" y="470" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="H_yT_B_1-8" value="**Exibir Histórico de Manejo**&lt;br&gt;&lt;i&gt;(Tabelas de Pesagens, Sanidade, Nutrição)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="470" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="H_yT_B_1-9" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="H_yT_B_1-8" target="H_yT_B_1-10" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="540" as="sourcePoint"/>
+                        <mxPoint x="400" y="600" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="H_yT_B_1-10" value="**Apresentar Botões de Ação**&lt;br&gt;&lt;i&gt;(Registrar Pesagem, Registrar Manejo, Finalizar Lote)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="600" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="H_yT_B_1-11" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="H_yT_B_1-10" target="H_yT_B_1-12" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="290" y="635" as="sourcePoint"/>
+                        <mxPoint x="160" y="700" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="160" y="635"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="H_yT_B_1-12" value="&lt;b&gt;Registrar Nova Pesagem&lt;/b&gt;&lt;br&gt;Usuário insere o novo peso e a data." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="700" width="160" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="H_yT_B_1-13" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="H_yT_B_1-10" target="H_yT_B_1-14" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="510" y="635" as="sourcePoint"/>
+                        <mxPoint x="640" y="700" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="640" y="635"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="H_yT_B_1-14" value="**Finalizar Lote**&lt;br&gt;Confirmar data de venda, peso final, receita." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+                    <mxGeometry x="560" y="700" width="160" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="H_yT_B_1-15" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="H_yT_B_1-14" target="H_yT_B_1-16" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="640" y="760" as="sourcePoint"/>
+                        <mxPoint x="640" y="820" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="H_yT_B_1-16" value="**Lote movido para 'Finalizados'**&lt;br&gt;&lt;i&gt;(Exibido em Relatórios e Análises)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="560" y="820" width="160" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="H_yT_B_1-17" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="H_yT_B_1-12" target="H_yT_B_1-18" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="160" y="760" as="sourcePoint"/>
+                        <mxPoint x="160" y="820" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="H_yT_B_1-18" value="**Recalcular indicadores e atualizar tela**&lt;br&gt;&lt;i&gt;(Ex: GMD atualizado com o novo peso)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="820" width="160" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

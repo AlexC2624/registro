@@ -1,0 +1,73 @@
+<mxfile host="65bd71144e" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36" version="24.6.4">
+    <diagram name="Página-1" id="T-1u9oG_E2f_pP9hSj_N">
+        <mxGraphModel dx="1074" dy="795" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#FFFFFF,#21275D)" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="A5HjK7b_L2f_tP9hSj_N-1" value="**Lógica do Módulo de Análise**" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=18;fontColor=default;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="259" y="30" width="300" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="A5HjK7b_L2f_tP9hSj_N-2" value="**Entrada (Usuário acessa 'Relatórios')**" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="90" width="220" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="A5HjK7b_L2f_tP9hSj_N-3" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="A5HjK7b_L2f_tP9hSj_N-2" target="A5HjK7b_L2f_tP9hSj_N-4" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="150" as="sourcePoint"/>
+                        <mxPoint x="400" y="210" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="A5HjK7b_L2f_tP9hSj_N-4" value="**Carregar dados de todos os lotes**&lt;br&gt;&lt;i&gt;(ativos e finalizados)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="210" width="220" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="A5HjK7b_L2f_tP9hSj_N-5" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="A5HjK7b_L2f_tP9hSj_N-4" target="A5HjK7b_L2f_tP9hSj_N-6" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="270" as="sourcePoint"/>
+                        <mxPoint x="400" y="330" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="A5HjK7b_L2f_tP9hSj_N-6" value="**Processar e Calcular Indicadores Chave**&lt;br&gt;&lt;i&gt;(GMD, Custo/Arroba, Margem Bruta por Lote)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="330" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="A5HjK7b_L2f_tP9hSj_N-7" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="A5HjK7b_L2f_tP9hSj_N-6" target="A5HjK7b_L2f_tP9hSj_N-8" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint"/>
+                        <mxPoint x="400" y="460" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="A5HjK7b_L2f_tP9hSj_N-8" value="**Exibir Gráfico de Comparativo de Lotes**&lt;br&gt;&lt;i&gt;(GMD vs. Custo por Arroba)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="460" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="A5HjK7b_L2f_tP9hSj_N-9" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="A5HjK7b_L2f_tP9hSj_N-8" target="A5HjK7b_L2f_tP9hSj_N-10" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="530" as="sourcePoint"/>
+                        <mxPoint x="400" y="590" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="A5HjK7b_L2f_tP9hSj_N-10" value="**Exibir Gráfico de Distribuição de Custos**&lt;br&gt;&lt;i&gt;(Pizza ou Barras: Ração, Sanidade, Compra)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="590" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="A5HjK7b_L2f_tP9hSj_N-11" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="A5HjK7b_L2f_tP9hSj_N-10" target="A5HjK7b_L2f_tP9hSj_N-12" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="660" as="sourcePoint"/>
+                        <mxPoint x="400" y="720" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="A5HjK7b_L2f_tP9hSj_N-12" value="**Apresentar Ferramenta de Projeção**&lt;br&gt;&lt;i&gt;(Estimar data de abate com base no GMD atual)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="720" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="A5HjK7b_L2f_tP9hSj_N-13" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="A5HjK7b_L2f_tP9hSj_N-6" target="A5HjK7b_L2f_tP9hSj_N-14" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="290" y="365" as="sourcePoint"/>
+                        <mxPoint x="160" y="460" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="160" y="365"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="A5HjK7b_L2f_tP9hSj_N-14" value="&lt;b&gt;Decisão do Produtor&lt;/b&gt;&lt;br&gt;&lt;i&gt;(Estratégia de manejo, compra/venda)&lt;/i&gt;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;align=center;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="100" y="460" width="120" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

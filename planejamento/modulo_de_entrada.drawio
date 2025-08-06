@@ -1,0 +1,81 @@
+<mxfile host="65bd71144e" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36" version="24.6.4">
+    <diagram name="Página-1" id="A5HjK7b_L2f_tP9hSj_P">
+        <mxGraphModel dx="1074" dy="795" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#FFFFFF,#21275D)" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="H_yT_B_1-1" value="**Lógica do Módulo de Entrada (Cadastro de Lote)**" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=18;fontColor=default;fillColor=none;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="259" y="30" width="300" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="H_yT_B_1-2" value="**Entrada (Usuário clica em 'Adicionar Novo Lote')**" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="90" width="220" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="H_yT_B_1-3" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="H_yT_B_1-2" target="H_yT_B_1-4" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="150" as="sourcePoint"/>
+                        <mxPoint x="400" y="210" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="H_yT_B_1-4" value="**Apresentar Formulário de Cadastro**&lt;br&gt;&lt;i&gt;(Campos para nome, data, número de animais, etc.)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="210" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="H_yT_B_1-5" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="H_yT_B_1-4" target="H_yT_B_1-6" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="280" as="sourcePoint"/>
+                        <mxPoint x="400" y="340" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="H_yT_B_1-6" value="**Usuário preenche os dados iniciais**&lt;br&gt;&lt;i&gt;(Nome do Lote, Data de Entrada, Nº de Animais, Peso Médio, Custo)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="340" width="220" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="H_yT_B_1-7" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="H_yT_B_1-6" target="H_yT_B_1-8" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="430" as="sourcePoint"/>
+                        <mxPoint x="400" y="490" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="H_yT_B_1-8" value="**Validar dados**&lt;br&gt;&lt;i&gt;(Campos obrigatórios preenchidos, formato correto)&lt;/i&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="490" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="H_yT_B_1-9" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="H_yT_B_1-8" target="H_yT_B_1-4" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="510" y="525" as="sourcePoint"/>
+                        <mxPoint x="590" y="525" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="590" y="525"/>
+                            <mxPoint x="590" y="245"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="H_yT_B_1-10" value="&lt;i&gt;Dados inválidos&lt;/i&gt;&lt;br&gt;Mensagem de erro" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="H_yT_B_1-9" vertex="1" connectable="0">
+                    <mxGeometry x="-0.0382" y="1" relative="1" as="geometry">
+                        <mxPoint x="14" y="2" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="H_yT_B_1-11" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="H_yT_B_1-8" target="H_yT_B_1-12" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="560" as="sourcePoint"/>
+                        <mxPoint x="400" y="620" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="H_yT_B_1-12" value="**Salvar dados do novo lote**&lt;br&gt;&lt;i&gt;(Cria um registro único no banco de dados)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="620" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="H_yT_B_1-13" value="&lt;i&gt;Dados válidos&lt;/i&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="H_yT_B_1-11" vertex="1" connectable="0">
+                    <mxGeometry x="0.142" y="1" relative="1" as="geometry">
+                        <mxPoint x="-1" y="-12" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="H_yT_B_1-14" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="H_yT_B_1-12" target="H_yT_B_1-15" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="690" as="sourcePoint"/>
+                        <mxPoint x="400" y="750" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="H_yT_B_1-15" value="**Redirecionar para 'Detalhes do Lote'**&lt;br&gt;&lt;i&gt;(Página de gerenciamento do lote recém-criado)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="750" width="220" height="70" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
