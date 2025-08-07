@@ -7,13 +7,20 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>Saúde Animal - {{ 'Vacinação' if modo == 'vacina' else 'Tratamento' }}</h1>
+    <h1>Saúde Animal - {{ 'Vacinação' if modo == 'vacina' else 'Visita' }}</h1>
 
     {% if status %}
-        <p style="color: green;">{{ status }}</p>
+    <script>
+        const status = {{ status | tojson }};
+        alert(status); // Exibe o alerta
+        if (status) {
+            window.location.href = "{{ url_for('cadastros') }}";
+        }
+    </script>
     {% endif %}
 
     {% if not animal_opcoes %}
+        <p>{{ animal_opcoes }}</p>
         <p>Nenhum animal cadastrado.</p>
     {% elif not lote_opcoes %}
         <p>Nenhum lote cadastrado.</p>
@@ -45,7 +52,7 @@
 
             <button type="submit">Registrar Vacinação</button>
         </form>
-        {% elif modo == 'tratamento' %}
+        {% elif modo == 'veterinario' %}
         <form method="post">
             <label for="animal">Animal:</label>
             <select name="animal" id="animal" required>
@@ -61,7 +68,7 @@
                 {% endfor %}
             </select><br>
 
-            <label for="data_tratamento">Data do Tratamento:</label>
+            <label for="data_tratamento">Data da visita:</label>
             <input type="date" name="data_tratamento" id="data_tratamento" required><br>
 
             <label for="tratamento">Tratamento:</label>
@@ -70,11 +77,11 @@
             <label for="observacao">Observação:</label>
             <input type="text" name="observacao" id="observacao"><br>
 
-            <button type="submit">Registrar Tratamento</button>
+            <button type="submit">Registrar visita</button>
         </form>
         {% endif %}
     {% endif %}
 
-    <a href="{{ url_for('home') }}">Voltar para Home</a>
+    <a href="{{ url_for('cadastros') }}">Voltar</a>
 </body>
 </html>

@@ -512,7 +512,7 @@ def saude(modo):
     if modo == 'vacina':
         if request.method == POST:
             animal = request.form['animal']
-            lote_opcoes = json_animais.obter_dado('lote')
+            lote_opcoes = sql().ler_tabela(f'lotes_{id_user}')
             data_vacina = request.form['data_vacina']
             vacina = request.form['vacina']
             observacao = request.form['observacao']
@@ -536,6 +536,7 @@ def saude(modo):
         animal_opcoes = sql().ler_tabela(f'animais_ativos_{id_user}')
         if not animal_opcoes:
             status = 'Nenhum animal cadastrado'
+            print(animal_opcoes, lote_opcoes, sep='\n\n')
             return render_template('saude.html', status=status)
         
         lote_opcoes = sql().ler_tabela(f'lotes_{id_user}')
