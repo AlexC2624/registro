@@ -25,21 +25,50 @@
     {% elif not lote_opcoes %}
         <p>Nenhum lote cadastrado.</p>
     {% else %}
-        {% if modo == 'vacina' %}
+    {% if modo == 'vacina' %}
         <form method="post">
-            <label for="animal">Animal:</label>
-            <select name="animal" id="animal" required>
-                {% for animal in animal_opcoes %}
-                    <option value="{{ animal[0] }}">{{ animal[1] }}</option>
-                {% endfor %}
-            </select><br>
-
-            <label for="lote">Lote:</label>
-            <select name="lote" id="lote" required>
+            <label for="lote_filtro">Lote:</label>
+            <select name="lote_filtro" id="lote_filtro" required>
+                <option value="todos">Todos</option>
                 {% for lote in lote_opcoes %}
-                    <option value="{{ lote[0] }}">{{ lote[1] }}</option>
+                    <option value="{{ lote[1] }}">{{ lote[1] }}</option>
                 {% endfor %}
             </select><br>
+            
+            <table id="tabela_animais">
+                <thead>
+                    <tr>
+                        <th>Selecionar</th>
+                        <th>ID</th>
+                        <th>Lote</th>
+                        <th>Raça</th>
+                        <th>Data de Nascimento</th>
+                        <th>Fornecedor</th>
+                        <th>Data de Entrada</th>
+                        <th>Peso de Entrada</th>
+                        <th>Valor de Entrada</th>
+                        <th>Consumo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for animal in animal_opcoes %}
+                        <tr data-lote="{{ animal[1] }}">
+                            <td>
+                                <input type="checkbox" name="animal_id[]" value="{{ animal[0] }}">
+                            </td>
+                            <td>{{ animal[0] }}</td>
+                            <td>{{ animal[1] }}</td>
+                            <td>{{ animal[2] }}</td>
+                            <td>{{ animal[3] }}</td>
+                            <td>{{ animal[4] }}</td>
+                            <td>{{ animal[5] }}</td>
+                            <td>{{ animal[6] }}</td>
+                            <td>{{ animal[7] }}</td>
+                            <td>{{ animal[8] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table><br>
 
             <label for="data_vacina">Data da Vacina:</label>
             <input type="date" name="data_vacina" id="data_vacina" required><br>
@@ -52,7 +81,37 @@
 
             <button type="submit">Registrar Vacinação</button>
         </form>
-        {% elif modo == 'veterinario' %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const loteFiltro = document.getElementById('lote_filtro');
+                const tabelaAnimais = document.getElementById('tabela_animais').getElementsByTagName('tbody')[0];
+                const linhas = tabelaAnimais.getElementsByTagName('tr');
+
+                loteFiltro.addEventListener('change', function() {
+                    const loteSelecionado = this.value;
+
+                    for (let i = 0; i < linhas.length; i++) {
+                        const linha = linhas[i];
+                        // Pega o valor do atributo 'data-lote' da linha
+                        const loteDaLinha = linha.getAttribute('data-lote');
+
+                        if (loteSelecionado === 'todos' || loteDaLinha === loteSelecionado) {
+                            linha.style.display = ''; // Mostra a linha
+                        } else {
+                            linha.style.display = 'none'; // Esconde a linha
+                        }
+                    }
+                });
+            });
+        </script>
+        <style>
+            /* Opcional: Adicione esta classe para um filtro mais eficiente. */
+            .hidden {
+                display: none;
+            }
+        </style>
+        {% endif %}
+        {% if modo == 'veterinario' %}
         <form method="post">
             <label for="animal">Animal:</label>
             <select name="animal" id="animal" required>
