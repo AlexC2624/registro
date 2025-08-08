@@ -57,7 +57,7 @@
                     <select name="fornecedor" id="fornecedor" required>
                         <option value="" disabled selected>Selecione o fornecedor</option>
                         {% for fornecedor in fornecedor_opcoes %}
-                        <option id="{{ fornecedor[0] }}" value="{{ fornecedor[1] }}">{{ fornecedor[0] }}</option>
+                        <option id="{{ fornecedor[0] }}" value="{{ fornecedor[1] }}">{{ fornecedor[1] }}</option>
                         {% endfor %}
                     </select>
                 </div>
