@@ -26,10 +26,15 @@
         <p>Nenhum lote cadastrado.</p>
     {% else %}
     {% if modo == 'vacina' %}
-        <form method="post">
+    <style>
+    .hidden {
+        display: none;
+    }
+    </style>
+        <form method="post" id="animal">
             <label for="lote_filtro">Lote:</label>
             <select name="lote_filtro" id="lote_filtro" required>
-                <option value="todos">Todos</option>
+                <option value="" disabled selected>Selecione</option>
                 {% for lote in lote_opcoes %}
                     <option value="{{ lote[1] }}">{{ lote[1] }}</option>
                 {% endfor %}
@@ -38,7 +43,7 @@
             <table id="tabela_animais">
                 <thead>
                     <tr>
-                        <th>Selecionar</th>
+                        <th><input type="checkbox" id="master-checkbox"></th>
                         <th>ID</th>
                         <th>Lote</th>
                         <th>Raça</th>
@@ -54,7 +59,7 @@
                     {% for animal in animal_opcoes %}
                         <tr data-lote="{{ animal[1] }}">
                             <td>
-                                <input type="checkbox" name="animal_id[]" value="{{ animal[0] }}">
+                                <input type="checkbox" name="animal_id[]" value="{{ animal[0] }}" class="animal-checkbox">
                             </td>
                             <td>{{ animal[0] }}</td>
                             <td>{{ animal[1] }}</td>
@@ -72,6 +77,14 @@
 
             <label for="data_vacina">Data da Vacina:</label>
             <input type="date" name="data_vacina" id="data_vacina" required><br>
+            <script>
+                const hojeEntrada = new Date();
+                const anoEntrada = hojeEntrada.getFullYear();
+                const mesEntrada = String(hojeEntrada.getMonth() + 1).padStart(2, '0');
+                const diaEntrada = String(hojeEntrada.getDate()).padStart(2, '0');
+                document.getElementById('data_vacina').setAttribute('max', `${anoEntrada}-${mesEntrada}-${diaEntrada}`);
+                document.getElementById('data_vacina').value = `${anoEntrada}-${mesEntrada}-${diaEntrada}`;
+            </script>
 
             <label for="vacina">Vacina:</label>
             <input type="text" name="vacina" id="vacina" required><br>
@@ -81,36 +94,92 @@
 
             <button type="submit">Registrar Vacinação</button>
         </form>
+
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const loteFiltro = document.getElementById('lote_filtro');
                 const tabelaAnimais = document.getElementById('tabela_animais').getElementsByTagName('tbody')[0];
                 const linhas = tabelaAnimais.getElementsByTagName('tr');
 
+                // Seleção do checkbox mestre e dos checkboxes individuais
+                const masterCheckbox = document.getElementById('master-checkbox');
+                const checkboxes = document.querySelectorAll('.animal-checkbox');
+
+                // Seleção do formulário
+                const form = document.getElementById('form-vacina');
+
+                // 1. Lógica de Filtragem de Lotes (já implementada)
                 loteFiltro.addEventListener('change', function() {
                     const loteSelecionado = this.value;
 
                     for (let i = 0; i < linhas.length; i++) {
                         const linha = linhas[i];
-                        // Pega o valor do atributo 'data-lote' da linha
                         const loteDaLinha = linha.getAttribute('data-lote');
 
                         if (loteSelecionado === 'todos' || loteDaLinha === loteSelecionado) {
-                            linha.style.display = ''; // Mostra a linha
+                            linha.classList.remove('hidden');
                         } else {
-                            linha.style.display = 'none'; // Esconde a linha
+                            linha.classList.add('hidden');
                         }
+                    }
+                    // Quando o filtro muda, desmarque o checkbox mestre
+                    masterCheckbox.checked = false;
+                    checkboxes.forEach(function(checkbox) {
+                        checkbox.checked = false;
+                    });
+                });
+
+                // 2. Lógica do Checkbox Mestre
+                masterCheckbox.addEventListener('change', function() {
+                    const isChecked = this.checked;
+                    checkboxes.forEach(function(checkbox) {
+                        // Apenas marca ou desmarca os checkboxes visíveis
+                        const parentRow = checkbox.closest('tr');
+                        if (!parentRow.classList.contains('hidden')) {
+                            checkbox.checked = isChecked;
+                        }
+                    });
+                });
+
+                // 3. Verificação de Submissão do Formulário
+                form.addEventListener('submit', function(event) {
+                    // Cria um array para armazenar os IDs dos animais selecionados
+                    let animaisSelecionados = [];
+
+                    // Itera sobre todos os checkboxes individuais
+                    checkboxes.forEach(function(checkbox) {
+                        // Se o checkbox estiver marcado...
+                        if (checkbox.checked) {
+                            // ...adiciona o valor dele (que deve ser o ID do animal) ao array
+                            animaisSelecionados.push(checkbox.value);
+                        }
+                    });
+                    console.log(animaisSelecionados)
+                    // Se o array de animais selecionados estiver vazio, exibe o alerta
+                    if (animaisSelecionados.length === 0) {
+                        alert('Por favor, selecione pelo menos um animal.');
+                        event.preventDefault(); // Impede o envio do formulário
+                    } else {
+                        // Se houver animais selecionados, você pode usar a lista para algo.
+                        // Por exemplo, você pode colocá-la em um campo de formulário oculto
+                        // para que ela seja enviada junto com o restante dos dados do formulário.
+                        console.log('Animais selecionados:', animaisSelecionados);
+
+                        // Exemplo: Criar um campo de input oculto para cada animal selecionado
+                        animaisSelecionados.forEach(id => {
+                            const inputHidden = document.createElement('input');
+                            inputHidden.type = 'hidden';
+                            inputHidden.name = 'animais[]'; // Use '[]' para que o Flask receba uma lista
+                            inputHidden.value = id;
+                            form.appendChild(inputHidden);
+                        });
+                        // O formulário será enviado normalmente, e agora o backend poderá receber a lista de animais.
                     }
                 });
             });
         </script>
-        <style>
-            /* Opcional: Adicione esta classe para um filtro mais eficiente. */
-            .hidden {
-                display: none;
-            }
-        </style>
         {% endif %}
+
         {% if modo == 'veterinario' %}
         <form method="post">
             <label for="animal">Animal:</label>
