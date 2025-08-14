@@ -58,7 +58,7 @@ def load_logged_in_user():
         'perguntar'
     ]
     if request.path.split('/')[1] in rotas:  # Verifica se a rota é uma das que requerem login
-        if not get_user_by_id(sql(), int(g.user_id)):  # Verifica se o usuário não está logado
+        if not g.user_id:  # Verifica se o usuário não está logado
             return redirect(url_for('index'))   # Redireciona para a página de login se não estiver logado
 
 @app.route('/', methods= [GET, POST])   # Rota de loguin
@@ -511,25 +511,22 @@ def saude(modo):
 
     if modo == 'vacina':
         if request.method == POST:
-            animal = request.form['animal']
-            lote_opcoes = sql().ler_tabela(f'lotes_{id_user}')
+            animal = request.form.getlist('animais[]')
+            lote = request.form['lote_filtro']
             data_vacina = request.form['data_vacina']
             vacina = request.form['vacina']
             observacao = request.form['observacao']
 
             novo_registro = {
                 'animal': animal,
-                'lote': lote_opcoes,
+                'lote': lote,
                 'data_vacina': data_vacina,
                 'vacina': vacina,
                 'observacao': observacao
             }
-
-            # Caminho do arquivo CSV para vacinas
-            arquivo = 'animal_vacina.csv'
-
-            banco = ManagerCSV(arquivo, list(novo_registro.keys()))
-            banco.adicionar(novo_registro)
+            
+            print(novo_registro)
+            sql().inserir(f'animal_vacina_{id_user}', novo_registro.keys(), novo_registro.values())
 
             status = 'Vacinação registrada com sucesso!'
 
