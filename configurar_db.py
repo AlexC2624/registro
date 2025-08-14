@@ -96,6 +96,14 @@ def tabelas(id_user=1):
             data_fim TEXT,
             quantidade TEXT,
             observacao TEXT
-        );"""
+        );""",
+        'animal_vacina': f""" CREATE TABLE IF NOT EXISTS animal_vacina_{id_user} (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            lote TEXT,
+            animal TEXT,
+            data_vacina TEXT,
+            vacina TEXT,
+            observacao TEXT
+        );""",
     }
     return TABELAS
