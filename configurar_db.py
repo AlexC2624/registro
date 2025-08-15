@@ -1,64 +1,30 @@
 def tabelas(id_user=1):
     TABELAS = {
+        # Cadastro de usuários
+        # Configuração de personalização para cada usuário
         'users': """CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT,
-            password_hash TEXT
-            );""",
-
-        'localizacao': f"""CREATE TABLE IF NOT EXISTS localizacao_{id_user} (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT,
-            endereco TEXT,
-            coordenadas INTEGER
-            );""",
-        'lotes': f"""CREATE TABLE IF NOT EXISTS lotes_{id_user} (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT,
-            quantidade INTEGER,
-            localizacao INTEGER,
-            descricao TEXT,
-            FOREIGN KEY (localizacao) REFERENCES localizacao(id)
-            );""",
-        'racas': f"""CREATE TABLE IF NOT EXISTS racas_{id_user} (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT,
-            descricao TEXT
-            );""",
-        'fornecedores': f"""CREATE TABLE IF NOT EXISTS fornecedores_{id_user} (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT,
-            telefone TEXT,
-            email TEXT
-            );""",
-        'clientes': f"""CREATE TABLE IF NOT EXISTS clientes_{id_user} (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT,
+            nome_usuario TEXT,
+            senha_hash TEXT,
             email TEXT,
-            telefone TEXT
+            telefone TEXT,
+            estado TEXT,
+            cidade TEXT,
+            comunidade TEXT
             );""",
-        'insumos': f"""CREATE TABLE IF NOT EXISTS insumos_{id_user} (
+        
+        # Cadaastro extras como lote, raca, fornecedor, cliente, insumo, estoque...
+        # 'tipo' receberá o nome de uso da linha. Ex: lote, raca...
+        'outros': """CREATE TABLE IF NOT EXISTS outros (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT,
-            quantidade INTEGER,
-            unidade TEXT,
-            fornecedor_id INTEGER,
-            FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id)
+            tipo TEXT,
+            a TEXT,
+            b TEXT,
+            c TEXT
             );""",
-        'animais_ativos': f"""CREATE TABLE IF NOT EXISTS animais_ativos_{id_user} (
+        # Histórico de compra/venda de animais
+        'animais': """CREATE TABLE IF NOT EXISTS animais (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            lote TEXT,
-            raca INTEGER,
-            data_nascimento INTEGER,
-            fornecedor INTEGER,
-            data_entrada INTEGER,
-            peso_entrada INTEGER,
-            valor_entrada INTEGER,
-            consumo INTEGER
-            );""",
-        'animais_saida': f"""CREATE TABLE IF NOT EXISTS animais_saida_{id_user} (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            idx_entrada INTEGER,
             lote TEXT,
             raca INTEGER,
             data_nascimento INTEGER,
@@ -73,37 +39,28 @@ def tabelas(id_user=1):
             peso_saida INTEGER,
             valor_saida INTEGER
         );""",
-        'insumo_novo': f""" CREATE TABLE IF NOT EXISTS insumo_novo_{id_user} (
+        # Histórico de compra/consumo de insumos
+        'insumo': """ CREATE TABLE IF NOT EXISTS insumo (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT,
-            fornecedor TEXT,
-            tipo TEXT,
-            estoque TEXT,
-            unidade TEXT
-        );""",
-        'insumo_compra': f""" CREATE TABLE IF NOT EXISTS insumo_compra_{id_user} (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            insumo TEXT,
+            tipo_movimentacao TEXT,
+            descrisao TEXT,
             data TEXT,
-            quantidade TEXT,
-            valor_unitario TEXT
-        );""",
-        'insumo_consumo': f""" CREATE TABLE IF NOT EXISTS insumo_consumo_{id_user} (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            insumo TEXT,
             lote TEXT,
-            data_inicio TEXT,
-            data_fim TEXT,
             quantidade TEXT,
-            observacao TEXT
+            valor_unitario TEXT,
+            observacao TEXT,
+            em_estoque TEXT
         );""",
-        'animal_vacina': f""" CREATE TABLE IF NOT EXISTS animal_vacina_{id_user} (
+        # Histórico de comportamento/vacina/tratamento aos animais
+        'saude': """ CREATE TABLE IF NOT EXISTS saude (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            lote TEXT,
             animal TEXT,
-            data_vacina TEXT,
-            vacina TEXT,
+            data TEXT,
+            peso TEXT,
+            comportamento TEXT,
+            medicamento TEXT,
+            valor_inspecao_veterinaria TEXT,
             observacao TEXT
-        );""",
+        );"""
     }
     return TABELAS
