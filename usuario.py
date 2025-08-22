@@ -5,17 +5,16 @@ def _hash_password(password):
     """Gero o hash da senha usando SHA256."""
     return hashlib.sha256(password.encode()).hexdigest()
 
-def register_user(sql: SQL, username: str, password: str):
+def register_user(sql: SQL, dados: dict):
     """
     Cadastra um novo usuário no banco de dados.
     Retorno True em caso de sucesso, False se o usuário já existir.
     """
     try:
-        password_hash = _hash_password(password)
-        sql.inserir('users', ['username', 'password_hash'], [username, password_hash])
+        dados['senha_hash'] = _hash_password(dados['senha_hash'])
+
+        sql.inserir('users', list(dados.keys()), list(dados.values()))
         return True, sql.cursor.lastrowid
-    # except ValueError as e:
-    #     return False, f"Erro: Usuário '{username}' já existe."
     finally:
         # sql.conn.close()
         pass
