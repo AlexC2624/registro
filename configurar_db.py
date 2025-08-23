@@ -1,4 +1,4 @@
-def tabelas(id_user=1):
+def tabelas():
     TABELAS = {
         # Cadastro de usuários
         # Configuração de personalização para cada usuário
