@@ -25,7 +25,7 @@ def login_user(sql: SQL, username: str, password: str):
     Se corretas, retorna True e o ID real do usuário (do banco de dados).
     Caso contrário, retorna False e uma mensagem de erro.
     """
-    user_data = sql.buscar_registro('users', 'username', username)
+    user_data = sql.buscar_registro('users', 'nome_usuario', username)
     # sql.conn.close()
 
     if user_data:
