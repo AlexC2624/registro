@@ -15,7 +15,7 @@
         <main class="container">
             <fieldset>
                 <legend>Acesse o Sistema</legend>
-                <form action="{{ url_for('index') }}" method="POST">
+                <form id="registroForm" action="{{ url_for('criar_conta') }}" method="POST">
                     <div class="form-group">
                         <label for="nome">Nome Completo:</label>
                         <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required>
@@ -25,8 +25,15 @@
                         <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
                     </div>
                     <div class="form-group">
-                        <label for="username">Email:</label>
-                        <input type="text" id="username" name="username" placeholder="Digite seu email" required>
+                        <label for="confirm_password">Confirme a Senha:</label>
+                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirme sua senha" required>
+                    </div>
+                    <div id="password-error" class="senhas-diferentes"></div>
+                    <div id="password-strength"></div>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="text" id="email" name="email" placeholder="Digite seu email" required>
                     </div>
                     <div class="form-group">
                         <label for="telefone">Telefone:</label>
@@ -45,7 +52,7 @@
                         <input type="text" id="comunidade" name="comunidade" placeholder="Digite sua comunidade" required>
                     </div>
                     {% if error %}
-                        <p class="error-message">{{ error }}</p>
+                    <p class="error-message">{{ error }}</p>
                     {% endif %}
                     <div class="button-container">
                         <button type="submit" name="button" value="criar">Criar</button>
@@ -53,11 +60,100 @@
                 </form>
             </fieldset>
         </main>
-
     </div>
     <footer>
         <p>&copy; 2025 - AI-Registro | Sistema de Gestão Inteligente de Gado | 
-        <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
-    </footer>
-</body>
-</html>
+            <a href="{{ url_for('tos') }}">Termos de Serviço</a></p>
+        </footer>
+    </body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Seleciona os campos e os elementos de feedback
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirm_password');
+            const passwordStrengthDiv = document.getElementById('password-strength');
+            const passwordErrorDiv = document.getElementById('password-error');
+            const form = document.getElementById('registroForm');
+
+            // Função para verificar o nível da senha
+            function checkPasswordStrength(password) {
+                let strength = 0;
+                
+                // Critério 1: Comprimento maior que 8
+                if (password.length >= 8) {
+                    strength++;
+                }
+                // Critério 2: Letra minúscula
+                if (password.match(/[a-z]/)) {
+                    strength++;
+                }
+                // Critério 3: Letra maiúscula
+                if (password.match(/[A-Z]/)) {
+                    strength++;
+                }
+                // Critério 4: Número
+                if (password.match(/[0-9]/)) {
+                    strength++;
+                }
+                // Critério 5: Caractere especial
+                if (password.match(/[^a-zA-Z0-9]/)) {
+                    strength++;
+                }
+                
+                return strength;
+            }
+
+            // Função para atualizar o feedback do nível da senha
+            function updatePasswordStrengthDisplay() {
+                const strength = checkPasswordStrength(passwordInput.value);
+                let strengthText = '';
+                let strengthColor = '';
+
+                if (passwordInput.value.length === 0) {
+                    strengthText = '';
+                } else if (strength <= 2) {
+                    strengthText = 'Fraca';
+                    strengthColor = 'red';
+                } else if (strength <= 4) {
+                    strengthText = 'Média';
+                    strengthColor = 'orange';
+                } else {
+                    strengthText = 'Forte';
+                    strengthColor = 'green';
+                }
+
+                passwordStrengthDiv.textContent = strengthText;
+                passwordStrengthDiv.style.color = strengthColor;
+            }
+
+            // Função para validar se as senhas coincidem
+            function validatePasswordMatch() {
+                if (confirmPasswordInput.value.length > 0 && passwordInput.value !== confirmPasswordInput.value) {
+                    passwordErrorDiv.textContent = 'As senhas não coincidem.';
+                    passwordErrorDiv.style.color = 'red';
+                    return false;
+                } else {
+                    passwordErrorDiv.textContent = '';
+                    return true;
+                }
+            }
+
+            // Adiciona ouvintes de evento para validação em tempo real
+            passwordInput.addEventListener('keyup', updatePasswordStrengthDisplay);
+            passwordInput.addEventListener('keyup', validatePasswordMatch);
+            confirmPasswordInput.addEventListener('keyup', validatePasswordMatch);
+
+            // Validação final no momento do envio do formulário
+            form.addEventListener('submit', function(event) {
+                if (!validatePasswordMatch()) {
+                    event.preventDefault();
+                }
+            });
+        });
+        document.addEventListener('submit', function(event) {
+            if (!validatePasswordMatch()) {
+                event.preventDefault();
+            };
+        });
+    </script>
+    </html>
