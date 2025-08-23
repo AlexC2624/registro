@@ -65,38 +65,51 @@ def load_logged_in_user():
 def index():
     error = None
     if request.method == POST:
-        button = request.form.get('button')
-        if button == 'logar':
-            username = request.form.get('username')
-            password = request.form.get('password')
+        if request.form.get('button') == 'registrar':
+            return redirect(url_for('criar_conta'))
 
-            # Lógica de autenticação
-            booleano, mensagem = login_user(sql(), username, password)
-            if booleano:
-                # Aqui é definido um cookie para o usuário logado com o seu id
-                session['user_id'] = mensagem
+        # Obtém os dados do formulário de login
+        username = request.form.get('username')
+        password = request.form.get('password')
 
-                return redirect(url_for('home'))
-            else:
-                error=mensagem
+        # Lógica de autenticação
+        booleano, mensagem = login_user(sql(), username, password)
+        if booleano:
+            # Aqui é definido um cookie para o usuário logado com o seu id
+            session['user_id'] = mensagem
 
-        elif button == 'registrar':
-            username = request.form.get('username')
-            password = request.form.get('password')
-
-            # Verifica se o usuário já existe
-            if sql().buscar_registro('users', 'username', username):
-                error = 'Usuário já existe. Tente outro nome de usuário.'
-                return render_template('index.html', error=error)
-
-            # Lógica de registro
-            booleano, mensagem = register_user(sql(), username, password)
-            if booleano:
-                session['user_id'] = mensagem  # Define o ID do usuário logado na sessão
-                return redirect(url_for('home'))
-            else:
-                error=mensagem
+            return redirect(url_for('home'))
+        else:
+            error=mensagem
     return render_template('index.html', error=error)
+
+@app.route('/criar_conta', methods= [GET, POST])   # Rota para criar uma nova conta
+def criar_conta():
+    error = None
+    if request.method == POST:
+        dados = {
+        'nome_usuario': request.form.get('nome'),
+        'senha_hash': request.form.get('password'),
+        'email': request.form.get('email'),
+        'telefone': request.form.get('telefone'),
+        'estado': request.form.get('estado'),
+        'cidade': request.form.get('cidade'),
+        'comunidade': request.form.get('comunidade')
+        }
+
+        # Verifica se o usuário já existe
+        if sql().buscar_registro('users', 'nome_usuario', dados['nome_usuario']):
+            error = 'Usuário já existe. Tente outro nome de usuário.'
+            return render_template('index.html', error=error)
+
+        # Lógica de registro
+        booleano, mensagem = register_user(sql(), dados)
+        if booleano:
+            session['user_id'] = mensagem  # Define o ID do usuário logado na sessão
+            return redirect(url_for('home'))
+        else:
+            error=mensagem
+    return render_template('criar_conta.html', error=error)
 
 @app.route('/home', methods= [GET]) # Rota para a página inicial
 def home():
@@ -117,9 +130,6 @@ def favicon(): return send_from_directory('static', 'favicon.ico')
 
 @app.route('/tos')
 def tos(): return render_template('tos.html')
-
-@app.route('/cadastros', methods= [GET])
-def cadastros(): return render_template('cadastros.html')
 
 @app.route('/json_animal/<categoria>', methods= [GET, POST])
 def json_animal(categoria):
